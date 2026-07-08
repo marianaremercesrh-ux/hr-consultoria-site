@@ -335,7 +335,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             <h1
               className="font-['Playfair_Display',serif] text-4xl sm:text-5xl lg:text-6xl leading-[1.08] font-semibold text-white mb-7"
             >
-              Contrate com mais clareza, agilidade e segurança.
+              HR Consultoria de RH: recrutamento e seleção com clareza, agilidade e segurança.
             </h1>
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-10 max-w-2xl font-light">
               A HR Consultoria de RH em Belo Horizonte ajuda empresas a encontrar profissionais mais alinhados com a vaga, reduzindo tempo no processo seletivo e aumentando as chances de uma contratação assertiva.
@@ -378,7 +378,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             </h2>
             <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
             <p className="text-lg leading-[1.75] text-muted-foreground mb-6">
-              Atuamos com recrutamento e seleção para empresas que precisam contratar com mais segurança, mas não querem perder tempo com processos confusos ou triagens superficiais.
+              A HR Consultoria de RH atua com recrutamento e seleção para empresas que precisam contratar com mais segurança, mas não querem perder tempo com processos confusos ou triagens superficiais.
             </p>
             <p className="text-lg leading-[1.75] text-muted-foreground">
               Antes de divulgar uma vaga, entendemos o que a empresa realmente precisa: rotina da função, perfil técnico, comportamento esperado e contexto da equipe. A partir disso, conduzimos a busca com critério e comunicação próxima.
@@ -415,6 +415,9 @@ Mensagem: ${mensagem || "Não informado"}`;
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-white leading-tight max-w-2xl">
               Apoio completo para encontrar o profissional certo
             </h2>
+            <p className="mt-6 max-w-2xl text-lg leading-[1.7]" style={{ color: "rgba(255,255,255,0.72)" }}>
+              A HR Consultoria de RH oferece suporte completo para empresas que desejam contratar com mais segurança, clareza e agilidade.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10">
@@ -479,6 +482,9 @@ Mensagem: ${mensagem || "Não informado"}`;
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight">
               Um processo claro do briefing à contratação
             </h2>
+            <p className="mt-6 max-w-3xl text-lg leading-[1.75] text-muted-foreground">
+              A HR Consultoria de RH organiza cada etapa com clareza, acompanhamento próximo e foco em uma contratação mais assertiva.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
@@ -603,6 +609,14 @@ Mensagem: ${mensagem || "Não informado"}`;
             <p className="text-lg text-muted-foreground leading-[1.75] mb-10">
               Fale com a HR Consultoria de RH e conte qual contratação sua empresa precisa realizar. Preencha o formulário para receber um retorno sobre os próximos passos.
             </p>
+            <div className="rounded-2xl border border-[#D4A62A]/20 bg-[#D4A62A]/8 p-5 mb-8">
+              <p className="text-base font-medium tracking-[0.18em] uppercase mb-2" style={{ color: "#D4A62A" }}>
+                Atendimento em Belo Horizonte
+              </p>
+              <p className="text-lg leading-[1.7] text-muted-foreground">
+                A HR Consultoria de RH atende empresas em Belo Horizonte e também realiza processos de forma remota, com alinhamentos por WhatsApp, e-mail ou videochamada.
+              </p>
+            </div>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
               <button
                 type="button"
@@ -700,7 +714,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                 <Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" />
               </div>
               <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
-                Recrutamento e seleção com processo claro, triagem cuidadosa e comunicação próxima.
+                A HR Consultoria de RH oferece recrutamento e seleção com processo claro, triagem cuidadosa e comunicação próxima.
               </p>
             </div>
 
