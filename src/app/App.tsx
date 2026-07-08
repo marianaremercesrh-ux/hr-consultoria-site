@@ -330,7 +330,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-8"
               style={{ color: "#D4A62A" }}
             >
-              Consultoria de RH em Belo Horizonte
+              Consultoria de RH para empresas
             </span>
             <h1
               className="font-['Playfair_Display',serif] text-4xl sm:text-5xl lg:text-6xl leading-[1.08] font-semibold text-white mb-7"
@@ -338,7 +338,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               HR Consultoria de RH: recrutamento e seleção com clareza, agilidade e segurança.
             </h1>
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-10 max-w-2xl font-light">
-              A HR Consultoria de RH em Belo Horizonte ajuda empresas a encontrar profissionais mais alinhados com a vaga, reduzindo tempo no processo seletivo e aumentando as chances de uma contratação assertiva.
+              A HR Consultoria de RH atende empresas em todo o Brasil, conduzindo processos seletivos de forma remota e buscando profissionais mais alinhados com a vaga e com a realidade de cada negócio.
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
               <a
@@ -509,10 +509,10 @@ Mensagem: ${mensagem || "Não informado"}`;
 
           <div className="mt-12 border-l-4 bg-white p-7 md:p-8" style={{ borderColor: "#D4A62A" }}>
             <h3 className="text-2xl font-semibold leading-snug text-foreground mb-3">
-              Atendimento remoto e presencial
+              Atendimento remoto para todo o Brasil
             </h3>
             <p className="text-lg leading-[1.7] text-muted-foreground">
-              O processo pode ser conduzido de forma online, por WhatsApp, e-mail ou videochamada, e também de forma presencial quando necessário, conforme a demanda da empresa.
+              A HR Consultoria de RH atende empresas em todo o Brasil, conduzindo processos seletivos de forma remota, com alinhamentos por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
             </p>
           </div>
         </div>
@@ -611,10 +611,10 @@ Mensagem: ${mensagem || "Não informado"}`;
             </p>
             <div className="rounded-2xl border border-[#D4A62A]/20 bg-[#D4A62A]/8 p-5 mb-8">
               <p className="text-base font-medium tracking-[0.18em] uppercase mb-2" style={{ color: "#D4A62A" }}>
-                Atendimento em Belo Horizonte
+                Atendimento remoto para todo o Brasil
               </p>
               <p className="text-lg leading-[1.7] text-muted-foreground">
-                A HR Consultoria de RH atende empresas em Belo Horizonte e também realiza processos de forma remota, com alinhamentos por WhatsApp, e-mail ou videochamada.
+                A HR Consultoria de RH atende empresas em todo o Brasil, conduzindo processos seletivos de forma remota, com alinhamentos por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
