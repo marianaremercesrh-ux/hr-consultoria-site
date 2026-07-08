@@ -33,12 +33,12 @@ function Logo({
   );
 }
 
-const WHATSAPP_NUMBER = "5531992936064";
+const WHATSAPP_NUMBER = "5531994773992";
 const CONTACT_EMAIL = "Marianaremercesrh@gmail.com";
 const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
-const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#111111]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#111111] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
-const EMAIL_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 border border-[#111111]/20 bg-white px-6 py-3 text-lg font-medium tracking-wide text-[#111111] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
+const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
+const EMAIL_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 border border-[#052656]/20 bg-white px-6 py-3 text-lg font-medium tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
 
 function WhatsAppIcon({ size = 18 }: { size?: number }) {
   return (
@@ -142,6 +142,17 @@ export default function App() {
     "Processo conduzido com organização, cuidado e transparência",
   ];
 
+  const areasAtendidas = [
+    "Operacional e produção",
+    "Administrativo",
+    "Comercial e atendimento",
+    "Tecnologia",
+    "Liderança e supervisão",
+    "Serviços gerais e apoio",
+    "Vagas técnicas",
+    "Recrutamento para pequenos negócios",
+  ];
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -226,7 +237,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                 key={l.href}
                 href={l.href}
                 className="text-lg font-medium tracking-wide transition-colors hover:opacity-70"
-                style={{ color: scrolled ? "#111111" : "#fff" }}
+                style={{ color: scrolled ? "#052656" : "#fff" }}
               >
                 {l.label}
               </a>
@@ -262,8 +273,8 @@ Mensagem: ${mensagem || "Não informado"}`;
             aria-expanded={menuOpen}
           >
             {menuOpen
-              ? <X size={22} style={{ color: scrolled ? "#111111" : "#fff" }} />
-              : <Menu size={22} style={{ color: scrolled ? "#111111" : "#fff" }} />}
+              ? <X size={22} style={{ color: scrolled ? "#052656" : "#fff" }} />
+              : <Menu size={22} style={{ color: scrolled ? "#052656" : "#fff" }} />}
           </button>
         </div>
 
@@ -303,14 +314,14 @@ Mensagem: ${mensagem || "Não informado"}`;
       {/* HERO */}
       <section id="inicio" className="relative min-h-screen flex items-center">
         <div
-          className="absolute inset-0 bg-gray-900"
+          className="absolute inset-0"
           style={{
             backgroundImage: `url(https://images.unsplash.com/photo-1758518731706-be5d5230e5a5?w=1800&h=1000&fit=crop&auto=format)`,
             backgroundSize: "cover",
             backgroundPosition: "center 30%",
           }}
         >
-          <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(17,17,17,0.88) 0%, rgba(17,17,17,0.60) 60%, rgba(17,17,17,0.30) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(5,38,86,0.90) 0%, rgba(5,38,86,0.66) 60%, rgba(5,38,86,0.36) 100%)" }} />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-32 pb-24 w-full">
@@ -342,7 +353,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               </a>
               <a
                 href="#servicos"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors duration-200 hover:bg-[#D4A62A] hover:text-[#111111] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/25 whitespace-nowrap"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors duration-200 hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/25 whitespace-nowrap"
               >
                 Conhecer serviços
               </a>
@@ -395,7 +406,7 @@ Mensagem: ${mensagem || "Não informado"}`;
       </section>
 
       {/* SERVIÇOS */}
-      <section id="servicos" className="py-20 md:py-28" style={{ backgroundColor: "#111111" }}>
+      <section id="servicos" className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
           <div className="mb-16">
             <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
@@ -410,7 +421,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             {services.map((s, i) => (
               <article
                 key={i}
-                className="group bg-[#111111] p-8 md:p-9 hover:bg-[#1A1A1A] transition-colors duration-200"
+                className="group bg-[#052656] p-8 md:p-9 hover:bg-[#08346F] transition-colors duration-200"
               >
                 <div className="mb-5" style={{ color: "#D4A62A" }}>{s.icon}</div>
                 <h3 className="font-['Playfair_Display',serif] text-2xl font-semibold text-white mb-4 leading-tight">
@@ -421,6 +432,39 @@ Mensagem: ${mensagem || "Não informado"}`;
                 </p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ÁREAS ATENDIDAS */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#FFFFFF" }}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-start">
+            <div>
+              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
+                Áreas que atendemos
+              </span>
+              <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight mb-6">
+                Recrutamento para diferentes níveis e áreas
+              </h2>
+              <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
+              <p className="text-lg leading-[1.75] text-muted-foreground">
+                A HR Consultoria de RH atua no recrutamento e seleção para diferentes áreas e níveis de contratação. Atendemos desde vagas operacionais até posições administrativas, comerciais, técnicas e de tecnologia, sempre buscando entender a necessidade da empresa e o perfil ideal para cada função.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
+              {areasAtendidas.map((area) => (
+                <article key={area} className="bg-white p-6 md:p-7">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center" style={{ backgroundColor: "rgba(212,166,42,0.14)", color: "#D4A62A" }}>
+                    <Check size={17} strokeWidth={2.6} aria-hidden="true" />
+                  </div>
+                  <h3 className="text-xl font-semibold leading-snug text-foreground">
+                    {area}
+                  </h3>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -472,14 +516,14 @@ Mensagem: ${mensagem || "Não informado"}`;
             <div className="w-12 h-px mb-10" style={{ backgroundColor: "#D4A62A" }} />
             <ul className="space-y-4">
               {diferenciais.map((d, i) => (
-                <li key={i} className="flex items-start gap-4">
+                <li key={i} className="flex items-start gap-3">
                   <span
-                    className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center"
+                    className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center"
                     style={{ backgroundColor: "#D4A62A" }}
                   >
-                    <Check size={11} color="#111111" strokeWidth={3} />
+                    <Check size={11} color="#052656" strokeWidth={3} />
                   </span>
-                  <span className="text-lg text-foreground leading-relaxed">{d}</span>
+                  <span className="block min-w-0 flex-1 text-lg leading-[1.6] text-foreground">{d}</span>
                 </li>
               ))}
             </ul>
@@ -502,7 +546,7 @@ Mensagem: ${mensagem || "Não informado"}`;
       </section>
 
       {/* CTA */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#111111" }}>
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
         <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-10 text-center">
           <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
             Vamos conversar
@@ -638,7 +682,7 @@ Mensagem: ${mensagem || "Não informado"}`;
       </section>
 
       {/* FOOTER */}
-      <footer style={{ backgroundColor: "#111111" }} className="py-16">
+      <footer style={{ backgroundColor: "#052656" }} className="py-16">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
             {/* Brand */}
@@ -706,7 +750,7 @@ Mensagem: ${mensagem || "Não informado"}`;
         type="button"
         aria-label="Voltar ao topo"
         onClick={() => document.getElementById("inicio")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-        className={`fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-40 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-[#D4A62A] text-[#111111] shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#E0B33A] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/30 ${
+        className={`fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-40 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-[#D4A62A] text-[#052656] shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#E0B33A] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/30 ${
           scrolled ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
