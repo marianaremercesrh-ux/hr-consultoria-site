@@ -486,8 +486,8 @@ Mensagem: ${mensagem || "Não informado"}`;
               <article key={i} className="relative p-8 border-b md:border-r border-border group">
                 {/* Step number */}
                 <span
-                  className="block font-['Playfair_Display',serif] text-5xl font-semibold mb-6 leading-none"
-                  style={{ color: "rgba(212,166,42,0.18)" }}
+                  className="block font-['Playfair_Display',serif] text-5xl sm:text-6xl font-semibold mb-6 leading-none"
+                  style={{ color: "#D4A62A", opacity: 0.55 }}
                 >
                   {s.num}
                 </span>
@@ -499,6 +499,15 @@ Mensagem: ${mensagem || "Não informado"}`;
                 />
               </article>
             ))}
+          </div>
+
+          <div className="mt-12 border-l-4 bg-white p-7 md:p-8" style={{ borderColor: "#D4A62A" }}>
+            <h3 className="text-2xl font-semibold leading-snug text-foreground mb-3">
+              Atendimento remoto e presencial
+            </h3>
+            <p className="text-lg leading-[1.7] text-muted-foreground">
+              O processo pode ser conduzido de forma online, por WhatsApp, e-mail ou videochamada, e também de forma presencial quando necessário, conforme a demanda da empresa.
+            </p>
           </div>
         </div>
       </section>
@@ -625,7 +634,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             {[
               { field: "nome", label: "Nome", placeholder: "Seu nome completo" },
               { field: "empresa", label: "Empresa", placeholder: "Nome da sua empresa" },
-              { field: "telefone", label: "Telefone / WhatsApp", placeholder: "(11) 99999-9999" },
+              { field: "telefone", label: "Telefone / WhatsApp", placeholder: "(31) 99477-3992" },
               { field: "vaga", label: "Vaga que precisa contratar", placeholder: "Ex: Assistente Administrativo" },
             ].map(({ field, label, placeholder }) => (
               <div key={field}>
