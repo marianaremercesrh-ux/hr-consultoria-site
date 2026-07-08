@@ -634,7 +634,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             {[
               { field: "nome", label: "Nome", placeholder: "Seu nome completo" },
               { field: "empresa", label: "Empresa", placeholder: "Nome da sua empresa" },
-              { field: "telefone", label: "Telefone / WhatsApp", placeholder: "(31) 99477-3992" },
+              { field: "telefone", label: "Telefone / WhatsApp", placeholder: "(31) 99999-9999" },
               { field: "vaga", label: "Vaga que precisa contratar", placeholder: "Ex: Assistente Administrativo" },
             ].map(({ field, label, placeholder }) => (
               <div key={field}>
