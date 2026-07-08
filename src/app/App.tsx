@@ -59,16 +59,23 @@ function whatsappLink() {
   return `https://wa.me/${WHATSAPP_NUMBER}`;
 }
 
-function emailLink(body = "Olá, gostaria de solicitar um orçamento.") {
-  const subject = "Solicitação de orçamento - HR Consultoria";
+function emailLink(
+  body = "Olá, gostaria de solicitar um orçamento.",
+  subject = "Solicitação de orçamento - HR Consultoria",
+) {
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [form, setForm] = useState({ nome: "", empresa: "", telefone: "", vaga: "", mensagem: "" });
-  const [formStatus, setFormStatus] = useState("");
+  const [formData, setFormData] = useState({
+    nome: "",
+    empresa: "",
+    telefone: "",
+    vaga: "",
+    mensagem: "",
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -134,6 +141,64 @@ export default function App() {
     "Apoio pensado para pequenas e médias empresas",
     "Processo conduzido com organização, cuidado e transparência",
   ];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleWhatsAppSubmit = () => {
+    const nome = formData.nome.trim();
+    const empresa = formData.empresa.trim();
+    const telefone = formData.telefone.trim();
+    const vaga = formData.vaga.trim();
+    const mensagem = formData.mensagem.trim();
+
+    if (!nome || !empresa || !telefone || !vaga) {
+      alert("Preencha os campos obrigatórios antes de enviar.");
+      return;
+    }
+
+    const texto = `Olá, tenho interesse em solicitar uma proposta para recrutamento e seleção.
+
+Nome: ${nome}
+Empresa: ${empresa}
+Telefone/WhatsApp: ${telefone}
+Vaga que preciso contratar: ${vaga}
+Mensagem: ${mensagem || "Não informado"}`;
+
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(texto)}`;
+
+    window.location.href = url;
+  };
+
+  const handleEmailSubmit = () => {
+    const nome = formData.nome.trim();
+    const empresa = formData.empresa.trim();
+    const telefone = formData.telefone.trim();
+    const vaga = formData.vaga.trim();
+    const mensagem = formData.mensagem.trim();
+
+    if (!nome || !empresa || !telefone || !vaga) {
+      alert("Preencha os campos obrigatórios antes de enviar.");
+      return;
+    }
+
+    const subject = "Solicitação de proposta - HR Consultoria de RH";
+
+    const body = `Olá, tenho interesse em solicitar uma proposta para recrutamento e seleção.
+
+Nome: ${nome}
+Empresa: ${empresa}
+Telefone/WhatsApp: ${telefone}
+Vaga que preciso contratar: ${vaga}
+Mensagem: ${mensagem || "Não informado"}`;
+
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
 
   return (
     <div className="bg-background text-foreground font-['Inter',sans-serif] antialiased overflow-x-hidden">
@@ -486,22 +551,22 @@ export default function App() {
               Fale com a HR Consultoria de RH e conte qual contratação sua empresa precisa realizar. Preencha o formulário para receber um retorno sobre os próximos passos.
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
-              <a
-                href={whatsappLink()}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={handleWhatsAppSubmit}
                 className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
               >
                 <WhatsAppIcon size={20} />
                 Conversar pelo WhatsApp
-              </a>
-              <a
-                href={emailLink()}
+              </button>
+              <button
+                type="button"
+                onClick={handleEmailSubmit}
                 className={`${EMAIL_BUTTON_CLASS} w-full sm:w-auto`}
               >
                 <Mail size={20} aria-hidden="true" />
                 Solicitar orçamento por e-mail
-              </a>
+              </button>
             </div>
           </div>
 
@@ -509,8 +574,6 @@ export default function App() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              window.open(whatsappLink(), "_blank", "noopener,noreferrer");
-              setFormStatus("Abrimos uma conversa no WhatsApp da HR Consultoria de RH. Se a janela não abrir, verifique o bloqueador de pop-ups do navegador.");
             }}
             id="formulario-contato"
             className="flex flex-col gap-5"
@@ -522,61 +585,54 @@ export default function App() {
               { field: "vaga", label: "Vaga que precisa contratar", placeholder: "Ex: Assistente Administrativo" },
             ].map(({ field, label, placeholder }) => (
               <div key={field}>
-                <label className="block text-base font-medium tracking-wide uppercase mb-2 text-foreground">
+                <label htmlFor={field} className="block text-base font-medium tracking-wide uppercase mb-2 text-foreground">
                   {label}
                 </label>
                 <input
+                  id={field}
+                  name={field}
                   type="text"
                   required
                   placeholder={placeholder}
-                  value={form[field as keyof typeof form]}
-                  onChange={(e) => {
-                    setFormStatus("");
-                    setForm((f) => ({ ...f, [field]: e.target.value }));
-                  }}
+                  value={formData[field as keyof typeof formData]}
+                  onChange={handleChange}
                   className="w-full px-5 py-4 text-lg leading-relaxed border border-border bg-card focus:outline-none focus:border-[#D4A62A] transition-colors"
                 />
               </div>
             ))}
 
             <div>
-              <label className="block text-base font-medium tracking-wide uppercase mb-2 text-foreground">
+              <label htmlFor="mensagem" className="block text-base font-medium tracking-wide uppercase mb-2 text-foreground">
                 Mensagem
               </label>
               <textarea
+                id="mensagem"
+                name="mensagem"
                 rows={4}
-                required
                 placeholder="Fale um pouco sobre o perfil que você busca..."
-                value={form.mensagem}
-                onChange={(e) => {
-                  setFormStatus("");
-                  setForm((f) => ({ ...f, mensagem: e.target.value }));
-                }}
+                value={formData.mensagem}
+                onChange={handleChange}
                 className="w-full px-5 py-4 text-lg leading-relaxed border border-border bg-card focus:outline-none focus:border-[#D4A62A] transition-colors resize-none"
               />
             </div>
 
-            {formStatus && (
-              <p role="status" className="border border-[#D4A62A]/30 bg-[#D4A62A]/10 px-5 py-4 text-lg leading-relaxed text-foreground">
-                {formStatus}
-              </p>
-            )}
-
             <button
-              type="submit"
+              type="button"
+              onClick={handleWhatsAppSubmit}
               className={`${WHATSAPP_BUTTON_CLASS} mt-2 w-full`}
             >
               <WhatsAppIcon size={20} />
               Enviar solicitação
               <ArrowRight size={14} />
             </button>
-            <a
-              href={emailLink(`Olá, gostaria de solicitar um orçamento.\n\nNome: ${form.nome}\nEmpresa: ${form.empresa}\nTelefone/WhatsApp: ${form.telefone}\nVaga: ${form.vaga}\nMensagem: ${form.mensagem}`)}
+            <button
+              type="button"
+              onClick={handleEmailSubmit}
               className={`${EMAIL_BUTTON_CLASS} w-full`}
             >
               <Mail size={20} aria-hidden="true" />
               Solicitar orçamento por e-mail
-            </a>
+            </button>
           </form>
         </div>
       </section>
