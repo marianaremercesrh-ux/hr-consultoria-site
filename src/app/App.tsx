@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail } from "lucide-react";
+import { JobsRouter } from "./pages/JobsPage";
 
 const LOGO_ASSETS = {
   color: {
@@ -12,7 +13,7 @@ const LOGO_ASSETS = {
   },
 };
 
-function Logo({
+export function Logo({
   variant = "color",
   showText = true,
   className = "",
@@ -34,13 +35,12 @@ function Logo({
 }
 
 const WHATSAPP_NUMBER = "5531994773992";
-const CONTACT_EMAIL = "Marianaremercesrh@gmail.com";
-const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
+export const CONTACT_EMAIL = "Marianaremercesrh@gmail.com";
+export const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
-const EMAIL_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 border border-[#052656]/20 bg-white px-6 py-3 text-lg font-medium tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
 
-function WhatsAppIcon({ size = 18 }: { size?: number }) {
+export function WhatsAppIcon({ size = 18 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -55,7 +55,7 @@ function WhatsAppIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-function whatsappLink() {
+export function whatsappLink() {
   return `https://wa.me/${WHATSAPP_NUMBER}`;
 }
 
@@ -66,7 +66,7 @@ function emailLink(
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-export default function App() {
+function HomeApp() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [formData, setFormData] = useState({
@@ -85,6 +85,7 @@ export default function App() {
 
   const navLinks = [
     { label: "Início", href: "#inicio" },
+    { label: "Vagas", href: "/vagas" },
     { label: "Sobre", href: "#sobre" },
     { label: "Serviços", href: "#servicos" },
     { label: "Processo", href: "#processo" },
@@ -255,13 +256,6 @@ Mensagem: ${mensagem || "Não informado"}`;
               <WhatsAppIcon size={18} />
               Fale conosco
             </a>
-            <a
-              href={emailLink()}
-              className={EMAIL_HEADER_BUTTON_CLASS}
-            >
-              <Mail size={18} aria-hidden="true" />
-              Orçamento por e-mail
-            </a>
           </div>
 
           {/* Mobile hamburger */}
@@ -299,13 +293,6 @@ Mensagem: ${mensagem || "Não informado"}`;
             >
               <WhatsAppIcon size={18} />
               Fale conosco
-            </a>
-            <a
-              href={emailLink()}
-              className={`${EMAIL_HEADER_BUTTON_CLASS} w-full`}
-            >
-              <Mail size={18} aria-hidden="true" />
-              Solicitar orçamento por e-mail
             </a>
           </div>
         )}
@@ -781,4 +768,8 @@ Mensagem: ${mensagem || "Não informado"}`;
       </button>
     </div>
   );
+}
+
+export default function App() {
+  return window.location.pathname.startsWith("/vagas") ? <JobsRouter /> : <HomeApp />;
 }
