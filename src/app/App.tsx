@@ -1,6 +1,9 @@
 ﻿import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminNewJobPage from "./pages/AdminNewJobPage";
 
 const LOGO_ASSETS = {
   color: {
@@ -771,5 +774,23 @@ Mensagem: ${mensagem || "Não informado"}`;
 }
 
 export default function App() {
-  return window.location.pathname.startsWith("/vagas") ? <JobsRouter /> : <HomeApp />;
+  const caminho = window.location.pathname;
+
+  if (caminho === "/admin/login") {
+    return <AdminLoginPage />;
+  }
+
+  if (caminho === "/admin/nova-vaga") {
+    return <AdminNewJobPage />;
+  }
+
+  if (caminho === "/admin") {
+    return <AdminDashboardPage />;
+  }
+
+  if (caminho.startsWith("/vagas")) {
+    return <JobsRouter />;
+  }
+
+  return <HomeApp />;
 }
