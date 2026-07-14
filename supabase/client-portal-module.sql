@@ -80,10 +80,6 @@ alter table public.candidatos enable row level security;
 alter table public.entrevistas enable row level security;
 alter table public.perfis_usuarios enable row level security;
 
-grant select on public.empresa_usuarios, public.feedbacks_cliente to authenticated;
-grant insert, update on public.feedbacks_cliente to authenticated;
-grant insert, update, delete on public.empresa_usuarios to authenticated;
-
 -- Substitui políticas amplas das tabelas compartilhadas por isolamento explícito.
 do $$ declare t text; p record; begin
   foreach t in array array['empresa_usuarios','feedbacks_cliente','empresas','vagas','candidaturas','candidatos','entrevistas','perfis_usuarios'] loop
@@ -111,6 +107,17 @@ create policy client_read_feedbacks on public.feedbacks_cliente for select to au
 create policy client_insert_feedbacks on public.feedbacks_cliente for insert to authenticated with check (user_id=auth.uid() and public.portal_has_company(empresa_id) and public.portal_can_view_application(candidatura_id));
 create policy client_update_feedbacks on public.feedbacks_cliente for update to authenticated using (public.portal_has_company(empresa_id) and public.portal_can_view_application(candidatura_id)) with check (user_id=auth.uid() and public.portal_has_company(empresa_id) and public.portal_can_view_application(candidatura_id));
 
+-- Privilégios de tabela necessários para que as políticas RLS sejam avaliadas.
+-- authenticated recebe somente SELECT em perfis; todas as operações continuam
+-- limitadas pelas políticas acima.
+revoke all on table public.empresa_usuarios, public.feedbacks_cliente,
+  public.empresas, public.vagas, public.candidaturas, public.candidatos,
+  public.entrevistas, public.perfis_usuarios from anon;
+grant select, insert, update, delete on table public.empresa_usuarios,
+  public.feedbacks_cliente, public.empresas, public.vagas, public.candidaturas,
+  public.candidatos, public.entrevistas to authenticated;
+grant select on table public.perfis_usuarios to authenticated;
+
 -- Tabelas exclusivamente administrativas, quando instaladas.
 do $$ declare t text; p record; begin
   foreach t in array array['movimentacoes_financeiras','contratos_clientes','observacoes_internas','historico_candidatos'] loop
@@ -118,6 +125,8 @@ do $$ declare t text; p record; begin
       execute format('alter table public.%I enable row level security',t);
       for p in select policyname from pg_policies where schemaname='public' and tablename=t loop execute format('drop policy if exists %I on public.%I',p.policyname,t); end loop;
       execute format('create policy admin_only on public.%I for all to authenticated using (public.portal_is_admin()) with check (public.portal_is_admin())',t);
+      execute format('revoke all on table public.%I from anon',t);
+      execute format('grant select, insert, update, delete on table public.%I to authenticated',t);
     end if;
   end loop;
 end $$;

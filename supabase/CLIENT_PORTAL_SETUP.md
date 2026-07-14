@@ -16,4 +16,22 @@
 11. No perfil de uma empresa, use “Acesso ao Portal” para autorizar e convidar o primeiro responsável.
 12. Na edição de uma vaga vinculada por `empresa_id`, revise o conteúdo e use “Liberar para o cliente” nas candidaturas desejadas.
 
+## Privilégios de banco necessários
+
+O `client-portal-module.sql` concede explicitamente os privilégios de tabela que o
+PostgREST precisa antes de avaliar as políticas RLS:
+
+- `authenticated`: `SELECT` em `public.perfis_usuarios`;
+- `authenticated`: `SELECT`, `INSERT`, `UPDATE` e `DELETE` nas tabelas operacionais
+  do portal (`empresa_usuarios`, `feedbacks_cliente`, `empresas`, `vagas`,
+  `candidaturas`, `candidatos` e `entrevistas`);
+- `authenticated`: os mesmos privilégios nas tabelas administrativas opcionais,
+  quando existirem, sempre limitados pela política `admin_only`;
+- `anon`: nenhum privilégio nessas tabelas.
+
+Os GRANTs não ignoram RLS. Clientes continuam limitados à empresa associada e às
+candidaturas liberadas; somente as políticas administrativas permitem escrita e
+exclusão nas demais tabelas. Não conceda `INSERT`, `UPDATE` ou `DELETE` em
+`public.perfis_usuarios`: o portal precisa apenas de `SELECT` nessa tabela.
+
 Não adicione `SUPABASE_SERVICE_ROLE_KEY` ao `.env.local` ou a qualquer variável `VITE_*`.
