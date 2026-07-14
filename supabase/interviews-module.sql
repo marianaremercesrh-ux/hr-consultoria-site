@@ -1,0 +1,10 @@
+create extension if not exists pgcrypto;
+create table if not exists public.empresas (id uuid primary key default gen_random_uuid(),nome text not null,contato_nome text,contato_cargo text,telefone text,whatsapp text,email text,endereco text,cidade text,estado text,observacoes text,status text not null default 'ativo' check(status in('ativo','inativo')),created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table if not exists public.entrevistas (id uuid primary key default gen_random_uuid(),candidato_id uuid not null references public.candidatos(id) on delete cascade,vaga_id bigint references public.vagas(id) on delete set null,empresa_id uuid references public.empresas(id) on delete set null,data date not null,horario time not null,entrevistador text,local text,observacoes text,status text not null default 'agendada',created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+alter table public.entrevistas drop constraint if exists entrevistas_status_check;
+alter table public.entrevistas add constraint entrevistas_status_check check(status in('agendada','confirmada','realizada','reagendada','cancelada','nao_compareceu'));
+create index if not exists empresas_nome_idx on public.empresas(nome);create index if not exists entrevistas_data_idx on public.entrevistas(data,horario);
+alter table public.empresas enable row level security;alter table public.entrevistas enable row level security;
+revoke all on public.empresas,public.entrevistas from anon;grant select,insert,update,delete on public.empresas,public.entrevistas to authenticated;
+drop policy if exists authenticated_manage_companies on public.empresas;create policy authenticated_manage_companies on public.empresas for all to authenticated using((select auth.uid())is not null)with check((select auth.uid())is not null);
+drop policy if exists authenticated_manage_interviews on public.entrevistas;create policy authenticated_manage_interviews on public.entrevistas for all to authenticated using((select auth.uid())is not null)with check((select auth.uid())is not null);

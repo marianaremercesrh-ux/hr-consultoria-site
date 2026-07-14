@@ -13,6 +13,7 @@ import AdminCompaniesPage from "./pages/AdminCompaniesPage";
 import AdminAgendaPage from "./pages/AdminAgendaPage";
 import AdminTalentPoolPage from "./pages/AdminTalentPoolPage";
 import AdminReportsPage from "./pages/AdminReportsPage";
+import CompanyContractSection from "./components/CompanyContractSection";
 
 const LOGO_ASSETS = {
   color: {
@@ -824,7 +825,7 @@ export default function App() {
   if (caminho === "/admin/empresas") return <AdminCompaniesPage />;
   if (caminho === "/admin/empresas/nova") return <AdminCompaniesPage newCompany />;
   const empresa = caminho.match(/^\/admin\/empresas\/([^/]+)$/);
-  if (empresa) return <AdminCompaniesPage id={decodeURIComponent(empresa[1])} />;
+  if (empresa) { const empresaId = decodeURIComponent(empresa[1]); return <><AdminCompaniesPage id={empresaId}/><div className="bg-[#F5F7FA] px-5 pb-10"><div className="mx-auto max-w-5xl"><CompanyContractSection empresaId={empresaId}/></div></div></>; }
   if (caminho === "/admin/agenda") return <AdminAgendaPage />;
   if (caminho === "/admin/talentos") return <AdminTalentPoolPage />;
   if (caminho === "/admin/relatorios") return <AdminReportsPage />;

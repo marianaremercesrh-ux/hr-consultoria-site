@@ -1,0 +1,5 @@
+export type PaymentStatus="pendente"|"pago"|"parcialmente_pago"|"atrasado"|"cancelado";
+export type CompanyContract={id:string;empresa_id:string;nome_arquivo:string|null;caminho_arquivo:string|null;valor_por_vaga:number;moeda:string;valor_recebido:number;forma_cobranca:string|null;status_pagamento:PaymentStatus;data_vencimento:string|null;observacoes:string|null;contrato_data_upload:string|null;created_at:string;updated_at:string};
+export type CompanyContractForm={valor_por_vaga:number;moeda:string;valor_recebido:number;forma_cobranca:string;status_pagamento:PaymentStatus;data_vencimento:string;observacoes:string};
+export const PAYMENT_STATUSES:Array<{value:PaymentStatus;label:string}>=[{value:"pendente",label:"Pendente"},{value:"pago",label:"Pago"},{value:"parcialmente_pago",label:"Parcialmente pago"},{value:"atrasado",label:"Atrasado"},{value:"cancelado",label:"Cancelado"}];
+export const EMPTY_CONTRACT_FORM:CompanyContractForm={valor_por_vaga:0,moeda:"BRL",valor_recebido:0,forma_cobranca:"",status_pagamento:"pendente",data_vencimento:"",observacoes:""};
