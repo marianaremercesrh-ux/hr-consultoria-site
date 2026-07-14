@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
@@ -728,6 +728,12 @@ Mensagem: ${mensagem || "Não informado"}`;
                     </a>
                   </li>
                 ))}
+                <li>
+                  <a href="/admin/login" className="inline-flex items-center gap-2 text-lg text-white/55 transition-colors hover:text-[#D4A62A]">
+                    <LockKeyhole size={16} aria-hidden="true" />
+                    Área do Recrutador
+                  </a>
+                </li>
               </ul>
             </div>
 
