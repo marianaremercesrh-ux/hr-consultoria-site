@@ -8,3 +8,4 @@ alter table public.empresas enable row level security;alter table public.entrevi
 revoke all on public.empresas,public.entrevistas from anon;grant select,insert,update,delete on public.empresas,public.entrevistas to authenticated;
 drop policy if exists authenticated_manage_companies on public.empresas;create policy authenticated_manage_companies on public.empresas for all to authenticated using((select auth.uid())is not null)with check((select auth.uid())is not null);
 drop policy if exists authenticated_manage_interviews on public.entrevistas;create policy authenticated_manage_interviews on public.entrevistas for all to authenticated using((select auth.uid())is not null)with check((select auth.uid())is not null);
+notify pgrst, 'reload schema';
