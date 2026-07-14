@@ -1,8 +1,30 @@
 import { supabase } from "../lib/supabase";
 import type { Empresa, EmpresaForm, Entrevista, HistoricoCandidato, ObservacaoInterna } from "../types/ats";
-export async function listEmpresas(){ const {data,error}=await supabase.from("empresas").select("*").order("nome"); if(error)throw error; return (data??[]) as Empresa[]; }
-export async function getEmpresa(id:string){ const {data,error}=await supabase.from("empresas").select("*").eq("id",id).single(); if(error)throw error; return data as Empresa; }
-export async function saveEmpresa(form:EmpresaForm,id?:string){ const payload={...form,updated_at:new Date().toISOString()}; const query=id?supabase.from("empresas").update(payload).eq("id",id).select("*").single():supabase.from("empresas").insert(payload).select("*").single(); const {data,error}=await query; if(error)throw error; return data as Empresa; }
+const EMPRESA_COLUMNS="id,nome,cnpj,logo_url,contato_nome,contato_cargo,telefone,whatsapp,email,endereco,cidade,estado,observacoes,status,created_at,updated_at";
+export async function listEmpresas(){ const {data,error}=await supabase.from("empresas").select(EMPRESA_COLUMNS).order("nome",{ascending:true}); if(error)throw error; return (data??[]) as Empresa[]; }
+export async function getEmpresa(id:string){ const {data,error}=await supabase.from("empresas").select(EMPRESA_COLUMNS).eq("id",id).single(); if(error)throw error; return data as Empresa; }
+export async function saveEmpresa(form:EmpresaForm,id?:string){
+  const optionalText=(value:string|null)=>value?.trim()||null;
+  const payload={
+    nome:form.nome.trim(),
+    cnpj:optionalText(form.cnpj),
+    contato_nome:optionalText(form.contato_nome),
+    contato_cargo:optionalText(form.contato_cargo),
+    telefone:optionalText(form.telefone),
+    whatsapp:optionalText(form.whatsapp),
+    email:optionalText(form.email),
+    endereco:optionalText(form.endereco),
+    cidade:optionalText(form.cidade),
+    estado:optionalText(form.estado),
+    observacoes:optionalText(form.observacoes),
+    status:form.status,
+    updated_at:new Date().toISOString(),
+  };
+  const query=id?supabase.from("empresas").update(payload).eq("id",id).select("*").single():supabase.from("empresas").insert(payload).select("*").single();
+  const {data,error}=await query;
+  if(error)throw error;
+  return data as Empresa;
+}
 export async function listEntrevistas(){ const {data,error}=await supabase.from("entrevistas").select("*,candidato:candidatos(id,nome),vaga:vagas(id,titulo),empresa:empresas(id,nome)").order("data").order("horario"); if(error)throw error; return (data??[]) as unknown as Entrevista[]; }
 export async function createEntrevista(form:Omit<Entrevista,"id"|"created_at"|"updated_at"|"candidato"|"vaga"|"empresa">){ const {error}=await supabase.from("entrevistas").insert(form); if(error)throw error; }
 export async function updateEntrevista(id:string,form:Omit<Entrevista,"id"|"created_at"|"updated_at"|"candidato"|"vaga"|"empresa">){const{error}=await supabase.from("entrevistas").update({...form,updated_at:new Date().toISOString()}).eq("id",id);if(error)throw error;}

@@ -9,6 +9,13 @@ export async function listApplications(): Promise<CandidaturaDetalhada[]> {
   return (data ?? []) as unknown as CandidaturaDetalhada[];
 }
 
+export async function listApplicationReferencesForJobs(jobIds: Array<string | number>): Promise<Array<Pick<Candidatura, "candidato_id" | "vaga_id">>> {
+  if (jobIds.length === 0) return [];
+  const { data, error } = await supabase.from("candidaturas").select("candidato_id,vaga_id").in("vaga_id", jobIds);
+  if (error) throw error;
+  return (data ?? []) as Array<Pick<Candidatura, "candidato_id" | "vaga_id">>;
+}
+
 export async function listCandidateApplications(candidateId: string): Promise<CandidaturaDetalhada[]> {
   const { data, error } = await supabase.from("candidaturas").select(DETAIL_SELECT).eq("candidato_id", candidateId).order("created_at", { ascending: false });
   if (error) throw error;

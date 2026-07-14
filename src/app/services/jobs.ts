@@ -19,6 +19,15 @@ export async function listJobs() {
   return (data ?? []) as Job[];
 }
 
+export async function listJobsByCompanyId(empresaId: string) {
+  const { data, error } = await supabase
+    .from("vagas")
+    .select("id,status,empresa_id")
+    .eq("empresa_id", empresaId);
+  if (error) throw error;
+  return (data ?? []) as Array<Pick<Job, "id" | "status" | "empresa_id">>;
+}
+
 export async function listPublishedJobs() {
   const { data, error } = await supabase
     .from("vagas")
