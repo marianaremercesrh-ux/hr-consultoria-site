@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { getJobById, updateJob } from "../services/jobs";
+import { generateJobSlug, getJobById, updateJob } from "../services/jobs";
 import { EMPTY_JOB_FORM, jobToForm, type JobFormData } from "../types/jobs";
 import AdminNav from "../components/AdminNav";
+import ApplicationStageControl, { EtapaBadge } from "../components/ApplicationStageControl";
+import JobShareActions from "../components/JobShareActions";
+import { listEmpresas } from "../services/ats";
+import type { Empresa } from "../types/ats";
 import { listApplications, updateApplicationStage } from "../services/applications";
 import { ETAPAS, type CandidaturaDetalhada, type EtapaProcesso } from "../types/candidates";
 import { Save, UserPlus, X } from "lucide-react";
@@ -14,6 +18,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [applications, setApplications] = useState<CandidaturaDetalhada[]>([]);
+  const [empresas, setEmpresas] = useState<Empresa[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -21,6 +26,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
       if (!data.session) { window.location.href = "/admin/login"; return; }
       try {
         setForm(jobToForm(await getJobById(id)));
+        void listEmpresas().then(setEmpresas).catch(() => undefined);
         try { setApplications((await listApplications()).filter((item) => String(item.vaga_id) === id)); }
         catch (applicationError) { if (import.meta.env.DEV) console.error(applicationError); }
       }
@@ -41,8 +47,8 @@ export default function AdminEditJobPage({ id }: { id: string }) {
     catch (error) { if (import.meta.env.DEV) console.error(error); setMessage("Não foi possível atualizar a vaga."); setSaving(false); }
   }
 
-  async function changeStage(applicationId: string, stage: EtapaProcesso) {
-    try { await updateApplicationStage(applicationId, stage); setApplications((current) => current.map((item) => item.id === applicationId ? { ...item, etapa: stage } : item)); setMessage("Etapa do candidato atualizada."); }
+  async function changeStage(applicationId: string, stage: EtapaProcesso, motivo?: string | null) {
+    try { await updateApplicationStage(applicationId, stage, motivo); setApplications((current) => current.map((item) => item.id === applicationId ? { ...item, etapa: stage, observacoes: motivo === undefined ? item.observacoes : motivo } : item)); setMessage("Etapa do candidato atualizada."); }
     catch (error) { if (import.meta.env.DEV) console.error(error); setMessage("Não foi possível atualizar a etapa."); }
   }
 
@@ -55,8 +61,9 @@ export default function AdminEditJobPage({ id }: { id: string }) {
 
   return <main className="min-h-screen bg-[#F5F7FA]">
     <AdminNav/>
-    <section className="mx-auto max-w-5xl px-5 py-10"><h1 className="mb-6 text-3xl font-semibold text-[#052656]">Editar vaga</h1>
+    <section className="mx-auto max-w-5xl px-5 py-10"><div className="mb-6 flex flex-wrap items-center justify-between gap-4"><h1 className="text-3xl font-semibold text-[#052656]">Editar vaga</h1><JobShareActions slug={generateJobSlug(form.titulo, form.cidade)} title={form.titulo}/></div>
       <form onSubmit={save} className="grid gap-6 bg-white p-6 shadow-sm md:grid-cols-2">
+        <label className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">Empresa cliente</span><select name="empresa_id" value={form.empresa_id ?? ""} onChange={(event) => { const selected = empresas.find((item) => item.id === event.target.value); setForm((current) => ({ ...current, empresa_id: event.target.value || null, empresa: selected?.nome ?? current.empresa })); }} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></label>
         {fields.map((field) => <label key={field.name} className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">{field.label}{field.required && <span className="ml-1 text-red-700">*</span>}</span><input name={field.name} type={field.type || "text"} min={field.type === "number" ? 1 : undefined} step={field.type === "number" ? 1 : undefined} required={field.required} value={String(form[field.name])} onChange={change} className={adminInputClass}/></label>)}
         <label><span className="mb-2 block text-sm font-semibold text-[#052656]">Status</span><select name="status" value={form.status} onChange={change} className={adminInputClass}><option value="publicada">Publicada</option><option value="rascunho">Rascunho</option><option value="encerrada">Encerrada</option></select></label>
         <label className="md:col-span-2 flex items-center gap-3 text-sm font-semibold text-[#052656]"><input type="checkbox" name="exibir_salario" checked={form.exibir_salario} onChange={change}/>Exibir salário no site</label>
@@ -64,7 +71,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
         {message && <div className="md:col-span-2"><AdminNotice>{message}</AdminNotice></div>}
         <div className="md:col-span-2 flex flex-wrap gap-3"><button type="submit" disabled={saving} className={adminButtonClass("primary")}><Save size={17}/>{saving ? "Salvando..." : "Salvar alterações"}</button><a href="/admin" className={adminButtonClass("secondary")}><X size={17}/>Cancelar</a></div>
       </form>
-      <section className="mt-8 border border-gray-200 bg-white p-6 shadow-sm"><div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-semibold text-[#052656]">Candidatos vinculados</h2><p className="mt-1 text-gray-600">{applications.length} {applications.length === 1 ? "candidato" : "candidatos"}</p></div><a href={`/admin/candidatos/novo?vaga=${encodeURIComponent(id)}`} className={adminButtonClass("primary")}><UserPlus size={17}/>Adicionar candidato</a></div><div className="mt-4 flex flex-wrap gap-2">{ETAPAS.map((stage) => { const total = applications.filter((item) => item.etapa === stage.value).length; return total ? <span key={stage.value} className="bg-gray-100 px-3 py-2 text-sm">{stage.label}: {total}</span> : null; })}</div>{applications.length === 0 ? <p className="mt-5 text-gray-600">Nenhum candidato vinculado a esta vaga.</p> : <div className="mt-5 overflow-x-auto border border-gray-200"><table className="w-full min-w-[650px] text-left"><thead className={adminTableHeadClass}><tr><th className="p-3">Candidato</th><th className="p-3">Etapa</th><th className="p-3">Ações</th></tr></thead><tbody>{applications.map((application) => <tr key={application.id} className={adminTableRowClass}><td className="p-3 font-semibold text-[#052656]">{application.candidato.nome}</td><td className="p-3"><select value={application.etapa} onChange={(event) => changeStage(application.id, event.target.value as EtapaProcesso)} className={adminInputClass}>{ETAPAS.map((stage) => <option key={stage.value} value={stage.value}>{stage.label}</option>)}</select></td><td className="p-3"><a href={`/admin/candidatos/${application.candidato_id}`} className="font-semibold text-[#052656] underline transition hover:text-[#D4A62A]">Abrir perfil</a></td></tr>)}</tbody></table></div>}</section>
+      <section className="mt-8 border border-gray-200 bg-white p-6 shadow-sm"><div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-semibold text-[#052656]">Candidatos vinculados</h2><p className="mt-1 text-gray-600">{applications.length} {applications.length === 1 ? "candidato" : "candidatos"}</p></div><a href={`/admin/candidatos/novo?vaga=${encodeURIComponent(id)}`} className={adminButtonClass("primary")}><UserPlus size={17}/>Adicionar candidato</a></div><div className="mt-4 flex flex-wrap gap-2">{ETAPAS.map((stage) => { const total = applications.filter((item) => item.etapa === stage.value).length; return total ? <span key={stage.value} className="inline-flex items-center gap-2"><EtapaBadge etapa={stage.value}/><span className="text-sm font-semibold">{total}</span></span> : null; })}</div>{applications.length === 0 ? <p className="mt-5 text-gray-600">Nenhum candidato vinculado a esta vaga.</p> : <div className="mt-5 overflow-x-auto border border-gray-200"><table className="w-full min-w-[760px] text-left"><thead className={adminTableHeadClass}><tr><th className="p-3">Candidato</th><th className="p-3">Etapa</th><th className="p-3">Ações</th></tr></thead><tbody>{applications.map((application) => <tr key={application.id} className={adminTableRowClass}><td className="p-3 font-semibold text-[#052656]">{application.candidato.nome}</td><td className="p-3 align-top"><ApplicationStageControl application={application} onSave={changeStage} ariaLabel={`Etapa de ${application.candidato.nome}`}/></td><td className="p-3"><a href={`/admin/candidatos/${application.candidato_id}`} className="font-semibold text-[#052656] underline transition hover:text-[#D4A62A]">Abrir perfil</a></td></tr>)}</tbody></table></div>}</section>
     </section>
   </main>;
 }

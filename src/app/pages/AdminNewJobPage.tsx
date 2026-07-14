@@ -5,10 +5,13 @@ import type { JobFormData } from "../types/jobs";
 import AdminNav from "../components/AdminNav";
 import { Save, X } from "lucide-react";
 import { AdminNotice, adminButtonClass, adminInputClass } from "../components/AdminUI";
+import { listEmpresas } from "../services/ats";
+import type { Empresa } from "../types/ats";
 
 export default function AdminNewJobPage() {
   const [formulario, setFormulario] = useState<JobFormData>({
     titulo: "",
+    empresa_id: null,
     empresa: "",
     cidade: "",
     estado: "MG",
@@ -27,11 +30,13 @@ export default function AdminNewJobPage() {
 
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
+  const [empresas, setEmpresas] = useState<Empresa[]>([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) window.location.href = "/admin/login";
     });
+    void listEmpresas().then(setEmpresas).catch(() => undefined);
   }, []);
 
   function alterarCampo(
@@ -94,12 +99,7 @@ export default function AdminNewJobPage() {
             required
           />
 
-          <Campo
-            label="Empresa"
-            name="empresa"
-            value={formulario.empresa}
-            onChange={alterarCampo}
-          />
+          <label><span className="mb-2 block font-semibold text-[#052656]">Empresa cliente</span><select name="empresa_id" value={formulario.empresa_id ?? ""} onChange={(event) => { const selected = empresas.find((item) => item.id === event.target.value); setFormulario((current) => ({ ...current, empresa_id: event.target.value || null, empresa: selected?.nome ?? current.empresa })); }} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.filter((item) => item.status === "ativo").map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></label>
 
           <Campo
             label="Cidade"

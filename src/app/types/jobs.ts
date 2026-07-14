@@ -5,6 +5,11 @@ export type Job = {
   titulo: string;
   slug: string;
   empresa: string | null;
+  empresa_id?: string | null;
+  valor_previsto?: number;
+  valor_recebido?: number;
+  garantia_ate?: string | null;
+  encerramento_previsto?: string | null;
   cidade: string;
   estado: string;
   modalidade: string | null;
@@ -23,6 +28,7 @@ export type Job = {
 };
 
 export type JobFormData = {
+  empresa_id?: string | null;
   titulo: string;
   empresa: string;
   cidade: string;
@@ -41,6 +47,7 @@ export type JobFormData = {
 };
 
 export const EMPTY_JOB_FORM: JobFormData = {
+  empresa_id: null,
   titulo: "",
   empresa: "",
   cidade: "",
@@ -60,6 +67,7 @@ export const EMPTY_JOB_FORM: JobFormData = {
 
 export function jobToForm(job: Job): JobFormData {
   return {
+    empresa_id: job.empresa_id ?? null,
     titulo: job.titulo,
     empresa: job.empresa ?? "",
     cidade: job.cidade,

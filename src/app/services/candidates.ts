@@ -24,6 +24,8 @@ export async function createCandidate(form: CandidatoForm): Promise<Candidato> {
   const now = new Date().toISOString();
   const { data, error } = await supabase.from("candidatos").insert({ ...form, created_at: now, updated_at: now }).select("*").single();
   if (error) throw error;
+  const { data: { user } } = await supabase.auth.getUser();
+  await supabase.from("historico_candidatos").insert({ candidato_id: data.id, evento: "Cadastro do candidato", responsavel: user?.id ?? null });
   return data as Candidato;
 }
 

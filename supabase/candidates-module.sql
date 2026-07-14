@@ -18,8 +18,9 @@ create table if not exists public.candidaturas (
   candidato_id uuid not null references public.candidatos(id) on delete cascade,
   vaga_id bigint references public.vagas(id) on delete set null,
   etapa text not null default 'novo' check (etapa in (
-    'novo', 'triagem', 'entrevista_agendada', 'entrevistado',
-    'encaminhado_cliente', 'aprovado', 'reprovado', 'banco_talentos'
+    'novo', 'triagem', 'entrevista_agendada', 'entrevista_reagendada',
+    'nao_compareceu', 'entrevista_cancelada', 'entrevistado',
+    'encaminhado_cliente', 'aprovado', 'reprovado', 'desistente', 'banco_talentos'
   )),
   observacoes text,
   created_at timestamptz not null default now(),

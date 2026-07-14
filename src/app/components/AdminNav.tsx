@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { ArrowUp, BriefcaseBusiness, LayoutDashboard, LogOut, Menu, UserRound, UsersRound, X } from "lucide-react";
+import { ArrowUp, BriefcaseBusiness, Building2, CalendarDays, FileBarChart, LayoutDashboard, LogOut, Menu, Search, UserRound, UsersRound, X } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import AdminGlobalSearch from "./AdminGlobalSearch";
 
 const links = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Vagas", href: "/admin#vagas", icon: BriefcaseBusiness },
   { label: "Candidatos", href: "/admin/candidatos", icon: UserRound },
   { label: "Processos seletivos", href: "/admin/processos", icon: UsersRound },
+  { label: "Empresas", href: "/admin/empresas", icon: Building2 },
+  { label: "Agenda", href: "/admin/agenda", icon: CalendarDays },
+  { label: "Talentos", href: "/admin/talentos", icon: Search },
+  { label: "Relatórios", href: "/admin/relatorios", icon: FileBarChart },
 ];
 
 export default function AdminNav() {
@@ -36,6 +41,7 @@ export default function AdminNav() {
       <button type="button" onClick={() => setOpen(!open)} className="p-2 text-white lg:hidden" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open}>{open ? <X/> : <Menu/>}</button>
     </div>
     {open && <nav className="mx-auto mt-5 flex max-w-7xl flex-col gap-2 border-t border-white/20 pt-5 lg:hidden" aria-label="Navegação administrativa móvel">{links.map((link) => { const Icon = link.icon; return <a key={link.label} href={link.href} aria-current={active(link.href) ? "page" : undefined} className={`inline-flex items-center gap-3 px-3 py-3 font-semibold ${active(link.href) ? "bg-white/10 text-[#D4A62A]" : "text-white"}`}><Icon size={19}/>{link.label}</a>; })}<button type="button" onClick={logout} className="mt-2 inline-flex w-fit items-center gap-2 bg-[#D4A62A] px-5 py-2 font-semibold text-[#052656]"><LogOut size={18}/>Sair</button></nav>}
+    <AdminGlobalSearch/>
   </header><button
     type="button"
     aria-label="Voltar ao topo"
