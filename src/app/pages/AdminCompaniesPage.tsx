@@ -37,6 +37,23 @@ export default function AdminCompaniesPage({ id, newCompany = false }: { id?: st
 
   useEffect(() => {
     void (async () => {
+      if (id) {
+        try {
+          const company = await getEmpresa(id);
+          const { id: _id, created_at: _created, updated_at: _updated, ...fields } = company;
+          setForm(fields);
+          if (company.logo_url) {
+            try { setLogoPreview(await signedCompanyLogo(company.logo_url)); } catch { setLogoPreview(""); }
+          }
+        } catch (error) {
+          reportSupabaseError("carregar empresa em public.empresas", error);
+          setMessage(import.meta.env.DEV ? `Não foi possível carregar a empresa: ${readableSupabaseError(error)}` : "Não foi possível carregar a empresa.");
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+
       let companies: Empresa[];
       try {
         companies = await listEmpresas();
@@ -50,33 +67,17 @@ export default function AdminCompaniesPage({ id, newCompany = false }: { id?: st
         return;
       }
 
-      if (!id) {
-        try { setContracts(await listCompanyContracts()); } catch { setContracts([]); }
-        try {
-          const allJobs = await listJobs();
-          setJobs(allJobs);
-        } catch { setJobs([]); }
-      }
+      try { setContracts(await listCompanyContracts()); } catch { setContracts([]); }
+      try {
+        const allJobs = await listJobs();
+        setJobs(allJobs);
+      } catch { setJobs([]); }
       const signed = await Promise.all(companies.map(async (company) => {
         if (!company.logo_url) return null;
         try { return [company.id, await signedCompanyLogo(company.logo_url)] as const; } catch { return null; }
       }));
       setLogoUrls(Object.fromEntries(signed.filter((entry): entry is readonly [string, string] => entry !== null)));
 
-      if (id) {
-        try {
-          const company = await getEmpresa(id);
-          const { id: _id, created_at: _created, updated_at: _updated, ...fields } = company;
-          setForm(fields);
-          if (company.logo_url) {
-            try { setLogoPreview(await signedCompanyLogo(company.logo_url)); } catch { setLogoPreview(""); }
-          }
-        } catch (error) {
-          reportSupabaseError("carregar empresa em public.empresas", error);
-          setMessage(import.meta.env.DEV ? `Não foi possível carregar a empresa: ${readableSupabaseError(error)}` : "Não foi possível carregar a empresa.");
-        }
-
-      }
       setLoading(false);
     })();
   }, [id]);
