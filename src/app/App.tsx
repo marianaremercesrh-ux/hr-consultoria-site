@@ -4,6 +4,7 @@ import { JobsRouter } from "./pages/JobsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminNewJobPage from "./pages/AdminNewJobPage";
+import AdminEditJobPage from "./pages/AdminEditJobPage";
 
 const LOGO_ASSETS = {
   color: {
@@ -782,6 +783,11 @@ export default function App() {
 
   if (caminho === "/admin/nova-vaga") {
     return <AdminNewJobPage />;
+  }
+
+  const editarVaga = caminho.match(/^\/admin\/vagas\/([^/]+)\/editar$/);
+  if (editarVaga) {
+    return <AdminEditJobPage id={decodeURIComponent(editarVaga[1])} />;
   }
 
   if (caminho === "/admin") {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function AdminLoginPage() {
@@ -6,6 +6,12 @@ export default function AdminLoginPage() {
   const [senha, setSenha] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) window.location.href = "/admin";
+    });
+  }, []);
 
   async function entrar(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -23,7 +29,7 @@ export default function AdminLoginPage() {
       return;
     }
 
-    window.location.href = "/admin/login";
+    window.location.href = "/admin";
   }
 
   return (

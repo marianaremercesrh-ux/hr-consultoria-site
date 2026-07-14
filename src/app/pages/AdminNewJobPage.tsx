@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { createJob } from "../services/jobs";
+import type { JobFormData } from "../types/jobs";
 
 export default function AdminNewJobPage() {
-  const [formulario, setFormulario] = useState({
+  const [formulario, setFormulario] = useState<JobFormData>({
     titulo: "",
-    slug: "",
     empresa: "",
     cidade: "",
     estado: "MG",
@@ -12,7 +13,6 @@ export default function AdminNewJobPage() {
     tipo_contrato: "",
     salario: "",
     exibir_salario: true,
-    resumo: "",
     descricao: "",
     atividades: "",
     requisitos: "",
@@ -24,6 +24,12 @@ export default function AdminNewJobPage() {
 
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) window.location.href = "/admin/login";
+    });
+  }, []);
 
   function alterarCampo(
     evento: React.ChangeEvent<
@@ -43,39 +49,25 @@ export default function AdminNewJobPage() {
     }));
   }
 
-  function gerarSlug(texto: string) {
-    return texto
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  }
-
   async function salvarVaga(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     setCarregando(true);
     setMensagem("");
 
-    const slugFinal =
-      formulario.slug.trim() ||
-      gerarSlug(`${formulario.titulo}-${formulario.cidade}`);
-
-    const { error } = await supabase.from("vagas").insert([
-      {
-        ...formulario,
-        slug: slugFinal,
-      },
-    ]);
-
-    if (error) {
-      console.error(error);
+    try {
+      await createJob(formulario);
+      setMensagem("Vaga salva com sucesso.");
+      window.setTimeout(() => {
+        window.location.href = "/admin";
+      }, 700);
+      return;
+    } catch (error) {
+      if (import.meta.env.DEV) console.error(error);
       setMensagem("Não foi possível salvar a vaga.");
       setCarregando(false);
       return;
     }
 
-    window.location.href = "/admin";
   }
 
   return (
@@ -290,6 +282,7 @@ function Campo({
         required={required}
         placeholder={placeholder}
         min={min}
+        step={type === "number" ? "1" : undefined}
         className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]"
       />
     </div>
