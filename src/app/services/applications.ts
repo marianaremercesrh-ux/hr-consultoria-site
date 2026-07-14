@@ -16,6 +16,15 @@ export async function listApplicationReferencesForJobs(jobIds: Array<string | nu
   return (data ?? []) as Array<Pick<Candidatura, "candidato_id" | "vaga_id">>;
 }
 
+export async function listCandidateLatestStages(): Promise<Array<Pick<Candidatura, "candidato_id" | "etapa" | "updated_at">>> {
+  const { data, error } = await supabase
+    .from("candidaturas")
+    .select("candidato_id,etapa,updated_at")
+    .order("updated_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as Array<Pick<Candidatura, "candidato_id" | "etapa" | "updated_at">>;
+}
+
 export async function listCandidateApplications(candidateId: string): Promise<CandidaturaDetalhada[]> {
   const { data, error } = await supabase.from("candidaturas").select(DETAIL_SELECT).eq("candidato_id", candidateId).order("created_at", { ascending: false });
   if (error) throw error;
