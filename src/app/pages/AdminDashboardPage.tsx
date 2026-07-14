@@ -6,7 +6,7 @@ import ATSOverview from "../components/ATSOverview";
 import { AdminNotice, AdminSkeleton, ConfirmDialog, adminButtonClass, adminInputClass, adminTableHeadClass, adminTableRowClass } from "../components/AdminUI";
 import { supabase } from "../lib/supabase";
 import { formatarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
-import { applicationCounts, listApplications, updateApplicationStage } from "../services/applications";
+import { listApplications, updateApplicationStage } from "../services/applications";
 import { listCandidates } from "../services/candidates";
 import { deleteJob, listJobs, updateJobStatus } from "../services/jobs";
 import type { Job, JobStatus } from "../types/jobs";
@@ -19,7 +19,6 @@ export default function AdminDashboardPage() {
   const [mensagem, setMensagem] = useState("");
   const [processando, setProcessando] = useState<string | number | null>(null);
   const [totalCandidatos, setTotalCandidatos] = useState(0);
-  const [etapas, setEtapas] = useState<EtapaProcesso[]>([]);
   const [candidaturas, setCandidaturas] = useState<CandidaturaDetalhada[]>([]);
   const [vagaParaExcluir, setVagaParaExcluir] = useState<Job | null>(null);
   const [buscaCandidato, setBuscaCandidato] = useState("");
@@ -35,9 +34,8 @@ export default function AdminDashboardPage() {
       const jobs = await listJobs();
       setVagas(jobs);
       try {
-        const [candidates, stages, applications] = await Promise.all([listCandidates(), applicationCounts(), listApplications()]);
+        const [candidates, applications] = await Promise.all([listCandidates(), listApplications()]);
         setTotalCandidatos(candidates.length);
-        setEtapas(stages.map((item) => item.etapa));
         setCandidaturas(applications);
       } catch (candidateError) {
         if (import.meta.env.DEV) console.error(candidateError);
@@ -158,22 +156,6 @@ export default function AdminDashboardPage() {
             <Contador titulo="Vagas abertas" total={totais.publicada}/>
             <Contador titulo="Vagas pendentes" total={totais.rascunho}/>
             <Contador titulo="Vagas encerradas" total={totais.encerrada}/>
-          </div>
-        </section>
-        <section className="mt-8 border border-gray-200 bg-white p-5 shadow-sm sm:p-7" aria-labelledby="resumo-candidatos">
-          <h2 id="resumo-candidatos" className="flex items-center gap-3 text-2xl font-semibold text-[#052656]"><UsersRound className="text-[#D4A62A]"/>Resumo de candidatos</h2>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <Contador titulo="Total de candidatos" total={totalCandidatos}/>
-            <Contador titulo="Em triagem" total={etapas.filter((item) => item === "triagem").length}/>
-            <Contador titulo="Entrevistas agendadas" total={etapas.filter((item) => item === "entrevista_agendada").length}/>
-            <Contador titulo="Entrevistas reagendadas" total={etapas.filter((item) => item === "entrevista_reagendada").length}/>
-            <Contador titulo="Não compareceu" total={etapas.filter((item) => item === "nao_compareceu").length}/>
-            <Contador titulo="Entrevistas canceladas" total={etapas.filter((item) => item === "entrevista_cancelada").length}/>
-            <Contador titulo="Encaminhados ao cliente" total={etapas.filter((item) => item === "encaminhado_cliente").length}/>
-            <Contador titulo="Aprovados" total={etapas.filter((item) => item === "aprovado").length}/>
-            <Contador titulo="Reprovados" total={etapas.filter((item) => item === "reprovado").length}/>
-            <Contador titulo="Desistentes" total={etapas.filter((item) => item === "desistente").length}/>
-            <Contador titulo="Banco de talentos" total={etapas.filter((item) => item === "banco_talentos").length}/>
           </div>
         </section>
         <div className="mt-8 grid gap-6 lg:grid-cols-3">

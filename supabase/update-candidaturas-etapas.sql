@@ -16,5 +16,8 @@ alter table public.candidaturas
     'aprovado',
     'reprovado',
     'desistente',
+    'contratado',
     'banco_talentos'
   ));
+
+notify pgrst, 'reload schema';

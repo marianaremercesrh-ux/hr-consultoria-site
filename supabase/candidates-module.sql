@@ -20,7 +20,7 @@ create table if not exists public.candidaturas (
   etapa text not null default 'novo' check (etapa in (
     'novo', 'triagem', 'entrevista_agendada', 'entrevista_reagendada',
     'nao_compareceu', 'entrevista_cancelada', 'entrevistado',
-    'encaminhado_cliente', 'aprovado', 'reprovado', 'desistente', 'banco_talentos'
+    'encaminhado_cliente', 'aprovado', 'reprovado', 'desistente', 'contratado', 'banco_talentos'
   )),
   observacoes text,
   created_at timestamptz not null default now(),
