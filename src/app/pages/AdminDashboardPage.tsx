@@ -7,11 +7,13 @@ import { AdminNotice, AdminSkeleton, ConfirmDialog, adminButtonClass, adminInput
 import { supabase } from "../lib/supabase";
 import { supabaseErrorDetails } from "../lib/supabaseError";
 import { formatarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
-import { listApplications, updateApplicationStage } from "../services/applications";
-import { listCandidates } from "../services/candidates";
-import { deleteJob, listJobs, listJobStatuses, updateJobStatus } from "../services/jobs";
+import { listApplicationsForJobSummary, updateApplicationStage, type JobSummaryApplicationRow } from "../services/applications";
+import { listCandidates, listCandidatesByIds, type JobSummaryCandidate } from "../services/candidates";
+import { deleteJob, listJobs, listJobsForCandidateSummary, listJobStatuses, updateJobStatus, type JobCandidateSummary } from "../services/jobs";
 import { JOB_STATUS, jobStatusCategory, type Job, type JobStatus } from "../types/jobs";
-import { ETAPAS, type CandidaturaDetalhada, type EtapaProcesso } from "../types/candidates";
+import { ETAPAS, type EtapaProcesso } from "../types/candidates";
+
+type SummaryApplication = JobSummaryApplicationRow & { candidato: JobSummaryCandidate; vaga: JobCandidateSummary };
 
 export default function AdminDashboardPage() {
   const [vagas, setVagas] = useState<Job[]>([]);
@@ -20,7 +22,10 @@ export default function AdminDashboardPage() {
   const [mensagem, setMensagem] = useState("");
   const [processando, setProcessando] = useState<string | number | null>(null);
   const [totalCandidatos, setTotalCandidatos] = useState(0);
-  const [candidaturas, setCandidaturas] = useState<CandidaturaDetalhada[]>([]);
+  const [candidaturas, setCandidaturas] = useState<SummaryApplication[]>([]);
+  const [vagasResumo, setVagasResumo] = useState<JobCandidateSummary[]>([]);
+  const [resumoCandidatosCarregando, setResumoCandidatosCarregando] = useState(true);
+  const [vagasResumoComErro, setVagasResumoComErro] = useState<Set<string>>(new Set());
   const [vagaParaExcluir, setVagaParaExcluir] = useState<Job | null>(null);
   const [buscaCandidato, setBuscaCandidato] = useState("");
   const [filtroVaga, setFiltroVaga] = useState("");
@@ -32,10 +37,65 @@ export default function AdminDashboardPage() {
   const [resumoVagasCarregando, setResumoVagasCarregando] = useState(true);
   const [erroResumoVagas, setErroResumoVagas] = useState(false);
 
+  const carregarResumoCandidatos = useCallback(async () => {
+    setResumoCandidatosCarregando(true);
+    setErroResumo("");
+    setVagasResumoComErro(new Set());
+    let summaryJobs: JobCandidateSummary[] = [];
+    try {
+      summaryJobs = await listJobsForCandidateSummary();
+      setVagasResumo(summaryJobs);
+    } catch (error) {
+      const { message, details, hint, code } = supabaseErrorDetails(error);
+      console.error("[Supabase] carregar vagas do resumo por vaga", { message, details, hint, code });
+      setErroResumo("Não foi possível carregar as vagas do resumo.");
+      setResumoCandidatosCarregando(false);
+      return;
+    }
+    let rows: JobSummaryApplicationRow[];
+    try {
+      rows = await listApplicationsForJobSummary();
+    } catch (error) {
+      const { message, details, hint, code } = supabaseErrorDetails(error);
+      console.error("[Supabase] carregar public.candidaturas para o resumo por vaga", { message, details, hint, code });
+      setVagasResumoComErro(new Set(summaryJobs.map((job) => String(job.id))));
+      setErroResumo("Não foi possível carregar as candidaturas do resumo por vaga.");
+      setResumoCandidatosCarregando(false);
+      return;
+    }
+    const linkedRows = rows.filter((row) => row.vaga_id !== null);
+    const candidateIds = [...new Set(linkedRows.map((row) => row.candidato_id))];
+    let people: JobSummaryCandidate[];
+    try {
+      people = await listCandidatesByIds(candidateIds);
+    } catch (error) {
+      const { message, details, hint, code } = supabaseErrorDetails(error);
+      console.error("[Supabase] carregar public.candidatos para o resumo por vaga", { message, details, hint, code });
+      setVagasResumoComErro(new Set(linkedRows.map((row) => String(row.vaga_id))));
+      setErroResumo("Não foi possível carregar os candidatos do resumo por vaga.");
+      setResumoCandidatosCarregando(false);
+      return;
+    }
+    const candidatesById = new Map(people.map((candidate) => [candidate.id, candidate]));
+    const jobsById = new Map(summaryJobs.map((job) => [String(job.id), job]));
+    const affected = new Set<string>();
+    const assembled: SummaryApplication[] = [];
+    linkedRows.forEach((row) => {
+      const candidate = candidatesById.get(row.candidato_id);
+      const job = jobsById.get(String(row.vaga_id));
+      if (!candidate || !job) { if (job) affected.add(String(job.id)); return; }
+      assembled.push({ ...row, candidato: candidate, vaga: job });
+    });
+    setCandidaturas(assembled);
+    setVagasResumoComErro(affected);
+    setResumoCandidatosCarregando(false);
+  }, []);
+
   const carregarVagas = useCallback(async () => {
     setErro("");
     setResumoVagasCarregando(true);
     setErroResumoVagas(false);
+    void carregarResumoCandidatos();
     try {
       const statusRows = await listJobStatuses();
       const uniqueJobs = new Map(statusRows.map((job) => [String(job.id), job]));
@@ -56,21 +116,14 @@ export default function AdminDashboardPage() {
     try {
       const jobs = await listJobs();
       setVagas(jobs);
-      try {
-        const [candidates, applications] = await Promise.all([listCandidates(), listApplications()]);
-        setTotalCandidatos(candidates.length);
-        setCandidaturas(applications);
-      } catch (candidateError) {
-        if (import.meta.env.DEV) console.error(candidateError);
-        setErroResumo("Não foi possível carregar o resumo de candidatos por vaga.");
-      }
+      void listCandidates().then((candidates) => setTotalCandidatos(candidates.length)).catch((candidateError) => { if (import.meta.env.DEV) console.error(candidateError); });
     } catch (error) {
       if (import.meta.env.DEV) console.error(error);
       setErro("Não foi possível carregar as vagas.");
     } finally {
       setCarregando(false);
     }
-  }, []);
+  }, [carregarResumoCandidatos]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -89,12 +142,12 @@ export default function AdminDashboardPage() {
     return correspondeNome && correspondeVaga && correspondeEtapa;
   }), [candidaturas, buscaCandidato, filtroVaga, filtroEtapa]);
 
-  const vagasDoResumo = useMemo(() => vagas.filter((vaga) => {
+  const vagasDoResumo = useMemo(() => vagasResumo.filter((vaga) => {
     if (vaga.status === JOB_STATUS.DELETED) return false;
     if (filtroVaga && String(vaga.id) !== filtroVaga) return false;
     if ((buscaCandidato || filtroEtapa) && !candidaturasFiltradas.some((item) => String(item.vaga_id) === String(vaga.id))) return false;
     return true;
-  }), [vagas, filtroVaga, buscaCandidato, filtroEtapa, candidaturasFiltradas]);
+  }), [vagasResumo, filtroVaga, buscaCandidato, filtroEtapa, candidaturasFiltradas]);
 
   async function alterarStatus(id: string | number, status: JobStatus, mensagemSucesso?: string) {
     setProcessando(id);
@@ -182,7 +235,9 @@ export default function AdminDashboardPage() {
         <ResumoPorVaga
           vagas={vagasDoResumo}
           candidaturas={candidaturasFiltradas}
-          todasAsVagas={vagas}
+          todasAsVagas={vagasResumo}
+          carregando={resumoCandidatosCarregando}
+          vagasComErro={vagasResumoComErro}
           busca={buscaCandidato}
           filtroVaga={filtroVaga}
           filtroEtapa={filtroEtapa}
@@ -214,10 +269,12 @@ export default function AdminDashboardPage() {
   );
 }
 
-function ResumoPorVaga({ vagas, candidaturas, todasAsVagas, busca, filtroVaga, filtroEtapa, vagaDetalhada, atualizando, erro, onBusca, onFiltroVaga, onFiltroEtapa, onDetalhes, onLimpar, onAlterarEtapa }: {
-  vagas: Job[];
-  candidaturas: CandidaturaDetalhada[];
-  todasAsVagas: Job[];
+function ResumoPorVaga({ vagas, candidaturas, todasAsVagas, carregando, vagasComErro, busca, filtroVaga, filtroEtapa, vagaDetalhada, atualizando, erro, onBusca, onFiltroVaga, onFiltroEtapa, onDetalhes, onLimpar, onAlterarEtapa }: {
+  vagas: JobCandidateSummary[];
+  candidaturas: SummaryApplication[];
+  todasAsVagas: JobCandidateSummary[];
+  carregando: boolean;
+  vagasComErro: Set<string>;
   busca: string;
   filtroVaga: string;
   filtroEtapa: string;
@@ -235,13 +292,14 @@ function ResumoPorVaga({ vagas, candidaturas, todasAsVagas, busca, filtroVaga, f
     <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 id="resumo-por-vaga" className="text-2xl font-semibold text-[#052656]">Resumo por vaga</h2><p className="mt-1 text-gray-600">Acompanhe candidatos e etapas de cada processo.</p></div><button type="button" onClick={onLimpar} className={adminButtonClass("secondary")}><FilterX size={17}/>Limpar filtros</button></div>
     <div className="mt-6 grid gap-4 md:grid-cols-3"><label><span className="mb-2 block font-semibold text-[#052656]">Buscar candidato</span><input value={busca} onChange={(event) => onBusca(event.target.value)} placeholder="Nome do candidato" className={adminInputClass}/></label><label><span className="mb-2 block font-semibold text-[#052656]">Filtrar por vaga</span><select value={filtroVaga} onChange={(event) => onFiltroVaga(event.target.value)} className={adminInputClass}><option value="">Todas as vagas</option>{todasAsVagas.filter((vaga) => vaga.status !== "excluida").map((vaga) => <option key={vaga.id} value={vaga.id}>{vaga.titulo}</option>)}</select></label><label><span className="mb-2 block font-semibold text-[#052656]">Filtrar por etapa</span><select value={filtroEtapa} onChange={(event) => onFiltroEtapa(event.target.value)} className={adminInputClass}><option value="">Todas as etapas</option>{ETAPAS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label></div>
     {erro && <AdminNotice type="error">{erro}</AdminNotice>}
-    {vagas.length === 0 ? <p className="mt-6 border border-dashed border-gray-300 p-8 text-center text-gray-600">Nenhuma vaga ou candidato corresponde aos filtros selecionados.</p> : <div className="mt-6 space-y-5">{vagas.map((vaga) => {
+    {carregando && todasAsVagas.length === 0 ? <p className="mt-6 border border-dashed border-gray-300 p-8 text-center text-gray-600">Carregando candidatos...</p> : vagas.length === 0 ? <p className="mt-6 border border-dashed border-gray-300 p-8 text-center text-gray-600">Nenhuma vaga ou candidato corresponde aos filtros selecionados.</p> : <div className="mt-6 space-y-5">{vagas.map((vaga) => {
       const items = candidaturas.filter((item) => String(item.vaga_id) === String(vaga.id));
       const aberta = vagaDetalhada === String(vaga.id);
+      const falhou = vagasComErro.has(String(vaga.id));
       return <article key={vaga.id} className="w-full border border-gray-200 bg-[#F5F7FA] p-5 transition hover:border-[#D4A62A] sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4"><button type="button" onClick={() => onDetalhes(aberta ? null : String(vaga.id))} className="min-w-0 text-left"><h3 className="break-words text-xl font-semibold text-[#052656] hover:text-[#D4A62A]">{vaga.titulo} — {formatarQuantidadeVagas(vaga.quantidade_vagas)}</h3><p className="mt-1 text-gray-600">{items.length} {items.length === 1 ? "candidato vinculado" : "candidatos vinculados"}</p></button><button type="button" onClick={() => onDetalhes(aberta ? null : String(vaga.id))} className={adminButtonClass("secondary")}>{aberta ? <ChevronUp size={17}/> : <ChevronDown size={17}/>}Ver detalhes</button></div>
-        <div className="mt-4 flex flex-wrap gap-2">{ETAPAS.map((etapa) => { const total = items.filter((item) => item.etapa === etapa.value).length; return total > 0 ? <span key={etapa.value} className="inline-flex items-center gap-2"><EtapaBadge etapa={etapa.value}/><span className="text-sm font-semibold">{total}</span></span> : null; })}{items.length === 0 && <span className="text-sm text-gray-500">Nenhum candidato nesta vaga.</span>}</div>
-        {aberta && <div className="mt-6 border-t border-gray-200 pt-5">{items.length === 0 ? <p className="text-gray-600">Nenhum candidato para exibir.</p> : <div className="grid gap-4">{items.map((item) => {
+        <div className="flex flex-wrap items-start justify-between gap-4"><button type="button" onClick={() => onDetalhes(aberta ? null : String(vaga.id))} className="min-w-0 text-left"><h3 className="break-words text-xl font-semibold text-[#052656] hover:text-[#D4A62A]">{vaga.titulo} — {formatarQuantidadeVagas(vaga.quantidade_vagas)}</h3>{carregando ? <p className="mt-1 text-gray-600">Carregando candidatos...</p> : falhou ? <p className="mt-1 font-semibold text-red-700">Não foi possível calcular</p> : <p className="mt-1 text-gray-600">{items.length} {items.length === 1 ? "candidato vinculado" : "candidatos vinculados"}</p>}</button><button type="button" onClick={() => onDetalhes(aberta ? null : String(vaga.id))} className={adminButtonClass("secondary")}>{aberta ? <ChevronUp size={17}/> : <ChevronDown size={17}/>}Ver detalhes</button></div>
+        {!carregando && !falhou && <div className="mt-4 flex flex-wrap gap-2">{ETAPAS.map((etapa) => { const total = items.filter((item) => item.etapa === etapa.value).length; return total > 0 ? <span key={etapa.value} className="inline-flex items-center gap-2"><EtapaBadge etapa={etapa.value}/><span className="text-sm font-semibold">{total}</span></span> : null; })}{items.length === 0 && <span className="text-sm text-gray-500">Nenhum candidato nesta vaga.</span>}</div>}
+        {aberta && <div className="mt-6 border-t border-gray-200 pt-5">{carregando ? <p className="text-gray-600">Carregando candidatos...</p> : falhou ? <p className="font-semibold text-red-700">Não foi possível calcular os candidatos desta vaga.</p> : items.length === 0 ? <p className="text-gray-600">Nenhum candidato para exibir.</p> : <div className="grid gap-4">{items.map((item) => {
           const rawPhone = item.candidato.telefone?.replace(/\D/g, "") ?? "";
           const phone = rawPhone.startsWith("55") ? rawPhone : rawPhone ? `55${rawPhone}` : "";
           return <div key={item.id} className="grid gap-4 border border-gray-200 bg-white p-4 md:grid-cols-[1fr_260px_auto] md:items-start"><div><h4 className="font-semibold text-[#052656]">{item.candidato.nome}</h4><p className="mt-1 text-sm text-gray-600">{item.candidato.telefone || "Telefone não informado"} · Cadastro em {new Intl.DateTimeFormat("pt-BR").format(new Date(item.candidato.created_at))}</p></div><ApplicationStageControl application={item} onSave={onAlterarEtapa} ariaLabel={`Etapa de ${item.candidato.nome}`}/><div className="flex flex-wrap gap-2"><a href={`/admin/candidatos/${item.candidato_id}`} className={adminButtonClass("secondary")}><UserRound size={16}/>Ver perfil</a>{phone && <a href={`https://wa.me/${phone}`} target="_blank" rel="noopener noreferrer" className={adminButtonClass("success")}><MessageCircle size={16}/>WhatsApp</a>}</div></div>;

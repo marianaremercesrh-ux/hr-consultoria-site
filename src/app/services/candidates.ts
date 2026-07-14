@@ -2,6 +2,7 @@ import { supabase } from "../lib/supabase";
 import type { Candidato, CandidatoComTotal, CandidatoForm } from "../types/candidates";
 
 const CANDIDATE_COLUMNS = "id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at";
+export type JobSummaryCandidate = Pick<Candidato, "id" | "nome" | "telefone" | "cidade" | "created_at">;
 
 export async function listCandidates(): Promise<CandidatoComTotal[]> {
   const { data, error } = await supabase
@@ -20,6 +21,16 @@ export async function getCandidate(id: string): Promise<Candidato | null> {
   const { data, error } = await supabase.from("candidatos").select(CANDIDATE_COLUMNS).eq("id", id).maybeSingle();
   if (error) throw error;
   return data as Candidato | null;
+}
+
+export async function listCandidatesByIds(ids: string[]): Promise<JobSummaryCandidate[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase
+    .from("candidatos")
+    .select("id,nome,telefone,cidade,created_at")
+    .in("id", ids);
+  if (error) throw error;
+  return (data ?? []) as JobSummaryCandidate[];
 }
 
 export async function createCandidate(form: CandidatoForm): Promise<Candidato> {

@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { supabaseErrorDetails } from "../lib/supabaseError";
 import { JOB_STATUS, type Job, type JobFormData, type JobStatus } from "../types/jobs";
 
 const JOB_COLUMNS = "id,titulo,slug,empresa,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
@@ -6,6 +7,7 @@ const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,status,created_at";
 
 export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
 export type JobStatusRecord = Pick<Job, "id" | "status">;
+export type JobCandidateSummary = Pick<Job, "id" | "titulo" | "quantidade_vagas" | "status">;
 
 export function generateJobSlug(title: string, city: string) {
   return `${title}-${city}`
@@ -31,6 +33,15 @@ export async function listJobStatuses(): Promise<JobStatusRecord[]> {
     .select("id,status");
   if (error) throw error;
   return (data ?? []) as JobStatusRecord[];
+}
+
+export async function listJobsForCandidateSummary(): Promise<JobCandidateSummary[]> {
+  const { data, error } = await supabase
+    .from("vagas")
+    .select("id,titulo,quantidade_vagas,status")
+    .order("titulo", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as JobCandidateSummary[];
 }
 
 export async function listSelectableJobs(): Promise<SelectableJob[]> {
@@ -116,8 +127,14 @@ export async function createJob(form: JobFormData): Promise<Pick<Job, "id" | "ti
     created_at: now,
     updated_at: now,
   };
+  if (import.meta.env.DEV) console.info("[Supabase] payload do INSERT em public.vagas", payload);
   const { data, error } = await supabase.from("vagas").insert(payload).select(CREATED_JOB_COLUMNS).single();
-  if (error) throw error;
+  if (error) {
+    const { message, details, hint, code } = supabaseErrorDetails(error);
+    console.error("[Supabase] INSERT em public.vagas falhou", { message, details, hint, code, payload: import.meta.env.DEV ? payload : undefined });
+    throw error;
+  }
+  if (import.meta.env.DEV) console.info("[Supabase] vaga confirmada pelo INSERT", data);
   return data as Pick<Job, "id" | "titulo" | "slug" | "empresa" | "status" | "created_at">;
 }
 

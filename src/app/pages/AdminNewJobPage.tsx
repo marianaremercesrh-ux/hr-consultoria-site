@@ -7,7 +7,7 @@ import { Save, X } from "lucide-react";
 import { AdminNotice, adminButtonClass, adminInputClass } from "../components/AdminUI";
 import { listEmpresas } from "../services/ats";
 import type { Empresa } from "../types/ats";
-import { readableSupabaseError, supabaseErrorDetails } from "../lib/supabaseError";
+import { supabaseErrorDetails } from "../lib/supabaseError";
 
 export default function AdminNewJobPage() {
   const [formulario, setFormulario] = useState<JobFormData>({
@@ -31,9 +31,11 @@ export default function AdminNewJobPage() {
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [mensagemErro, setMensagemErro] = useState(false);
+  const [erroTecnico, setErroTecnico] = useState<{ message: string; details: string | null; hint: string | null; code: string | null } | null>(null);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
 
   useEffect(() => {
+    console.info("[HR] Cadastro de vagas com diagnóstico Supabase v2 carregado.");
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) window.location.href = "/admin/login";
     });
@@ -73,10 +75,17 @@ export default function AdminNewJobPage() {
     }
     setCarregando(true);
     setMensagem("");
+    setErroTecnico(null);
 
     try {
       const slug = generateJobSlug(formulario.titulo, formulario.cidade);
-      const existing = await findJobBySlug(slug);
+      let existing = null;
+      try {
+        existing = await findJobBySlug(slug);
+      } catch (duplicateCheckError) {
+        const duplicateDetails = supabaseErrorDetails(duplicateCheckError);
+        console.error("[Supabase] verificação de duplicidade por slug falhou; o INSERT continuará", duplicateDetails);
+      }
       if (existing) {
         setMensagemErro(true);
         setMensagem(`Esta vaga já existe no Supabase (ID ${existing.id}). Verifique a listagem antes de tentar novamente.`);
@@ -93,8 +102,9 @@ export default function AdminNewJobPage() {
     } catch (error) {
       const { message, details, hint, code } = supabaseErrorDetails(error);
       console.error("[Supabase] cadastrar vaga em public.vagas", { message, details, hint, code });
+      setErroTecnico({ message, details, hint, code });
       setMensagemErro(true);
-      setMensagem(`Não foi possível cadastrar a vaga: ${readableSupabaseError(error)}`);
+      setMensagem(`Não foi possível cadastrar a vaga: ${message}${code ? ` (código ${code})` : ""}`);
       setCarregando(false);
       return;
     }
@@ -235,7 +245,7 @@ export default function AdminNewJobPage() {
           />
 
           {mensagem && (
-            <div className="md:col-span-2"><AdminNotice type={mensagemErro ? "error" : undefined}>{mensagem}</AdminNotice></div>
+            <div className="md:col-span-2"><AdminNotice type={mensagemErro ? "error" : undefined}><span>{mensagem}{import.meta.env.DEV && erroTecnico && <small className="mt-2 block whitespace-pre-wrap font-mono">{JSON.stringify(erroTecnico, null, 2)}</small>}</span></AdminNotice></div>
           )}
 
           <div className="md:col-span-2 flex flex-wrap gap-3">

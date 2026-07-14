@@ -1,12 +1,23 @@
 import { supabase } from "../lib/supabase";
 import type { Candidatura, CandidaturaDetalhada, EtapaProcesso } from "../types/candidates";
 
-const DETAIL_SELECT = "id,candidato_id,vaga_id,etapa,observacoes,created_at,updated_at,candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status,empresa_id,empresa_cliente:empresas(id,nome))";
+type ApplicationDatabaseRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id" | "etapa" | "observacoes" | "created_at">;
+export type JobSummaryApplicationRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id" | "etapa" | "observacoes" | "created_at" | "updated_at">;
+
+const APPLICATION_COLUMNS = "id,candidato_id,vaga_id,etapa,observacoes,created_at";
+const DETAIL_SELECT = `${APPLICATION_COLUMNS},candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status)`;
+
+function normalizeApplication(row: ApplicationDatabaseRow): Candidatura {
+  return { ...row, updated_at: row.created_at };
+}
 
 export async function listApplications(): Promise<CandidaturaDetalhada[]> {
   const { data, error } = await supabase.from("candidaturas").select(DETAIL_SELECT).order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as unknown as CandidaturaDetalhada[];
+  return (data ?? []).map((row) => {
+    const detailed = row as unknown as ApplicationDatabaseRow & Pick<CandidaturaDetalhada, "candidato" | "vaga">;
+    return { ...normalizeApplication(detailed), candidato: detailed.candidato, vaga: detailed.vaga };
+  });
 }
 
 export async function listApplicationReferencesForJobs(jobIds: Array<string | number>): Promise<Array<Pick<Candidatura, "candidato_id" | "vaga_id">>> {
@@ -16,43 +27,56 @@ export async function listApplicationReferencesForJobs(jobIds: Array<string | nu
   return (data ?? []) as Array<Pick<Candidatura, "candidato_id" | "vaga_id">>;
 }
 
+export async function listApplicationsForJobSummary(): Promise<JobSummaryApplicationRow[]> {
+  const { data, error } = await supabase
+    .from("candidaturas")
+    .select(APPLICATION_COLUMNS)
+    .not("vaga_id", "is", null)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((row) => normalizeApplication(row as ApplicationDatabaseRow));
+}
+
 export async function listCandidateLatestStages(): Promise<Array<Pick<Candidatura, "candidato_id" | "etapa" | "updated_at">>> {
   const { data, error } = await supabase
     .from("candidaturas")
-    .select("candidato_id,etapa,updated_at")
-    .order("updated_at", { ascending: false });
+    .select("candidato_id,etapa,created_at")
+    .order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as Array<Pick<Candidatura, "candidato_id" | "etapa" | "updated_at">>;
+  return (data ?? []).map((row) => ({ candidato_id: row.candidato_id, etapa: row.etapa, updated_at: row.created_at })) as Array<Pick<Candidatura, "candidato_id" | "etapa" | "updated_at">>;
 }
 
 export async function listCandidateApplications(candidateId: string): Promise<CandidaturaDetalhada[]> {
   const { data, error } = await supabase.from("candidaturas").select(DETAIL_SELECT).eq("candidato_id", candidateId).order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as unknown as CandidaturaDetalhada[];
+  return (data ?? []).map((row) => {
+    const detailed = row as unknown as ApplicationDatabaseRow & Pick<CandidaturaDetalhada, "candidato" | "vaga">;
+    return { ...normalizeApplication(detailed), candidato: detailed.candidato, vaga: detailed.vaga };
+  });
 }
 
 export async function getCandidateLatestApplication(candidateId: string): Promise<Pick<Candidatura, "id" | "vaga_id" | "etapa" | "observacoes" | "updated_at"> | null> {
   const { data, error } = await supabase
     .from("candidaturas")
-    .select("id,vaga_id,etapa,observacoes,updated_at")
+    .select(APPLICATION_COLUMNS)
     .eq("candidato_id", candidateId)
-    .order("updated_at", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   if (error) throw error;
-  return data as Pick<Candidatura, "id" | "vaga_id" | "etapa" | "observacoes" | "updated_at"> | null;
+  return data ? normalizeApplication(data as ApplicationDatabaseRow) : null;
 }
 
 export async function createApplication(candidateId: string, jobId: string | number, etapa: EtapaProcesso, observacoes = "") {
-  const now = new Date().toISOString();
-  const { data, error } = await supabase.from("candidaturas").insert({ candidato_id: candidateId, vaga_id: jobId, etapa, observacoes: observacoes.trim() || null, created_at: now, updated_at: now }).select("id").single();
+  const { data, error } = await supabase.from("candidaturas").insert({ candidato_id: candidateId, vaga_id: jobId, etapa, observacoes: observacoes.trim() || null }).select("id,candidato_id,vaga_id").single();
   if (error) throw error;
+  if (!data.candidato_id || data.vaga_id == null) throw new Error("O Supabase criou a candidatura sem candidato_id ou vaga_id.");
   const { data: { user } } = await supabase.auth.getUser();
   await supabase.from("historico_candidatos").insert({ candidato_id: candidateId, candidatura_id: data.id, evento: `Entrada no processo: ${etapa}`, observacao: observacoes.trim() || null, responsavel: user?.id ?? null });
 }
 
 export async function updateApplicationStage(id: string, etapa: EtapaProcesso, observacoes?: string | null) {
-  const changes: { etapa: EtapaProcesso; updated_at: string; observacoes?: string | null } = { etapa, updated_at: new Date().toISOString() };
+  const changes: { etapa: EtapaProcesso; observacoes?: string | null } = { etapa };
   if (observacoes !== undefined) changes.observacoes = observacoes?.trim() || null;
   const { error } = await supabase.from("candidaturas").update(changes).eq("id", id);
   if (error) throw error;
@@ -68,7 +92,6 @@ export async function updateApplicationProcess(id: string, jobId: string | numbe
     vaga_id: jobId,
     etapa,
     observacoes: observacoes?.trim() || null,
-    updated_at: new Date().toISOString(),
   };
   const { data, error } = await supabase.from("candidaturas").update(changes).eq("id", id).select("candidato_id").single();
   if (error) throw error;

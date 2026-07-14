@@ -82,5 +82,5 @@ export type Candidatura = {
 
 export type CandidaturaDetalhada = Candidatura & {
   candidato: Candidato;
-  vaga: (Pick<Job, "id" | "titulo" | "status" | "empresa_id"> & { empresa_cliente?: { id: string; nome: string } | null }) | null;
+  vaga: (Pick<Job, "id" | "titulo" | "status"> & { empresa?: string | null; empresa_id?: string | null }) | null;
 };
