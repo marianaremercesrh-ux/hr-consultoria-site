@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole, Building2 } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
-import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminLoginPage, { AdminClientSessionNotice } from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminNewJobPage from "./pages/AdminNewJobPage";
 import AdminEditJobPage from "./pages/AdminEditJobPage";
@@ -739,9 +739,15 @@ Mensagem: ${mensagem || "Não informado"}`;
                   </li>
                 ))}
                 <li>
-                  <a href="/admin/login" className="inline-flex items-center gap-2 text-lg text-white/55 transition-colors hover:text-[#D4A62A]">
-                    <LockKeyhole size={16} aria-hidden="true" />
-                    Área do Recrutador
+                  <a href="/admin/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
+                    <LockKeyhole size={17} className="mt-1" aria-hidden="true" />
+                    <span><strong className="block text-lg">Área do Recrutador</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Gestão administrativa e processos seletivos</span></span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/cliente/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
+                    <Building2 size={17} className="mt-1" aria-hidden="true" />
+                    <span><strong className="block text-lg">Área do Cliente</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Acompanhamento de vagas e candidatos liberados</span></span>
                   </a>
                 </li>
               </ul>
@@ -855,4 +861,4 @@ export default function App() {
   return <HomeApp />;
 }
 
-function AdminAccessGate({children}:{children:React.ReactNode}){const[allowed,setAllowed]=useState<boolean|null>(null);useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){window.location.href="/admin/login";return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();if(!profile||!["administrador","recrutador"].includes(profile.perfil)){window.location.href="/cliente";return}setAllowed(true)})},[]);return allowed?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso administrativo...</main>}
+function AdminAccessGate({children}:{children:React.ReactNode}){const[access,setAccess]=useState<"checking"|"allowed"|"client">("checking");useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){window.location.href="/admin/login";return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();setAccess(profile&&["administrador","recrutador"].includes(profile.perfil)?"allowed":"client")})},[]);if(access==="client")return <AdminClientSessionNotice/>;return access==="allowed"?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso administrativo...</main>}

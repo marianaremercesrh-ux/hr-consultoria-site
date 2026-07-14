@@ -117,6 +117,7 @@ grant select, insert, update, delete on table public.empresa_usuarios,
   public.feedbacks_cliente, public.empresas, public.vagas, public.candidaturas,
   public.candidatos, public.entrevistas to authenticated;
 grant select on table public.perfis_usuarios to authenticated;
+grant select, insert, update on table public.empresa_usuarios to service_role;
 
 -- Tabelas exclusivamente administrativas, quando instaladas.
 do $$ declare t text; p record; begin
