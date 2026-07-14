@@ -31,6 +31,18 @@ export async function listCandidateApplications(candidateId: string): Promise<Ca
   return (data ?? []) as unknown as CandidaturaDetalhada[];
 }
 
+export async function getCandidateLatestApplication(candidateId: string): Promise<Pick<Candidatura, "id" | "vaga_id" | "etapa" | "observacoes" | "updated_at"> | null> {
+  const { data, error } = await supabase
+    .from("candidaturas")
+    .select("id,vaga_id,etapa,observacoes,updated_at")
+    .eq("candidato_id", candidateId)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data as Pick<Candidatura, "id" | "vaga_id" | "etapa" | "observacoes" | "updated_at"> | null;
+}
+
 export async function createApplication(candidateId: string, jobId: string | number, etapa: EtapaProcesso, observacoes = "") {
   const now = new Date().toISOString();
   const { data, error } = await supabase.from("candidaturas").insert({ candidato_id: candidateId, vaga_id: jobId, etapa, observacoes: observacoes.trim() || null, created_at: now, updated_at: now }).select("id").single();

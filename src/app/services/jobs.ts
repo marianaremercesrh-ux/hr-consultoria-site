@@ -3,6 +3,8 @@ import type { Job, JobFormData, JobStatus } from "../types/jobs";
 
 const JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,valor_previsto,valor_recebido,garantia_ate,encerramento_previsto,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
 
+export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
+
 export function generateJobSlug(title: string, city: string) {
   return `${title}-${city}`
     .toLowerCase()
@@ -19,6 +21,16 @@ export async function listJobs() {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Job[];
+}
+
+export async function listSelectableJobs(): Promise<SelectableJob[]> {
+  const { data, error } = await supabase
+    .from("vagas")
+    .select("id,titulo,status,empresa")
+    .in("status", ["publicada", "rascunho"])
+    .order("titulo", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as SelectableJob[];
 }
 
 export async function listJobsByCompanyId(empresaId: string) {
