@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, FilterX, Pencil, Trash2, UserRound } from "lucide-react";
+import { ArrowLeft, ChevronDown, Download, FileSpreadsheet, FileText, FilterX, Pencil, Trash2, UserRound } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { EtapaBadge } from "../components/ApplicationStageControl";
 import { AdminNotice, AdminSkeleton, ConfirmDialog, adminButtonClass, adminInputClass, adminTableHeadClass, adminTableRowClass } from "../components/AdminUI";
 import { useAdminSession } from "../hooks/useAdminSession";
-import { listCandidateLatestStages } from "../services/applications";
+import { listApplicationsForCandidateReport, listCandidateLatestStages } from "../services/applications";
 import { deleteCandidate, listCandidates } from "../services/candidates";
+import { listJobsForCandidateSummary } from "../services/jobs";
+import { downloadCandidatesExcel, downloadCandidatesPdf, reportStatus, type CandidateReportRow } from "../services/candidateReports";
 import { deleteResume } from "../services/storage";
-import { ETAPAS, type CandidatoComTotal, type EtapaProcesso } from "../types/candidates";
+import { ETAPAS, etapaLabel, type CandidatoComTotal, type EtapaProcesso } from "../types/candidates";
 
 export default function AdminCandidatesPage() {
   const checkingSession = useAdminSession();
@@ -22,6 +24,8 @@ export default function AdminCandidatesPage() {
   const [error, setError] = useState("");
   const [candidateToDelete, setCandidateToDelete] = useState<CandidatoComTotal | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [reportMenuOpen, setReportMenuOpen] = useState(false);
+  const [generatingReport, setGeneratingReport] = useState(false);
 
   async function load() {
     setError("");
@@ -49,6 +53,36 @@ export default function AdminCandidatesPage() {
 
   function clearFilters() { setQuery(""); setCity(""); setProcessFilter(""); setStatusFilter(""); }
 
+  async function generateReport(format: "pdf" | "excel") {
+    if (generatingReport) return;
+    setGeneratingReport(true); setReportMenuOpen(false); setError(""); setMessage("");
+    try {
+      const [freshCandidates, applications, jobs] = await Promise.all([listCandidates(), listApplicationsForCandidateReport(), listJobsForCandidateSummary()]);
+      const latestApplication = new Map<string, (typeof applications)[number]>();
+      applications.forEach((application) => { if (!latestApplication.has(application.candidato_id)) latestApplication.set(application.candidato_id, application); });
+      const freshFiltered = freshCandidates.filter((candidate) => {
+        const matchesQuery = `${candidate.nome} ${candidate.telefone ?? ""}`.toLocaleLowerCase("pt-BR").includes(query.toLocaleLowerCase("pt-BR"));
+        const matchesCity = !city || candidate.cidade === city;
+        const matchesProcess = !processFilter || (processFilter === "com" ? candidate.total_processos > 0 : candidate.total_processos === 0);
+        const stage = latestApplication.get(candidate.id)?.etapa;
+        const matchesStatus = !statusFilter || (statusFilter === "sem_processo" ? !stage : stage === statusFilter);
+        return matchesQuery && matchesCity && matchesProcess && matchesStatus;
+      });
+      if (freshFiltered.length === 0) { setError("Nenhum candidato encontrado para gerar o relatório"); return; }
+      const jobsById = new Map(jobs.map((job) => [String(job.id), job.titulo]));
+      const rows: CandidateReportRow[] = freshFiltered.map((candidate) => {
+        const application = latestApplication.get(candidate.id);
+        return { nome:candidate.nome,telefone:candidate.telefone||"Não informado",cidade:candidate.cidade||"Não informada",linkedin:candidate.linkedin||"Não informado",processo:application?.vaga_id==null?"Sem processo":jobsById.get(String(application.vaga_id))||"Vaga indisponível",status:reportStatus(application?.etapa),cadastro:new Intl.DateTimeFormat("pt-BR").format(new Date(candidate.created_at)),observacoes:candidate.observacoes||application?.observacoes||"—" };
+      });
+      const filters = [query&&`Busca: ${query}`,city&&`Cidade: ${city}`,processFilter&&`Processos: ${processFilter==="com"?"Com processo":"Sem processo"}`,statusFilter&&`Status: ${statusFilter==="sem_processo"?"Sem processo":etapaLabel(statusFilter as EtapaProcesso)}`].filter(Boolean) as string[];
+      if (format === "pdf") await downloadCandidatesPdf(rows, filters); else await downloadCandidatesExcel(rows);
+      setMessage(`Relatório em ${format === "pdf" ? "PDF" : "Excel"} gerado com sucesso.`);
+    } catch (reason) {
+      console.error("[Relatório de candidatos] Não foi possível gerar o arquivo", reason);
+      setError("Não foi possível concluir o download do relatório. Tente novamente.");
+    } finally { setGeneratingReport(false); }
+  }
+
   async function remove() {
     if (!candidateToDelete) return;
     const candidate = candidateToDelete;
@@ -67,7 +101,7 @@ export default function AdminCandidatesPage() {
   if (checkingSession) return <Loading/>;
   return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><section className="mx-auto max-w-7xl px-5 py-10">
     <a href="/admin" className={`${adminButtonClass("secondary")} mb-6`}><ArrowLeft size={17} aria-hidden="true"/>Dashboard</a>
-    <div className="flex flex-wrap items-center justify-between gap-4"><div><h1 className="text-3xl font-semibold text-[#052656]">Candidatos</h1><p className="mt-2 text-gray-600">Cadastro e acompanhamento dos profissionais.</p></div><a href="/admin/candidatos/novo" className={adminButtonClass("primary")}><UserRound size={17}/>Novo candidato</a></div>
+    <div className="flex flex-wrap items-center justify-between gap-4"><div><h1 className="text-3xl font-semibold text-[#052656]">Candidatos</h1><p className="mt-2 text-gray-600">Cadastro e acompanhamento dos profissionais.</p></div><div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row"><a href="/admin/candidatos/novo" className={`${adminButtonClass("primary")} w-full sm:w-auto`}><UserRound size={17}/>Novo candidato</a><div className="relative w-full sm:w-auto" onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setReportMenuOpen(false); }}><button type="button" disabled={generatingReport} onClick={() => setReportMenuOpen((open) => !open)} aria-haspopup="menu" aria-expanded={reportMenuOpen} className={`${adminButtonClass("secondary")} w-full sm:w-auto`}><Download size={17}/>{generatingReport?"Gerando...":"Baixar relatório"}<ChevronDown size={15}/></button>{reportMenuOpen&&!generatingReport&&<div role="menu" className="absolute right-0 z-30 mt-2 w-full min-w-52 border border-gray-200 bg-white p-2 shadow-xl sm:w-56"><button role="menuitem" type="button" onClick={() => void generateReport("pdf")} className="flex w-full items-center gap-3 px-3 py-3 text-left font-semibold text-[#052656] hover:bg-[#D4A62A]/15"><FileText size={18}/>Baixar em PDF</button><button role="menuitem" type="button" onClick={() => void generateReport("excel")} className="flex w-full items-center gap-3 px-3 py-3 text-left font-semibold text-[#052656] hover:bg-[#D4A62A]/15"><FileSpreadsheet size={18}/>Baixar em Excel</button></div>}</div></div></div>
     {message && <AdminNotice>{message}</AdminNotice>}{error && <AdminNotice type="error">{error}</AdminNotice>}
     <div className="mt-8 border border-gray-200 bg-white p-5 shadow-sm"><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><label><span className="mb-2 block font-semibold text-[#052656]">Buscar por nome ou telefone</span><input value={query} onChange={(event) => setQuery(event.target.value)} className={adminInputClass}/></label><label><span className="mb-2 block font-semibold text-[#052656]">Filtrar por cidade</span><select value={city} onChange={(event) => setCity(event.target.value)} className={adminInputClass}><option value="">Todas as cidades</option>{cities.map((value) => <option key={value ?? ""}>{value}</option>)}</select></label><label><span className="mb-2 block font-semibold text-[#052656]">Filtrar por processos</span><select value={processFilter} onChange={(event) => setProcessFilter(event.target.value)} className={adminInputClass}><option value="">Todos</option><option value="com">Com processo</option><option value="sem">Sem processo</option></select></label><label><span className="mb-2 block font-semibold text-[#052656]">Filtrar por status</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className={adminInputClass}><option value="">Todos os status</option><option value="sem_processo">Sem processo</option>{ETAPAS.map((stage) => <option key={stage.value} value={stage.value}>{stage.label}</option>)}</select></label></div><div className="mt-4 flex justify-end"><button type="button" onClick={clearFilters} className={adminButtonClass("secondary")}><FilterX size={17}/>Limpar filtros</button></div></div>
     {loading ? <div className="mt-8"><AdminSkeleton rows={4}/></div> : filtered.length === 0 ? <p className="mt-8 bg-white p-8 text-center text-gray-600">Nenhum candidato encontrado.</p> : <div className="mt-8 overflow-x-auto border border-gray-200 bg-white shadow-sm"><table className="w-full min-w-[1050px] text-left"><thead className={adminTableHeadClass}><tr>{["Nome", "Telefone", "Cidade", "LinkedIn", "Processos", "Status", "Cadastro", "Ações"].map((title) => <th key={title} className="px-4 py-3">{title}</th>)}</tr></thead><tbody>{filtered.map((candidate) => <tr key={candidate.id} className={adminTableRowClass}><td className="px-4 py-4 font-semibold text-[#052656]">{candidate.nome}</td><td className="px-4 py-4">{candidate.telefone || "—"}</td><td className="px-4 py-4">{candidate.cidade || "—"}</td><td className="px-4 py-4">{candidate.linkedin ? <a href={candidate.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#052656] underline">Abrir</a> : "—"}</td><td className="px-4 py-4">{candidate.total_processos}</td><td className="px-4 py-4">{latestStages[candidate.id] ? <EtapaBadge etapa={latestStages[candidate.id]}/> : <span className="text-sm text-gray-500">Sem processo</span>}</td><td className="px-4 py-4">{new Intl.DateTimeFormat("pt-BR").format(new Date(candidate.created_at))}</td><td className="px-4 py-4"><div className="flex flex-wrap gap-2"><a href={`/admin/candidatos/${candidate.id}`} className={adminButtonClass("secondary")}><UserRound size={15}/>Ver perfil</a><a href={`/admin/candidatos/${candidate.id}/editar`} className={adminButtonClass("primary")}><Pencil size={15}/>Editar</a><button type="button" onClick={() => setCandidateToDelete(candidate)} className={adminButtonClass("danger")}><Trash2 size={15}/>Excluir</button></div></td></tr>)}</tbody></table></div>}

@@ -37,6 +37,12 @@ export async function listApplicationsForJobSummary(): Promise<JobSummaryApplica
   return (data ?? []).map((row) => normalizeApplication(row as ApplicationDatabaseRow));
 }
 
+export async function listApplicationsForCandidateReport(): Promise<JobSummaryApplicationRow[]> {
+  const { data, error } = await supabase.from("candidaturas").select(APPLICATION_COLUMNS).order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((row) => normalizeApplication(row as ApplicationDatabaseRow));
+}
+
 export async function listCandidateLatestStages(): Promise<Array<Pick<Candidatura, "candidato_id" | "etapa" | "updated_at">>> {
   const { data, error } = await supabase
     .from("candidaturas")
