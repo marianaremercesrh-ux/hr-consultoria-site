@@ -8,6 +8,7 @@ const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,status,created_at";
 export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
 export type JobStatusRecord = Pick<Job, "id" | "status">;
 export type JobCandidateSummary = Pick<Job, "id" | "titulo" | "quantidade_vagas" | "status">;
+export type CandidateReportJob = Pick<Job, "id" | "titulo" | "empresa" | "status">;
 
 export function generateJobSlug(title: string, city: string) {
   return `${title}-${city}`
@@ -42,6 +43,12 @@ export async function listJobsForCandidateSummary(): Promise<JobCandidateSummary
     .order("titulo", { ascending: true });
   if (error) throw error;
   return (data ?? []) as JobCandidateSummary[];
+}
+
+export async function listJobsForCandidateReport(): Promise<CandidateReportJob[]> {
+  const { data, error } = await supabase.from("vagas").select("id,titulo,empresa,status").order("titulo", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as CandidateReportJob[];
 }
 
 export async function listSelectableJobs(): Promise<SelectableJob[]> {

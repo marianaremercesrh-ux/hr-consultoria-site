@@ -3,6 +3,7 @@ import type { Candidato, CandidatoComTotal, CandidatoForm } from "../types/candi
 
 const CANDIDATE_COLUMNS = "id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at";
 export type JobSummaryCandidate = Pick<Candidato, "id" | "nome" | "telefone" | "cidade" | "created_at">;
+export type CandidateReportCandidate = Pick<Candidato, "id" | "nome" | "observacoes" | "created_at"> & Partial<Pick<Candidato, "telefone" | "cidade" | "estado" | "linkedin">> & { total_processos: number };
 
 export async function listCandidates(): Promise<CandidatoComTotal[]> {
   const { data, error } = await supabase
@@ -31,6 +32,17 @@ export async function listCandidatesByIds(ids: string[]): Promise<JobSummaryCand
     .in("id", ids);
   if (error) throw error;
   return (data ?? []) as JobSummaryCandidate[];
+}
+
+export async function listCandidatesForReport(includeContact: boolean, includeCity = false): Promise<CandidateReportCandidate[]> {
+  const columns = includeContact ? "id,nome,telefone,cidade,estado,linkedin,observacoes,created_at" : includeCity ? "id,nome,cidade,observacoes,created_at" : "id,nome,observacoes,created_at";
+  const { data, error } = await supabase.from("candidatos").select(`${columns},candidaturas(count)`).order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((row) => {
+    const candidate = row as unknown as CandidateReportCandidate & { candidaturas?: Array<{ count: number }> };
+    const { candidaturas, ...fields } = candidate;
+    return { ...fields, total_processos: candidaturas?.[0]?.count ?? 0 };
+  });
 }
 
 export async function createCandidate(form: CandidatoForm): Promise<Candidato> {
