@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Trash2, UserRound } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2, UserRound } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { AdminNotice, AdminSkeleton, ConfirmDialog, adminButtonClass, adminInputClass, adminTableHeadClass, adminTableRowClass } from "../components/AdminUI";
 import { useAdminSession } from "../hooks/useAdminSession";
@@ -46,6 +46,7 @@ export default function AdminCandidatesPage() {
 
   if (checkingSession) return <Loading/>;
   return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><section className="mx-auto max-w-7xl px-5 py-10">
+    <a href="/admin" className={`${adminButtonClass("secondary")} mb-6`}><ArrowLeft size={17} aria-hidden="true"/>Dashboard</a>
     <div className="flex flex-wrap items-center justify-between gap-4"><div><h1 className="text-3xl font-semibold text-[#052656]">Candidatos</h1><p className="mt-2 text-gray-600">Cadastro e acompanhamento dos profissionais.</p></div><a href="/admin/candidatos/novo" className={adminButtonClass("primary")}><UserRound size={17}/>Novo candidato</a></div>
     {message && <AdminNotice>{message}</AdminNotice>}{error && <AdminNotice type="error">{error}</AdminNotice>}
     <div className="mt-8 grid gap-4 border border-gray-200 bg-white p-5 shadow-sm md:grid-cols-2"><label><span className="mb-2 block font-semibold text-[#052656]">Buscar por nome ou telefone</span><input value={query} onChange={(event) => setQuery(event.target.value)} className={adminInputClass}/></label><label><span className="mb-2 block font-semibold text-[#052656]">Filtrar por cidade</span><select value={city} onChange={(event) => setCity(event.target.value)} className={adminInputClass}><option value="">Todas as cidades</option>{cities.map((value) => <option key={value ?? ""}>{value}</option>)}</select></label></div>
