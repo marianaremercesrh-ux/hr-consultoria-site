@@ -5,11 +5,12 @@ import ApplicationStageControl, { EtapaBadge } from "../components/ApplicationSt
 import ATSOverview from "../components/ATSOverview";
 import { AdminNotice, AdminSkeleton, ConfirmDialog, adminButtonClass, adminInputClass, adminTableHeadClass, adminTableRowClass } from "../components/AdminUI";
 import { supabase } from "../lib/supabase";
+import { supabaseErrorDetails } from "../lib/supabaseError";
 import { formatarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
 import { listApplications, updateApplicationStage } from "../services/applications";
 import { listCandidates } from "../services/candidates";
-import { deleteJob, listJobs, updateJobStatus } from "../services/jobs";
-import type { Job, JobStatus } from "../types/jobs";
+import { deleteJob, listJobs, listJobStatuses, updateJobStatus } from "../services/jobs";
+import { JOB_STATUS, jobStatusCategory, type Job, type JobStatus } from "../types/jobs";
 import { ETAPAS, type CandidaturaDetalhada, type EtapaProcesso } from "../types/candidates";
 
 export default function AdminDashboardPage() {
@@ -27,9 +28,31 @@ export default function AdminDashboardPage() {
   const [vagaDetalhada, setVagaDetalhada] = useState<string | null>(null);
   const [erroResumo, setErroResumo] = useState("");
   const [candidaturaAtualizando, setCandidaturaAtualizando] = useState<string | null>(null);
+  const [totaisVagas, setTotaisVagas] = useState({ aberta: 0, pendente: 0, encerrada: 0 });
+  const [resumoVagasCarregando, setResumoVagasCarregando] = useState(true);
+  const [erroResumoVagas, setErroResumoVagas] = useState(false);
 
   const carregarVagas = useCallback(async () => {
     setErro("");
+    setResumoVagasCarregando(true);
+    setErroResumoVagas(false);
+    try {
+      const statusRows = await listJobStatuses();
+      const uniqueJobs = new Map(statusRows.map((job) => [String(job.id), job]));
+      const totals = { aberta: 0, pendente: 0, encerrada: 0 };
+      uniqueJobs.forEach((job) => {
+        const category = jobStatusCategory(String(job.status));
+        if (category !== "ignorada") totals[category] += 1;
+      });
+      setTotaisVagas(totals);
+      if (import.meta.env.DEV) console.info("[Supabase] Valores encontrados em public.vagas.status", [...new Set(statusRows.map((job) => job.status))]);
+    } catch (statusError) {
+      const { message, details, hint, code } = supabaseErrorDetails(statusError);
+      console.error("[Supabase] calcular resumo de vagas", { message, details, hint, code });
+      setErroResumoVagas(true);
+    } finally {
+      setResumoVagasCarregando(false);
+    }
     try {
       const jobs = await listJobs();
       setVagas(jobs);
@@ -59,12 +82,6 @@ export default function AdminDashboardPage() {
     });
   }, [carregarVagas]);
 
-  const totais = useMemo(() => ({
-    publicada: vagas.filter((vaga) => vaga.status === "publicada").length,
-    rascunho: vagas.filter((vaga) => vaga.status === "rascunho").length,
-    encerrada: vagas.filter((vaga) => vaga.status === "encerrada").length,
-  }), [vagas]);
-
   const candidaturasFiltradas = useMemo(() => candidaturas.filter((item) => {
     const correspondeNome = item.candidato.nome.toLocaleLowerCase("pt-BR").includes(buscaCandidato.toLocaleLowerCase("pt-BR"));
     const correspondeVaga = !filtroVaga || String(item.vaga_id) === filtroVaga;
@@ -73,7 +90,7 @@ export default function AdminDashboardPage() {
   }), [candidaturas, buscaCandidato, filtroVaga, filtroEtapa]);
 
   const vagasDoResumo = useMemo(() => vagas.filter((vaga) => {
-    if (vaga.status === "excluida") return false;
+    if (vaga.status === JOB_STATUS.DELETED) return false;
     if (filtroVaga && String(vaga.id) !== filtroVaga) return false;
     if ((buscaCandidato || filtroEtapa) && !candidaturasFiltradas.some((item) => String(item.vaga_id) === String(vaga.id))) return false;
     return true;
@@ -121,7 +138,6 @@ export default function AdminDashboardPage() {
       await updateApplicationStage(id, etapa, motivo);
       const atualizadas = candidaturas.map((item) => item.id === id ? { ...item, etapa, observacoes: motivo === undefined ? item.observacoes : motivo, updated_at: new Date().toISOString() } : item);
       setCandidaturas(atualizadas);
-      setEtapas(atualizadas.map((item) => item.etapa));
       setMensagem("Etapa do candidato atualizada com sucesso.");
     } catch (error) {
       if (import.meta.env.DEV) console.error(error);
@@ -153,14 +169,14 @@ export default function AdminDashboardPage() {
         <section className="mt-10 border border-gray-200 bg-white p-5 shadow-sm sm:p-7" aria-labelledby="resumo-vagas">
           <h2 id="resumo-vagas" className="flex items-center gap-3 text-2xl font-semibold text-[#052656]"><BriefcaseBusiness className="text-[#D4A62A]"/>Resumo de vagas</h2>
           <div className="mt-5 grid gap-5 md:grid-cols-3">
-            <Contador titulo="Vagas abertas" total={totais.publicada}/>
-            <Contador titulo="Vagas pendentes" total={totais.rascunho}/>
-            <Contador titulo="Vagas encerradas" total={totais.encerrada}/>
+            <Contador titulo="Vagas abertas" total={totaisVagas.aberta} carregando={resumoVagasCarregando} erro={erroResumoVagas}/>
+            <Contador titulo="Vagas pendentes" total={totaisVagas.pendente} carregando={resumoVagasCarregando} erro={erroResumoVagas}/>
+            <Contador titulo="Vagas encerradas" total={totaisVagas.encerrada} carregando={resumoVagasCarregando} erro={erroResumoVagas}/>
           </div>
         </section>
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <section className="border border-gray-200 bg-white p-6 shadow-sm"><h2 className="flex items-center gap-3 text-xl font-semibold text-[#052656]"><Activity className="text-[#D4A62A]"/>Atividade recente</h2><p className="mt-6 text-gray-600">Nenhuma atividade recente.</p></section>
-          <section className="border border-gray-200 bg-white p-6 shadow-sm"><h2 className="flex items-center gap-3 text-xl font-semibold text-[#052656]"><BriefcaseBusiness className="text-[#D4A62A]"/>Últimas vagas</h2><div className="mt-5 space-y-3">{vagas.slice(0, 4).map((vaga) => <article key={vaga.id} className="border-b border-gray-100 pb-3 last:border-0"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="break-words font-semibold text-[#052656]">{vaga.titulo} — {formatarQuantidadeVagas(vaga.quantidade_vagas)}</h3><p className="mt-1 text-sm text-gray-600">{vaga.cidade} · <span className="capitalize">{vaga.status === "excluida" ? "Excluída" : vaga.status}</span></p></div><a href={`/admin/vagas/${vaga.id}/editar`} className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[#052656] hover:text-[#D4A62A]">Ver vaga<ArrowRight size={15}/></a></div></article>)}{vagas.length === 0 && <p className="text-gray-600">Nenhuma vaga cadastrada.</p>}</div></section>
+          <section className="border border-gray-200 bg-white p-6 shadow-sm"><h2 className="flex items-center gap-3 text-xl font-semibold text-[#052656]"><BriefcaseBusiness className="text-[#D4A62A]"/>Últimas vagas</h2><div className="mt-5 space-y-3">{vagas.slice(0, 4).map((vaga) => <article key={vaga.id} className="border-b border-gray-100 pb-3 last:border-0"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="break-words font-semibold text-[#052656]">{vaga.titulo} — {formatarQuantidadeVagas(vaga.quantidade_vagas)}</h3><p className="mt-1 text-sm text-gray-600">{vaga.cidade} · <span className="capitalize">{vaga.status === JOB_STATUS.DELETED ? "Excluída" : vaga.status}</span></p></div><a href={`/admin/vagas/${vaga.id}/editar`} className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[#052656] hover:text-[#D4A62A]">Ver vaga<ArrowRight size={15}/></a></div></article>)}{vagas.length === 0 && <p className="text-gray-600">Nenhuma vaga cadastrada.</p>}</div></section>
           <section className="border border-gray-200 bg-white p-6 shadow-sm"><h2 className="flex items-center gap-3 text-xl font-semibold text-[#052656]"><UsersRound className="text-[#D4A62A]"/>Últimos candidatos</h2><div className="mt-5 space-y-3">{candidaturas.filter((item, index, list) => list.findIndex((other) => other.candidato_id === item.candidato_id) === index).slice(0, 4).map((item) => <article key={item.candidato_id} className="border-b border-gray-100 pb-3 last:border-0"><div className="flex items-start justify-between gap-3"><div><h3 className="font-semibold text-[#052656]">{item.candidato.nome}</h3><p className="mt-1 text-sm text-gray-600">{item.vaga?.titulo ?? "Sem vaga"}</p><div className="mt-2"><EtapaBadge etapa={item.etapa}/></div></div><a href={`/admin/candidatos/${item.candidato_id}`} className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[#052656] hover:text-[#D4A62A]">Ver perfil<ArrowRight size={15}/></a></div></article>)}{candidaturas.length === 0 && <p className="text-gray-600">Nenhum candidato recente.</p>}</div></section>
         </div>
         <ResumoPorVaga
@@ -235,5 +251,5 @@ function ResumoPorVaga({ vagas, candidaturas, todasAsVagas, busca, filtroVaga, f
   </section>;
 }
 
-function Contador({ titulo, total }: { titulo: string; total: number }) { return <article className="border border-gray-100 bg-[#F5F7FA] p-6 transition hover:-translate-y-0.5 hover:shadow-md"><p className="text-sm font-semibold uppercase tracking-wide text-gray-500">{titulo}</p><p className="mt-3 text-4xl font-bold text-[#052656]">{total}</p></article>; }
+function Contador({ titulo, total, carregando = false, erro = false }: { titulo: string; total: number; carregando?: boolean; erro?: boolean }) { return <article className="border border-gray-100 bg-[#F5F7FA] p-6 transition hover:-translate-y-0.5 hover:shadow-md"><p className="text-sm font-semibold uppercase tracking-wide text-gray-500">{titulo}</p>{carregando ? <p className="mt-3 font-semibold text-gray-500">Calculando...</p> : erro ? <p className="mt-3 font-semibold text-red-700">Não foi possível calcular</p> : <p className="mt-3 text-4xl font-bold text-[#052656]">{total}</p>}</article>; }
 function Acao({ children, onClick, disabled, verde = false }: { children: React.ReactNode; onClick: () => void; disabled: boolean; verde?: boolean }) { return <button type="button" onClick={onClick} disabled={disabled} className={adminButtonClass(verde ? "success" : "primary")}>{children}</button>; }

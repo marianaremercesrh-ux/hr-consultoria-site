@@ -1,9 +1,11 @@
 import { supabase } from "../lib/supabase";
-import type { Job, JobFormData, JobStatus } from "../types/jobs";
+import { JOB_STATUS, type Job, type JobFormData, type JobStatus } from "../types/jobs";
 
-const JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,valor_previsto,valor_recebido,garantia_ate,encerramento_previsto,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
+const JOB_COLUMNS = "id,titulo,slug,empresa,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
+const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,status,created_at";
 
 export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
+export type JobStatusRecord = Pick<Job, "id" | "status">;
 
 export function generateJobSlug(title: string, city: string) {
   return `${title}-${city}`
@@ -23,11 +25,19 @@ export async function listJobs() {
   return (data ?? []) as Job[];
 }
 
+export async function listJobStatuses(): Promise<JobStatusRecord[]> {
+  const { data, error } = await supabase
+    .from("vagas")
+    .select("id,status");
+  if (error) throw error;
+  return (data ?? []) as JobStatusRecord[];
+}
+
 export async function listSelectableJobs(): Promise<SelectableJob[]> {
   const { data, error } = await supabase
     .from("vagas")
     .select("id,titulo,status,empresa")
-    .in("status", ["publicada", "rascunho"])
+    .in("status", [JOB_STATUS.OPEN, JOB_STATUS.DRAFT])
     .order("titulo", { ascending: true });
   if (error) throw error;
   return (data ?? []) as SelectableJob[];
@@ -46,7 +56,7 @@ export async function listPublishedJobs() {
   const { data, error } = await supabase
     .from("vagas")
     .select(JOB_COLUMNS)
-    .eq("status", "publicada")
+    .eq("status", JOB_STATUS.OPEN)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Job[];
@@ -67,21 +77,48 @@ export async function getPublishedJobBySlug(slug: string) {
     .from("vagas")
     .select(JOB_COLUMNS)
     .eq("slug", slug)
-    .eq("status", "publicada")
+    .eq("status", JOB_STATUS.OPEN)
     .maybeSingle();
   if (error) throw error;
   return data as Job | null;
 }
 
-export async function createJob(form: JobFormData) {
+export async function findJobBySlug(slug: string): Promise<Pick<Job, "id" | "titulo" | "slug" | "empresa" | "status" | "created_at"> | null> {
+  const { data, error } = await supabase
+    .from("vagas")
+    .select(CREATED_JOB_COLUMNS)
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error) throw error;
+  return data as Pick<Job, "id" | "titulo" | "slug" | "empresa" | "status" | "created_at"> | null;
+}
+
+export async function createJob(form: JobFormData): Promise<Pick<Job, "id" | "titulo" | "slug" | "empresa" | "status" | "created_at">> {
   const now = new Date().toISOString();
-  const { error } = await supabase.from("vagas").insert({
-    ...form,
+  const optionalText = (value: string) => value.trim() || null;
+  const payload = {
+    titulo: form.titulo.trim(),
     slug: generateJobSlug(form.titulo, form.cidade),
+    empresa: optionalText(form.empresa),
+    cidade: form.cidade.trim(),
+    estado: form.estado.trim(),
+    modalidade: optionalText(form.modalidade),
+    tipo_contrato: optionalText(form.tipo_contrato),
+    salario: optionalText(form.salario),
+    exibir_salario: form.exibir_salario,
+    descricao: optionalText(form.descricao),
+    atividades: optionalText(form.atividades),
+    requisitos: optionalText(form.requisitos),
+    beneficios: optionalText(form.beneficios),
+    horario: optionalText(form.horario),
+    quantidade_vagas: form.quantidade_vagas,
+    status: form.status,
     created_at: now,
     updated_at: now,
-  });
+  };
+  const { data, error } = await supabase.from("vagas").insert(payload).select(CREATED_JOB_COLUMNS).single();
   if (error) throw error;
+  return data as Pick<Job, "id" | "titulo" | "slug" | "empresa" | "status" | "created_at">;
 }
 
 export async function updateJob(id: string | number, form: JobFormData) {
@@ -107,7 +144,7 @@ export async function updateJobStatus(id: string | number, status: JobStatus) {
 export async function deleteJob(id: string | number) {
   const { error } = await supabase
     .from("vagas")
-    .update({ status: "excluida", updated_at: new Date().toISOString() })
+    .update({ status: JOB_STATUS.DELETED, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) throw error;
 }

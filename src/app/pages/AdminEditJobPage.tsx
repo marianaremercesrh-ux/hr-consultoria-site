@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { generateJobSlug, getJobById, updateJob } from "../services/jobs";
-import { EMPTY_JOB_FORM, jobToForm, type JobFormData } from "../types/jobs";
+import { EMPTY_JOB_FORM, JOB_STATUS_OPTIONS, jobToForm, type JobFormData } from "../types/jobs";
 import AdminNav from "../components/AdminNav";
 import ApplicationStageControl, { EtapaBadge } from "../components/ApplicationStageControl";
 import JobShareActions from "../components/JobShareActions";
@@ -65,7 +65,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
       <form onSubmit={save} className="grid gap-6 bg-white p-6 shadow-sm md:grid-cols-2">
         <label className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">Empresa cliente</span><select name="empresa_id" value={form.empresa_id ?? ""} onChange={(event) => { const selected = empresas.find((item) => item.id === event.target.value); setForm((current) => ({ ...current, empresa_id: event.target.value || null, empresa: selected?.nome ?? current.empresa })); }} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></label>
         {fields.map((field) => <label key={field.name} className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">{field.label}{field.required && <span className="ml-1 text-red-700">*</span>}</span><input name={field.name} type={field.type || "text"} min={field.type === "number" ? 1 : undefined} step={field.type === "number" ? 1 : undefined} required={field.required} value={String(form[field.name])} onChange={change} className={adminInputClass}/></label>)}
-        <label><span className="mb-2 block text-sm font-semibold text-[#052656]">Status</span><select name="status" value={form.status} onChange={change} className={adminInputClass}><option value="publicada">Publicada</option><option value="rascunho">Rascunho</option><option value="encerrada">Encerrada</option></select></label>
+        <label><span className="mb-2 block text-sm font-semibold text-[#052656]">Status</span><select name="status" value={form.status} onChange={change} className={adminInputClass}>{JOB_STATUS_OPTIONS.map((status) => <option key={status.value} value={status.value}>{status.label}</option>)}</select></label>
         <label className="md:col-span-2 flex items-center gap-3 text-sm font-semibold text-[#052656]"><input type="checkbox" name="exibir_salario" checked={form.exibir_salario} onChange={change}/>Exibir salário no site</label>
         {areas.map((field) => <label key={field.name} className="md:col-span-2"><span className="mb-2 block text-sm font-semibold text-[#052656]">{field.label}</span><textarea name={field.name} value={String(form[field.name])} onChange={change} rows={4} className={`${adminInputClass} resize-y`}/></label>)}
         {message && <div className="md:col-span-2"><AdminNotice>{message}</AdminNotice></div>}

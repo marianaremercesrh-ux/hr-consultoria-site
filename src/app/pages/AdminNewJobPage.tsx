@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { createJob } from "../services/jobs";
-import type { JobFormData } from "../types/jobs";
+import { createJob, findJobBySlug, generateJobSlug } from "../services/jobs";
+import { JOB_STATUS, JOB_STATUS_OPTIONS, type JobFormData } from "../types/jobs";
 import AdminNav from "../components/AdminNav";
 import { Save, X } from "lucide-react";
 import { AdminNotice, adminButtonClass, adminInputClass } from "../components/AdminUI";
 import { listEmpresas } from "../services/ats";
 import type { Empresa } from "../types/ats";
+import { readableSupabaseError, supabaseErrorDetails } from "../lib/supabaseError";
 
 export default function AdminNewJobPage() {
   const [formulario, setFormulario] = useState<JobFormData>({
     titulo: "",
-    empresa_id: null,
     empresa: "",
     cidade: "",
     estado: "MG",
@@ -25,11 +25,12 @@ export default function AdminNewJobPage() {
     beneficios: "",
     horario: "",
     quantidade_vagas: 1,
-    status: "publicada",
+    status: JOB_STATUS.OPEN,
   });
 
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
+  const [mensagemErro, setMensagemErro] = useState(false);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
 
   useEffect(() => {
@@ -59,19 +60,41 @@ export default function AdminNewJobPage() {
 
   async function salvarVaga(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
+    if (carregando) return;
+    if (!formulario.titulo.trim() || !formulario.cidade.trim() || !formulario.estado.trim()) {
+      setMensagemErro(true);
+      setMensagem("Preencha título, cidade e estado.");
+      return;
+    }
+    if (!Number.isInteger(formulario.quantidade_vagas) || formulario.quantidade_vagas < 1) {
+      setMensagemErro(true);
+      setMensagem("A quantidade de vagas deve ser um número inteiro maior que zero.");
+      return;
+    }
     setCarregando(true);
     setMensagem("");
 
     try {
-      await createJob(formulario);
-      setMensagem("Vaga salva com sucesso.");
+      const slug = generateJobSlug(formulario.titulo, formulario.cidade);
+      const existing = await findJobBySlug(slug);
+      if (existing) {
+        setMensagemErro(true);
+        setMensagem(`Esta vaga já existe no Supabase (ID ${existing.id}). Verifique a listagem antes de tentar novamente.`);
+        setCarregando(false);
+        return;
+      }
+      const created = await createJob(formulario);
+      setMensagemErro(false);
+      setMensagem(`Vaga cadastrada com sucesso (ID ${created.id}).`);
       window.setTimeout(() => {
         window.location.href = "/admin";
       }, 700);
       return;
     } catch (error) {
-      if (import.meta.env.DEV) console.error(error);
-      setMensagem("Não foi possível salvar a vaga.");
+      const { message, details, hint, code } = supabaseErrorDetails(error);
+      console.error("[Supabase] cadastrar vaga em public.vagas", { message, details, hint, code });
+      setMensagemErro(true);
+      setMensagem(`Não foi possível cadastrar a vaga: ${readableSupabaseError(error)}`);
       setCarregando(false);
       return;
     }
@@ -99,7 +122,7 @@ export default function AdminNewJobPage() {
             required
           />
 
-          <label><span className="mb-2 block font-semibold text-[#052656]">Empresa cliente</span><select name="empresa_id" value={formulario.empresa_id ?? ""} onChange={(event) => { const selected = empresas.find((item) => item.id === event.target.value); setFormulario((current) => ({ ...current, empresa_id: event.target.value || null, empresa: selected?.nome ?? current.empresa })); }} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.filter((item) => item.status === "ativo").map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></label>
+          <label><span className="mb-2 block font-semibold text-[#052656]">Empresa cliente</span><select name="empresa" value={formulario.empresa} onChange={(event) => setFormulario((current) => ({ ...current, empresa: event.target.value }))} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.filter((item) => item.status === "ativo").map((item) => <option key={item.id} value={item.nome}>{item.nome}</option>)}</select></label>
 
           <Campo
             label="Cidade"
@@ -167,9 +190,7 @@ export default function AdminNewJobPage() {
               onChange={alterarCampo}
               className={adminInputClass}
             >
-              <option value="publicada">Publicada</option>
-              <option value="rascunho">Rascunho</option>
-              <option value="encerrada">Encerrada</option>
+              {JOB_STATUS_OPTIONS.map((status) => <option key={status.value} value={status.value}>{status.label}</option>)}
             </select>
           </div>
 
@@ -214,7 +235,7 @@ export default function AdminNewJobPage() {
           />
 
           {mensagem && (
-            <div className="md:col-span-2"><AdminNotice>{mensagem}</AdminNotice></div>
+            <div className="md:col-span-2"><AdminNotice type={mensagemErro ? "error" : undefined}>{mensagem}</AdminNotice></div>
           )}
 
           <div className="md:col-span-2 flex flex-wrap gap-3">

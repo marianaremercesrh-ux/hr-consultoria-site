@@ -1,4 +1,40 @@
-export type JobStatus = "publicada" | "rascunho" | "encerrada" | "excluida";
+export const JOB_STATUS = {
+  OPEN: "publicada",
+  DRAFT: "rascunho",
+  CLOSED: "encerrada",
+  DELETED: "excluida",
+} as const;
+
+export type JobStatus = typeof JOB_STATUS[keyof typeof JOB_STATUS];
+
+export const JOB_STATUS_OPTIONS: ReadonlyArray<{ value: Exclude<JobStatus, "excluida">; label: string }> = [
+  { value: JOB_STATUS.OPEN, label: "Publicada" },
+  { value: JOB_STATUS.DRAFT, label: "Rascunho" },
+  { value: JOB_STATUS.CLOSED, label: "Encerrada" },
+];
+
+export type JobStatusCategory = "aberta" | "pendente" | "encerrada" | "ignorada";
+
+function normalizeJobStatus(status: string) {
+  return status.trim().toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+}
+
+const OPEN_JOB_STATUSES = new Set(["publicada", "publicado", "ativa", "ativo", "aberta", "aberto", "em andamento", "andamento"]);
+const PENDING_JOB_STATUSES = new Set(["rascunho", "pendente", "pendencia", "pausada", "pausado", "em pausa", "aguardando", "aguardando publicacao"]);
+const CLOSED_JOB_STATUSES = new Set(["encerrada", "encerrado", "concluida", "concluido", "preenchida", "preenchido", "cancelada", "cancelado", "fechada", "fechado"]);
+
+export function jobStatusCategory(status: string): JobStatusCategory {
+  const normalized = normalizeJobStatus(status);
+  if (OPEN_JOB_STATUSES.has(normalized)) return "aberta";
+  if (PENDING_JOB_STATUSES.has(normalized)) return "pendente";
+  if (CLOSED_JOB_STATUSES.has(normalized)) return "encerrada";
+  return "ignorada";
+}
+
+export function jobStatusLabel(status: string) {
+  const normalized = normalizeJobStatus(status).replace(/ /g, "_");
+  return JOB_STATUS_OPTIONS.find((item) => item.value === normalized)?.label ?? (normalized === "excluida" ? "Excluída" : status);
+}
 
 export type Job = {
   id: string | number;
@@ -62,7 +98,7 @@ export const EMPTY_JOB_FORM: JobFormData = {
   beneficios: "",
   horario: "",
   quantidade_vagas: 1,
-  status: "publicada",
+  status: JOB_STATUS.OPEN,
 };
 
 export function jobToForm(job: Job): JobFormData {
