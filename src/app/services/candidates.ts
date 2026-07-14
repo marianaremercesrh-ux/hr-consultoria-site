@@ -1,10 +1,12 @@
 import { supabase } from "../lib/supabase";
 import type { Candidato, CandidatoComTotal, CandidatoForm } from "../types/candidates";
 
+const CANDIDATE_COLUMNS = "id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at";
+
 export async function listCandidates(): Promise<CandidatoComTotal[]> {
   const { data, error } = await supabase
     .from("candidatos")
-    .select("*, candidaturas(count)")
+    .select(`${CANDIDATE_COLUMNS},candidaturas(count)`)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []).map((item) => {
@@ -14,15 +16,15 @@ export async function listCandidates(): Promise<CandidatoComTotal[]> {
   });
 }
 
-export async function getCandidate(id: string): Promise<Candidato> {
-  const { data, error } = await supabase.from("candidatos").select("*").eq("id", id).single();
+export async function getCandidate(id: string): Promise<Candidato | null> {
+  const { data, error } = await supabase.from("candidatos").select(CANDIDATE_COLUMNS).eq("id", id).maybeSingle();
   if (error) throw error;
-  return data as Candidato;
+  return data as Candidato | null;
 }
 
 export async function createCandidate(form: CandidatoForm): Promise<Candidato> {
   const now = new Date().toISOString();
-  const { data, error } = await supabase.from("candidatos").insert({ ...form, created_at: now, updated_at: now }).select("*").single();
+  const { data, error } = await supabase.from("candidatos").insert({ ...form, created_at: now, updated_at: now }).select(CANDIDATE_COLUMNS).single();
   if (error) throw error;
   const { data: { user } } = await supabase.auth.getUser();
   await supabase.from("historico_candidatos").insert({ candidato_id: data.id, evento: "Cadastro do candidato", responsavel: user?.id ?? null });

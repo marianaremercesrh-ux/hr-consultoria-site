@@ -7,6 +7,7 @@ import { createApplication, deleteApplication, listCandidateApplications, update
 import { getCandidate } from "../services/candidates";
 import { listJobs } from "../services/jobs";
 import { createResumeSignedUrl } from "../services/storage";
+import { supabaseErrorDetails } from "../lib/supabaseError";
 import { ETAPAS, etapaPermiteMotivo, type Candidato, type CandidaturaDetalhada, type EtapaProcesso } from "../types/candidates";
 import type { Job } from "../types/jobs";
 import { Pencil, UserPlus } from "lucide-react";
@@ -22,8 +23,32 @@ export default function AdminCandidateProfilePage({ id }: { id: string }) {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [notFound, setNotFound] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
 
-  async function load() { try { const [person, links, vacancies] = await Promise.all([getCandidate(id), listCandidateApplications(id), listJobs()]); setCandidate(person); setApplications(links); setJobs(vacancies); } catch (error) { if (import.meta.env.DEV) console.error(error); setMessage("Não foi possível carregar o perfil do candidato."); } finally { setLoading(false); } }
+  async function load() {
+    setNotFound(false); setLoadFailed(false);
+    try {
+      const person = await getCandidate(id);
+      if (!person) { setCandidate(null); setNotFound(true); return; }
+      setCandidate(person);
+    } catch (error) {
+      const details = supabaseErrorDetails(error);
+      console.error("[Supabase] Falha ao buscar public.candidatos por id", details);
+      setLoadFailed(true);
+      return;
+    } finally {
+      setLoading(false);
+    }
+    try {
+      const [links, vacancies] = await Promise.all([listCandidateApplications(id), listJobs()]);
+      setApplications(links); setJobs(vacancies);
+    } catch (error) {
+      const details = supabaseErrorDetails(error);
+      console.error("[Supabase] Falha ao carregar processos do candidato", details);
+      setMessage("O candidato foi localizado, mas não foi possível carregar todos os dados dos processos.");
+    }
+  }
   useEffect(() => { if (!checkingSession) void load(); }, [checkingSession, id]);
 
   async function changeStage(applicationId: string, value: EtapaProcesso, motivo?: string | null) { try { await updateApplicationStage(applicationId, value, motivo); setMessage("Etapa atualizada com sucesso."); await load(); } catch (error) { if (import.meta.env.DEV) console.error(error); setMessage("Não foi possível atualizar a etapa."); } }
@@ -32,7 +57,8 @@ export default function AdminCandidateProfilePage({ id }: { id: string }) {
   async function openResume() { if (!candidate?.curriculo_url) return; try { window.open(await createResumeSignedUrl(candidate.curriculo_url), "_blank", "noopener,noreferrer"); } catch (error) { if (import.meta.env.DEV) console.error(error); setMessage("Não foi possível abrir o currículo."); } }
 
   if (checkingSession || loading) return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><div className="mx-auto max-w-6xl px-5 py-10"><AdminSkeleton rows={5}/></div></main>;
-  if (!candidate) return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><p className="p-10 text-center">Candidato não encontrado.</p></main>;
+  if (notFound) return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><p className="p-10 text-center">Candidato não encontrado.</p></main>;
+  if (loadFailed || !candidate) return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><div className="mx-auto max-w-3xl p-10"><AdminNotice type="error">Não foi possível consultar o candidato. Tente novamente.</AdminNotice></div></main>;
   const rawPhone = candidate.telefone?.replace(/\D/g, "");
   const phone = rawPhone?.startsWith("55") ? rawPhone : rawPhone ? `55${rawPhone}` : "";
   return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><section className="mx-auto max-w-6xl px-5 py-10">
@@ -41,7 +67,7 @@ export default function AdminCandidateProfilePage({ id }: { id: string }) {
     <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]"><section className="bg-white p-6 shadow-sm"><h2 className="text-2xl font-semibold text-[#052656]">Dados do candidato</h2><dl className="mt-5 grid gap-4 sm:grid-cols-2"><Info label="Telefone" value={candidate.telefone}/><Info label="Localização" value={[candidate.cidade, candidate.estado].filter(Boolean).join(", ")}/><Info label="LinkedIn" value={candidate.linkedin}/><Info label="Observações" value={candidate.observacoes}/></dl><div className="mt-6 flex flex-wrap gap-3">{phone && <a href={`https://wa.me/${phone}`} target="_blank" rel="noopener noreferrer" className="bg-green-600 px-4 py-2 font-semibold text-white">Abrir WhatsApp</a>}{candidate.linkedin && <a href={candidate.linkedin} target="_blank" rel="noopener noreferrer" className="border border-[#052656] px-4 py-2 font-semibold text-[#052656]">Abrir LinkedIn</a>}{candidate.curriculo_url && <button type="button" onClick={openResume} className="bg-[#D4A62A] px-4 py-2 font-semibold text-[#052656]">Ver currículo</button>}</div></section>
       <aside className="border border-gray-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-semibold text-[#052656]">Adicionar a outra vaga</h2><label className="mt-4 block"><span className="mb-2 block font-semibold">Vaga</span><select value={jobId} onChange={(event) => setJobId(event.target.value)} className={adminInputClass}><option value="">Selecione</option>{jobs.filter((job) => job.status !== "excluida").map((job) => <option key={job.id} value={job.id}>{job.titulo}</option>)}</select></label><label className="mt-4 block"><span className="mb-2 block font-semibold">Etapa</span><select value={stage} onChange={(event) => setStage(event.target.value as EtapaProcesso)} className={adminInputClass}>{ETAPAS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>{etapaPermiteMotivo(stage) && <label className="mt-4 block"><span className="mb-2 block font-semibold">Motivo (opcional)</span><textarea value={reason} onChange={(event) => setReason(event.target.value)} rows={3} className={`${adminInputClass} resize-y`}/></label>}<button type="button" onClick={addApplication} disabled={!jobId} className={`mt-4 w-full ${adminButtonClass("primary")}`}><UserPlus size={17}/>Adicionar candidato</button></aside>
     </div>
-    <section className="mt-8 border border-gray-200 bg-white p-6 shadow-sm"><h2 className="text-2xl font-semibold text-[#052656]">Processos seletivos</h2>{applications.length === 0 ? <p className="mt-5 text-gray-600">Este candidato ainda não participa de processos.</p> : <div className="mt-5 overflow-x-auto border border-gray-200"><table className="w-full min-w-[850px] text-left"><thead className={adminTableHeadClass}><tr><th className="p-3">Vaga</th><th className="p-3">Etapa</th><th className="p-3">Entrada</th><th className="p-3">Atualização</th><th className="p-3">Ações</th></tr></thead><tbody>{applications.map((application) => <tr key={application.id} className={adminTableRowClass}><td className="p-3 font-semibold text-[#052656]">{application.vaga?.titulo ?? "Vaga removida"}</td><td className="p-3 align-top"><ApplicationStageControl application={application} onSave={changeStage} ariaLabel={`Etapa em ${application.vaga?.titulo ?? "vaga"}`}/></td><td className="p-3">{new Intl.DateTimeFormat("pt-BR").format(new Date(application.created_at))}</td><td className="p-3">{new Intl.DateTimeFormat("pt-BR").format(new Date(application.updated_at))}</td><td className="p-3"><button type="button" onClick={() => removeApplication(application.id)} className="font-semibold text-red-700 underline hover:text-red-900">Remover do processo</button></td></tr>)}</tbody></table></div>}</section>
+    <section className="mt-8 border border-gray-200 bg-white p-6 shadow-sm"><h2 className="text-2xl font-semibold text-[#052656]">Histórico dos processos seletivos</h2>{applications.length === 0 ? <p className="mt-5 text-gray-600">Este candidato ainda não participa de processos.</p> : <div className="mt-5 overflow-x-auto border border-gray-200"><table className="w-full min-w-[980px] text-left"><thead className={adminTableHeadClass}><tr><th className="p-3">Vaga</th><th className="p-3">Empresa</th><th className="p-3">Status</th><th className="p-3">Entrada</th><th className="p-3">Atualização</th><th className="p-3">Ações</th></tr></thead><tbody>{applications.map((application) => <tr key={application.id} className={adminTableRowClass}><td className="p-3 font-semibold text-[#052656]">{application.vaga?.titulo ?? "Vaga removida"}</td><td className="p-3">{application.vaga?.empresa_cliente?.nome ?? "Não informada"}</td><td className="p-3 align-top"><ApplicationStageControl application={application} onSave={changeStage} ariaLabel={`Etapa em ${application.vaga?.titulo ?? "vaga"}`}/></td><td className="p-3">{new Intl.DateTimeFormat("pt-BR").format(new Date(application.created_at))}</td><td className="p-3">{new Intl.DateTimeFormat("pt-BR").format(new Date(application.updated_at))}</td><td className="p-3"><button type="button" onClick={() => removeApplication(application.id)} className="font-semibold text-red-700 underline hover:text-red-900">Remover do processo</button></td></tr>)}</tbody></table></div>}</section>
     <CandidateHistoryPanel candidateId={id}/>
   </section></main>;
 }

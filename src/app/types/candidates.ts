@@ -12,6 +12,7 @@ export type EtapaProcesso =
   | "aprovado"
   | "reprovado"
   | "desistente"
+  | "contratado"
   | "banco_talentos";
 
 export type EtapaTone = "positive" | "info" | "warning" | "neutral";
@@ -28,6 +29,7 @@ export const ETAPAS: Array<{ value: EtapaProcesso; label: string; tone: EtapaTon
   { value: "aprovado", label: "Aprovado", tone: "positive" },
   { value: "reprovado", label: "Reprovado", tone: "warning" },
   { value: "desistente", label: "Desistente", tone: "neutral" },
+  { value: "contratado", label: "Contratado", tone: "positive" },
   { value: "banco_talentos", label: "Banco de talentos", tone: "info" },
 ];
 
@@ -80,5 +82,5 @@ export type Candidatura = {
 
 export type CandidaturaDetalhada = Candidatura & {
   candidato: Candidato;
-  vaga: Pick<Job, "id" | "titulo" | "status" | "empresa_id"> | null;
+  vaga: (Pick<Job, "id" | "titulo" | "status" | "empresa_id"> & { empresa_cliente?: { id: string; nome: string } | null }) | null;
 };

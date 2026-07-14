@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabase";
 import type { Candidatura, CandidaturaDetalhada, EtapaProcesso } from "../types/candidates";
 
-const DETAIL_SELECT = "*, candidato:candidatos(*), vaga:vagas(id,titulo,status,empresa_id)";
+const DETAIL_SELECT = "id,candidato_id,vaga_id,etapa,observacoes,created_at,updated_at,candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status,empresa_id,empresa_cliente:empresas(id,nome))";
 
 export async function listApplications(): Promise<CandidaturaDetalhada[]> {
   const { data, error } = await supabase.from("candidaturas").select(DETAIL_SELECT).order("created_at", { ascending: false });
@@ -33,8 +33,10 @@ export async function listCandidateApplications(candidateId: string): Promise<Ca
 
 export async function createApplication(candidateId: string, jobId: string | number, etapa: EtapaProcesso, observacoes = "") {
   const now = new Date().toISOString();
-  const { error } = await supabase.from("candidaturas").insert({ candidato_id: candidateId, vaga_id: jobId, etapa, observacoes: observacoes.trim() || null, created_at: now, updated_at: now });
+  const { data, error } = await supabase.from("candidaturas").insert({ candidato_id: candidateId, vaga_id: jobId, etapa, observacoes: observacoes.trim() || null, created_at: now, updated_at: now }).select("id").single();
   if (error) throw error;
+  const { data: { user } } = await supabase.auth.getUser();
+  await supabase.from("historico_candidatos").insert({ candidato_id: candidateId, candidatura_id: data.id, evento: `Entrada no processo: ${etapa}`, observacao: observacoes.trim() || null, responsavel: user?.id ?? null });
 }
 
 export async function updateApplicationStage(id: string, etapa: EtapaProcesso, observacoes?: string | null) {
@@ -47,6 +49,19 @@ export async function updateApplicationStage(id: string, etapa: EtapaProcesso, o
     const { data: { user } } = await supabase.auth.getUser();
     await supabase.from("historico_candidatos").insert({ candidato_id: application.candidato_id, candidatura_id: id, evento: `Mudança de etapa: ${etapa}`, observacao: observacoes?.trim() || null, responsavel: user?.id ?? null });
   }
+}
+
+export async function updateApplicationProcess(id: string, jobId: string | number, etapa: EtapaProcesso, observacoes?: string | null) {
+  const changes = {
+    vaga_id: jobId,
+    etapa,
+    observacoes: observacoes?.trim() || null,
+    updated_at: new Date().toISOString(),
+  };
+  const { data, error } = await supabase.from("candidaturas").update(changes).eq("id", id).select("candidato_id").single();
+  if (error) throw error;
+  const { data: { user } } = await supabase.auth.getUser();
+  await supabase.from("historico_candidatos").insert({ candidatura_id: id, candidato_id: data.candidato_id, evento: `Processo atualizado: ${etapa}`, observacao: observacoes?.trim() || null, responsavel: user?.id ?? null });
 }
 
 export async function deleteApplication(id: string) {

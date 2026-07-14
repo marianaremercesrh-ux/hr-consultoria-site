@@ -1,6 +1,8 @@
 import { supabase } from "../lib/supabase";
 import type { Job, JobFormData, JobStatus } from "../types/jobs";
 
+const JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,valor_previsto,valor_recebido,garantia_ate,encerramento_previsto,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
+
 export function generateJobSlug(title: string, city: string) {
   return `${title}-${city}`
     .toLowerCase()
@@ -13,7 +15,7 @@ export function generateJobSlug(title: string, city: string) {
 export async function listJobs() {
   const { data, error } = await supabase
     .from("vagas")
-    .select("*")
+    .select(JOB_COLUMNS)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Job[];
@@ -31,7 +33,7 @@ export async function listJobsByCompanyId(empresaId: string) {
 export async function listPublishedJobs() {
   const { data, error } = await supabase
     .from("vagas")
-    .select("*")
+    .select(JOB_COLUMNS)
     .eq("status", "publicada")
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -41,7 +43,7 @@ export async function listPublishedJobs() {
 export async function getJobById(id: string | number) {
   const { data, error } = await supabase
     .from("vagas")
-    .select("*")
+    .select(JOB_COLUMNS)
     .eq("id", id)
     .single();
   if (error) throw error;
@@ -51,7 +53,7 @@ export async function getJobById(id: string | number) {
 export async function getPublishedJobBySlug(slug: string) {
   const { data, error } = await supabase
     .from("vagas")
-    .select("*")
+    .select(JOB_COLUMNS)
     .eq("slug", slug)
     .eq("status", "publicada")
     .maybeSingle();
