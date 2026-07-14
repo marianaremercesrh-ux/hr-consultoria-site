@@ -78,9 +78,16 @@ export type Candidatura = {
   observacoes: string | null;
   created_at: string;
   updated_at: string;
+  portal_liberado: boolean;
+  portal_liberado_em: string | null;
+  portal_liberado_por: string | null;
+  resumo_cliente: string | null;
+  pontos_positivos_cliente: string | null;
+  pontos_atencao_cliente: string | null;
+  curriculo_liberado: boolean;
 };
 
 export type CandidaturaDetalhada = Candidatura & {
   candidato: Candidato;
-  vaga: (Pick<Job, "id" | "titulo" | "status"> & { empresa?: string | null; empresa_id?: string | null }) | null;
+  vaga: (Pick<Job, "id" | "titulo" | "status"> & { empresa?: string | null; empresa_id?: string | null; empresa_cliente?: { id: string; nome: string } | null }) | null;
 };

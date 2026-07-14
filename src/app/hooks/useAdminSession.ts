@@ -9,7 +9,10 @@ export function useAdminSession() {
         window.location.href = "/admin/login";
         return;
       }
-      setCheckingSession(false);
+      supabase.from("perfis_usuarios").select("perfil").eq("usuario_id", data.session.user.id).maybeSingle().then(({ data: profile }) => {
+        if (!profile || !["administrador", "recrutador"].includes(profile.perfil)) { window.location.href = "/cliente"; return; }
+        setCheckingSession(false);
+      });
     });
   }, []);
   return checkingSession;

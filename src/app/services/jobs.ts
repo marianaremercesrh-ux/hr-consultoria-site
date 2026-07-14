@@ -2,8 +2,8 @@ import { supabase } from "../lib/supabase";
 import { supabaseErrorDetails } from "../lib/supabaseError";
 import { JOB_STATUS, type Job, type JobFormData, type JobStatus } from "../types/jobs";
 
-const JOB_COLUMNS = "id,titulo,slug,empresa,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
-const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,status,created_at";
+const JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
+const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,status,created_at";
 
 export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
 export type JobStatusRecord = Pick<Job, "id" | "status">;
@@ -118,6 +118,7 @@ export async function createJob(form: JobFormData): Promise<Pick<Job, "id" | "ti
     titulo: form.titulo.trim(),
     slug: generateJobSlug(form.titulo, form.cidade),
     empresa: optionalText(form.empresa),
+    empresa_id: form.empresa_id || null,
     cidade: form.cidade.trim(),
     estado: form.estado.trim(),
     modalidade: optionalText(form.modalidade),

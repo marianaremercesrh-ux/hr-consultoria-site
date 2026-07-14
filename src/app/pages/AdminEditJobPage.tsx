@@ -11,6 +11,9 @@ import { listApplications, updateApplicationStage } from "../services/applicatio
 import { ETAPAS, type CandidaturaDetalhada, type EtapaProcesso } from "../types/candidates";
 import { Save, UserPlus, X } from "lucide-react";
 import { AdminNotice, adminButtonClass, adminInputClass, adminTableHeadClass, adminTableRowClass } from "../components/AdminUI";
+import PortalReleaseControl from "../components/PortalReleaseControl";
+import { listAdminClientFeedbacks } from "../services/portalAdmin";
+import type { ClientFeedback } from "../types/clientPortal";
 
 export default function AdminEditJobPage({ id }: { id: string }) {
   const [form, setForm] = useState<JobFormData>(EMPTY_JOB_FORM);
@@ -19,6 +22,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
   const [message, setMessage] = useState("");
   const [applications, setApplications] = useState<CandidaturaDetalhada[]>([]);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [feedbacks, setFeedbacks] = useState<ClientFeedback[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -27,7 +31,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
       try {
         setForm(jobToForm(await getJobById(id)));
         void listEmpresas().then(setEmpresas).catch(() => undefined);
-        try { setApplications((await listApplications()).filter((item) => String(item.vaga_id) === id)); }
+        try { const rows=(await listApplications()).filter((item) => String(item.vaga_id) === id);setApplications(rows);setFeedbacks(await listAdminClientFeedbacks(rows.map(item=>item.id))); }
         catch (applicationError) { if (import.meta.env.DEV) console.error(applicationError); }
       }
       catch (error) { if (import.meta.env.DEV) console.error(error); setMessage("Não foi possível carregar a vaga."); }
@@ -71,7 +75,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
         {message && <div className="md:col-span-2"><AdminNotice>{message}</AdminNotice></div>}
         <div className="md:col-span-2 flex flex-wrap gap-3"><button type="submit" disabled={saving} className={adminButtonClass("primary")}><Save size={17}/>{saving ? "Salvando..." : "Salvar alterações"}</button><a href="/admin" className={adminButtonClass("secondary")}><X size={17}/>Cancelar</a></div>
       </form>
-      <section className="mt-8 border border-gray-200 bg-white p-6 shadow-sm"><div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-semibold text-[#052656]">Candidatos vinculados</h2><p className="mt-1 text-gray-600">{applications.length} {applications.length === 1 ? "candidato" : "candidatos"}</p></div><a href={`/admin/candidatos/novo?vaga=${encodeURIComponent(id)}`} className={adminButtonClass("primary")}><UserPlus size={17}/>Adicionar candidato</a></div><div className="mt-4 flex flex-wrap gap-2">{ETAPAS.map((stage) => { const total = applications.filter((item) => item.etapa === stage.value).length; return total ? <span key={stage.value} className="inline-flex items-center gap-2"><EtapaBadge etapa={stage.value}/><span className="text-sm font-semibold">{total}</span></span> : null; })}</div>{applications.length === 0 ? <p className="mt-5 text-gray-600">Nenhum candidato vinculado a esta vaga.</p> : <div className="mt-5 overflow-x-auto border border-gray-200"><table className="w-full min-w-[760px] text-left"><thead className={adminTableHeadClass}><tr><th className="p-3">Candidato</th><th className="p-3">Etapa</th><th className="p-3">Ações</th></tr></thead><tbody>{applications.map((application) => <tr key={application.id} className={adminTableRowClass}><td className="p-3 font-semibold text-[#052656]">{application.candidato.nome}</td><td className="p-3 align-top"><ApplicationStageControl application={application} onSave={changeStage} ariaLabel={`Etapa de ${application.candidato.nome}`}/></td><td className="p-3"><a href={`/admin/candidatos/${application.candidato_id}`} className="font-semibold text-[#052656] underline transition hover:text-[#D4A62A]">Abrir perfil</a></td></tr>)}</tbody></table></div>}</section>
+      <section className="mt-8 border border-gray-200 bg-white p-6 shadow-sm"><div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-semibold text-[#052656]">Candidatos vinculados</h2><p className="mt-1 text-gray-600">{applications.length} {applications.length === 1 ? "candidato" : "candidatos"}</p></div><a href={`/admin/candidatos/novo?vaga=${encodeURIComponent(id)}`} className={adminButtonClass("primary")}><UserPlus size={17}/>Adicionar candidato</a></div><div className="mt-4 flex flex-wrap gap-2">{ETAPAS.map((stage) => { const total = applications.filter((item) => item.etapa === stage.value).length; return total ? <span key={stage.value} className="inline-flex items-center gap-2"><EtapaBadge etapa={stage.value}/><span className="text-sm font-semibold">{total}</span></span> : null; })}</div>{applications.length === 0 ? <p className="mt-5 text-gray-600">Nenhum candidato vinculado a esta vaga.</p> : <div className="mt-5 overflow-x-auto border border-gray-200"><table className="w-full min-w-[1080px] text-left"><thead className={adminTableHeadClass}><tr><th className="p-3">Candidato</th><th className="p-3">Etapa</th><th className="p-3">Portal do Cliente</th><th className="p-3">Ações</th></tr></thead><tbody>{applications.map((application) => <tr key={application.id} className={adminTableRowClass}><td className="p-3 align-top font-semibold text-[#052656]">{application.candidato.nome}</td><td className="p-3 align-top"><ApplicationStageControl application={application} onSave={changeStage} ariaLabel={`Etapa de ${application.candidato.nome}`}/></td><td className="p-3 align-top"><PortalReleaseControl application={application} feedback={feedbacks.find(item=>item.candidatura_id===application.id)} onChanged={async()=>{const rows=(await listApplications()).filter(item=>String(item.vaga_id)===id);setApplications(rows);setFeedbacks(await listAdminClientFeedbacks(rows.map(item=>item.id)))}}/></td><td className="p-3 align-top"><a href={`/admin/candidatos/${application.candidato_id}`} className="font-semibold text-[#052656] underline transition hover:text-[#D4A62A]">Abrir perfil</a></td></tr>)}</tbody></table></div>}</section>
     </section>
   </main>;
 }

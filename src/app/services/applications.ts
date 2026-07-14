@@ -5,10 +5,10 @@ type ApplicationDatabaseRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id
 export type JobSummaryApplicationRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id" | "etapa" | "observacoes" | "created_at" | "updated_at">;
 
 const APPLICATION_COLUMNS = "id,candidato_id,vaga_id,etapa,observacoes,created_at";
-const DETAIL_SELECT = `${APPLICATION_COLUMNS},candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status)`;
+const DETAIL_SELECT = `${APPLICATION_COLUMNS},portal_liberado,portal_liberado_em,portal_liberado_por,resumo_cliente,pontos_positivos_cliente,pontos_atencao_cliente,curriculo_liberado,candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status,empresa)`;
 
 function normalizeApplication(row: ApplicationDatabaseRow): Candidatura {
-  return { ...row, updated_at: row.created_at };
+  return { portal_liberado:false,portal_liberado_em:null,portal_liberado_por:null,resumo_cliente:null,pontos_positivos_cliente:null,pontos_atencao_cliente:null,curriculo_liberado:false,...row, updated_at: row.created_at };
 }
 
 export async function listApplications(): Promise<CandidaturaDetalhada[]> {

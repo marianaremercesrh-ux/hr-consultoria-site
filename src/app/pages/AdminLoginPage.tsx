@@ -29,6 +29,14 @@ export default function AdminLoginPage() {
       return;
     }
 
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: profile } = await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id", user?.id ?? "").maybeSingle();
+    if (!profile || !["administrador", "recrutador"].includes(profile.perfil)) {
+      await supabase.auth.signOut();
+      setMensagem("Este usuário não possui acesso ao painel administrativo.");
+      setCarregando(false);
+      return;
+    }
     window.location.href = "/admin";
   }
 

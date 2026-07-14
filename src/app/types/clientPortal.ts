@@ -1,0 +1,10 @@
+import type { EtapaProcesso } from "./candidates";
+import type { JobStatus } from "./jobs";
+export type CompanyUser={id:string;empresa_id:string;user_id:string;nome:string;email:string;ativo:boolean;created_at:string;updated_at:string};
+export type ClientCompany={id:string;nome:string;logo_url:string|null;status:"ativo"|"inativo"};
+export type PortalJob={id:string|number;empresa_id:string|null;titulo:string;descricao:string|null;atividades:string|null;requisitos:string|null;beneficios:string|null;cidade:string;estado:string;modalidade:string|null;tipo_contrato:string|null;quantidade_vagas:number;status:JobStatus;created_at:string};
+export type PortalApplication={id:string;candidato_id:string;vaga_id:string|number|null;etapa:EtapaProcesso;portal_liberado:boolean;portal_liberado_em:string|null;resumo_cliente:string|null;pontos_positivos_cliente:string|null;pontos_atencao_cliente:string|null;curriculo_liberado:boolean;created_at:string};
+export type PortalCandidate={id:string;nome:string;cidade:string|null;area:string|null;experiencia:string|null;curriculo_url:string|null;created_at:string};
+export type PortalInterview={id:string;candidato_id:string|null;vaga_id:string|number|null;data:string;horario:string;local:string|null;status:string};
+export type ClientDecision="quero_entrevistar"|"aprovado_empresa"|"nao_aprovado"|"solicitar_informacoes";
+export type ClientFeedback={id:string;candidatura_id:string;empresa_id:string;user_id:string;decisao:ClientDecision;comentario:string|null;created_at:string;updated_at:string};

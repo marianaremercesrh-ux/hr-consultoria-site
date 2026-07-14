@@ -15,6 +15,10 @@ import AdminTalentPoolPage from "./pages/AdminTalentPoolPage";
 import AdminReportsPage from "./pages/AdminReportsPage";
 import AdminFinancialPage from "./pages/AdminFinancialPage";
 import CompanyContractSection from "./components/CompanyContractSection";
+import PortalAccessSection from "./components/PortalAccessSection";
+import ClientLoginPage from "./pages/ClientLoginPage";
+import ClientPortalPage from "./pages/ClientPortalPage";
+import { supabase } from "./lib/supabase";
 
 const LOGO_ASSETS = {
   color: {
@@ -793,52 +797,55 @@ Mensagem: ${mensagem || "Não informado"}`;
 export default function App() {
   const caminho = window.location.pathname;
 
+  if (caminho === "/cliente/login") return <ClientLoginPage />;
+  if (caminho === "/cliente" || caminho.startsWith("/cliente/")) return <ClientPortalPage />;
+
   if (caminho === "/admin/login") {
     return <AdminLoginPage />;
   }
 
   if (caminho === "/admin/nova-vaga") {
-    return <AdminNewJobPage />;
+    return <AdminAccessGate><AdminNewJobPage /></AdminAccessGate>;
   }
 
   if (caminho === "/admin/candidatos") {
-    return <AdminCandidatesPage />;
+    return <AdminAccessGate><AdminCandidatesPage /></AdminAccessGate>;
   }
 
   if (caminho === "/admin/candidatos/novo") {
-    return <AdminCandidateFormPage />;
+    return <AdminAccessGate><AdminCandidateFormPage /></AdminAccessGate>;
   }
 
   const editarCandidato = caminho.match(/^\/admin\/candidatos\/([^/]+)\/editar$/);
   if (editarCandidato) {
-    return <AdminCandidateFormPage id={decodeURIComponent(editarCandidato[1])} />;
+    return <AdminAccessGate><AdminCandidateFormPage id={decodeURIComponent(editarCandidato[1])} /></AdminAccessGate>;
   }
 
   const perfilCandidato = caminho.match(/^\/admin\/candidatos\/([^/]+)$/);
   if (perfilCandidato) {
-    return <AdminCandidateProfilePage id={decodeURIComponent(perfilCandidato[1])} />;
+    return <AdminAccessGate><AdminCandidateProfilePage id={decodeURIComponent(perfilCandidato[1])} /></AdminAccessGate>;
   }
 
   if (caminho === "/admin/processos") {
-    return <AdminProcessesPage />;
+    return <AdminAccessGate><AdminProcessesPage /></AdminAccessGate>;
   }
 
-  if (caminho === "/admin/empresas") return <AdminCompaniesPage />;
-  if (caminho === "/admin/empresas/nova") return <AdminCompaniesPage newCompany />;
+  if (caminho === "/admin/empresas") return <AdminAccessGate><AdminCompaniesPage /></AdminAccessGate>;
+  if (caminho === "/admin/empresas/nova") return <AdminAccessGate><AdminCompaniesPage newCompany /></AdminAccessGate>;
   const empresa = caminho.match(/^\/admin\/empresas\/([^/]+)$/);
-  if (empresa) { const empresaId = decodeURIComponent(empresa[1]); return <><AdminCompaniesPage id={empresaId}/><div className="bg-[#F5F7FA] px-5 pb-10"><div className="mx-auto max-w-5xl"><CompanyContractSection empresaId={empresaId}/></div></div></>; }
-  if (caminho === "/admin/agenda") return <AdminAgendaPage />;
-  if (caminho === "/admin/financeiro") return <AdminFinancialPage />;
-  if (caminho === "/admin/talentos") return <AdminTalentPoolPage />;
-  if (caminho === "/admin/relatorios") return <AdminReportsPage />;
+  if (empresa) { const empresaId = decodeURIComponent(empresa[1]); return <AdminAccessGate><><AdminCompaniesPage id={empresaId}/><div className="bg-[#F5F7FA] px-5 pb-10"><div className="mx-auto max-w-5xl space-y-8"><PortalAccessSection empresaId={empresaId}/><CompanyContractSection empresaId={empresaId}/></div></div></></AdminAccessGate>; }
+  if (caminho === "/admin/agenda") return <AdminAccessGate><AdminAgendaPage /></AdminAccessGate>;
+  if (caminho === "/admin/financeiro") return <AdminAccessGate><AdminFinancialPage /></AdminAccessGate>;
+  if (caminho === "/admin/talentos") return <AdminAccessGate><AdminTalentPoolPage /></AdminAccessGate>;
+  if (caminho === "/admin/relatorios") return <AdminAccessGate><AdminReportsPage /></AdminAccessGate>;
 
   const editarVaga = caminho.match(/^\/admin\/vagas\/([^/]+)\/editar$/);
   if (editarVaga) {
-    return <AdminEditJobPage id={decodeURIComponent(editarVaga[1])} />;
+    return <AdminAccessGate><AdminEditJobPage id={decodeURIComponent(editarVaga[1])} /></AdminAccessGate>;
   }
 
   if (caminho === "/admin") {
-    return <AdminDashboardPage />;
+    return <AdminAccessGate><AdminDashboardPage /></AdminAccessGate>;
   }
 
   if (caminho.startsWith("/vagas")) {
@@ -847,3 +854,5 @@ export default function App() {
 
   return <HomeApp />;
 }
+
+function AdminAccessGate({children}:{children:React.ReactNode}){const[allowed,setAllowed]=useState<boolean|null>(null);useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){window.location.href="/admin/login";return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();if(!profile||!["administrador","recrutador"].includes(profile.perfil)){window.location.href="/cliente";return}setAllowed(true)})},[]);return allowed?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso administrativo...</main>}

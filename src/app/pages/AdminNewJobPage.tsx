@@ -132,7 +132,7 @@ export default function AdminNewJobPage() {
             required
           />
 
-          <label><span className="mb-2 block font-semibold text-[#052656]">Empresa cliente</span><select name="empresa" value={formulario.empresa} onChange={(event) => setFormulario((current) => ({ ...current, empresa: event.target.value }))} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.filter((item) => item.status === "ativo").map((item) => <option key={item.id} value={item.nome}>{item.nome}</option>)}</select></label>
+          <label><span className="mb-2 block font-semibold text-[#052656]">Empresa cliente</span><select name="empresa_id" value={formulario.empresa_id ?? ""} onChange={(event) => {const selected=empresas.find(item=>item.id===event.target.value);setFormulario((current) => ({ ...current, empresa_id:event.target.value||null,empresa:selected?.nome??"" }))}} className={adminInputClass}><option value="">Sem empresa vinculada</option>{empresas.filter((item) => item.status === "ativo").map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></label>
 
           <Campo
             label="Cidade"
