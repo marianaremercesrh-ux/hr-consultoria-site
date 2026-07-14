@@ -1,8 +1,12 @@
 create extension if not exists pgcrypto;
 create table if not exists public.empresas (id uuid primary key default gen_random_uuid(),nome text not null,contato_nome text,contato_cargo text,telefone text,whatsapp text,email text,endereco text,cidade text,estado text,observacoes text,status text not null default 'ativo' check(status in('ativo','inativo')),created_at timestamptz not null default now(),updated_at timestamptz not null default now());
-create table if not exists public.entrevistas (id uuid primary key default gen_random_uuid(),candidato_id uuid not null references public.candidatos(id) on delete cascade,vaga_id bigint references public.vagas(id) on delete set null,empresa_id uuid references public.empresas(id) on delete set null,data date not null,horario time not null,entrevistador text,local text,observacoes text,status text not null default 'agendada',created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table if not exists public.entrevistas (id uuid primary key default gen_random_uuid(),candidato_id uuid references public.candidatos(id) on delete cascade,candidato_nome_manual text,vaga_id bigint references public.vagas(id) on delete set null,empresa_id uuid references public.empresas(id) on delete set null,data date not null,horario time not null,entrevistador text,local text,observacoes text,status text not null default 'agendada',created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+alter table public.entrevistas alter column candidato_id drop not null;
+alter table public.entrevistas add column if not exists candidato_nome_manual text;
 alter table public.entrevistas drop constraint if exists entrevistas_status_check;
 alter table public.entrevistas add constraint entrevistas_status_check check(status in('agendada','confirmada','realizada','reagendada','cancelada','nao_compareceu'));
+alter table public.entrevistas drop constraint if exists entrevistas_candidato_or_manual_check;
+alter table public.entrevistas add constraint entrevistas_candidato_or_manual_check check(candidato_id is not null or nullif(btrim(candidato_nome_manual),'') is not null);
 create index if not exists empresas_nome_idx on public.empresas(nome);create index if not exists entrevistas_data_idx on public.entrevistas(data,horario);
 alter table public.empresas enable row level security;alter table public.entrevistas enable row level security;
 revoke all on public.empresas,public.entrevistas from anon;grant select,insert,update,delete on public.empresas,public.entrevistas to authenticated;

@@ -15,12 +15,19 @@ alter table public.candidatos add column if not exists experiencia text;
 alter table public.candidatos add column if not exists disponibilidade text;
 
 create table if not exists public.entrevistas (
-  id uuid primary key default gen_random_uuid(), candidato_id uuid not null references public.candidatos(id) on delete cascade,
+  id uuid primary key default gen_random_uuid(), candidato_id uuid references public.candidatos(id) on delete cascade,
+  candidato_nome_manual text,
   vaga_id bigint references public.vagas(id) on delete set null, empresa_id uuid references public.empresas(id) on delete set null,
   data date not null, horario time not null, entrevistador text, local text, observacoes text,
-  status text not null default 'agendada' check (status in ('agendada','realizada','cancelada','nao_compareceu')),
+  status text not null default 'agendada',
   created_at timestamptz not null default now(), updated_at timestamptz not null default now()
 );
+alter table public.entrevistas alter column candidato_id drop not null;
+alter table public.entrevistas add column if not exists candidato_nome_manual text;
+alter table public.entrevistas drop constraint if exists entrevistas_status_check;
+alter table public.entrevistas add constraint entrevistas_status_check check (status in ('agendada','confirmada','realizada','reagendada','cancelada','nao_compareceu'));
+alter table public.entrevistas drop constraint if exists entrevistas_candidato_or_manual_check;
+alter table public.entrevistas add constraint entrevistas_candidato_or_manual_check check (candidato_id is not null or nullif(btrim(candidato_nome_manual),'') is not null);
 create table if not exists public.historico_candidatos (
   id uuid primary key default gen_random_uuid(), candidato_id uuid not null references public.candidatos(id) on delete cascade,
   candidatura_id uuid references public.candidaturas(id) on delete set null, evento text not null, observacao text,
@@ -46,6 +53,7 @@ alter table public.entrevistas enable row level security;
 alter table public.historico_candidatos enable row level security;
 alter table public.observacoes_internas enable row level security;
 alter table public.perfis_usuarios enable row level security;
+revoke all on public.empresas, public.entrevistas, public.historico_candidatos, public.observacoes_internas, public.perfis_usuarios from anon;
 grant select, insert, update, delete on public.empresas, public.entrevistas, public.historico_candidatos, public.observacoes_internas to authenticated;
 grant select on public.perfis_usuarios to authenticated;
 do $$ declare tabela text; begin
@@ -56,3 +64,4 @@ do $$ declare tabela text; begin
 end $$;
 drop policy if exists authenticated_read_own_profile on public.perfis_usuarios;
 create policy authenticated_read_own_profile on public.perfis_usuarios for select to authenticated using (usuario_id = (select auth.uid()));
+notify pgrst, 'reload schema';
