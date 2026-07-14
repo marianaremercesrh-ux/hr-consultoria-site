@@ -3,12 +3,10 @@ import { Building2, Plus, Save, Upload } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { AdminNotice, AdminSkeleton, adminButtonClass, adminInputClass } from "../components/AdminUI";
 import { getEmpresa, listEmpresas, saveEmpresa } from "../services/ats";
-import { listJobs } from "../services/jobs";
 import { listCompanyContracts } from "../services/companyContracts";
 import { signedCompanyLogo, uploadCompanyLogo, validateCompanyLogo } from "../services/companyLogos";
 import { readableSupabaseError, reportSupabaseError } from "../lib/supabaseError";
 import type { Empresa, EmpresaForm } from "../types/ats";
-import type { Job } from "../types/jobs";
 import type { CompanyContract } from "../types/companyContracts";
 
 const EMPTY: EmpresaForm = {
@@ -25,7 +23,6 @@ function formatCnpj(value: string) {
 export default function AdminCompaniesPage({ id, newCompany = false }: { id?: string; newCompany?: boolean }) {
   const [items, setItems] = useState<Empresa[]>([]);
   const [form, setForm] = useState<EmpresaForm>(EMPTY);
-  const [jobs, setJobs] = useState<Array<Pick<Job, "id" | "status" | "empresa_id">>>([]);
   const [contracts, setContracts] = useState<CompanyContract[]>([]);
   const [logoUrls, setLogoUrls] = useState<Record<string, string>>({});
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -68,10 +65,6 @@ export default function AdminCompaniesPage({ id, newCompany = false }: { id?: st
       }
 
       try { setContracts(await listCompanyContracts()); } catch { setContracts([]); }
-      try {
-        const allJobs = await listJobs();
-        setJobs(allJobs);
-      } catch { setJobs([]); }
       const signed = await Promise.all(companies.map(async (company) => {
         if (!company.logo_url) return null;
         try { return [company.id, await signedCompanyLogo(company.logo_url)] as const; } catch { return null; }
@@ -168,16 +161,11 @@ export default function AdminCompaniesPage({ id, newCompany = false }: { id?: st
     {message && <AdminNotice type="error">{message}</AdminNotice>}
     <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{items.map((company) => {
       const hasContract = contracts.some((contract) => contract.empresa_id === company.id && Boolean(contract.caminho_arquivo));
-      const companyJobs = jobs.filter((job) => job.empresa_id === company.id);
-      const openJobs = companyJobs.filter((job) => job.status === "publicada").length;
-      const pendingJobs = companyJobs.filter((job) => job.status === "rascunho").length;
-      const closedJobs = companyJobs.filter((job) => job.status === "encerrada").length;
       return <a key={company.id} href={`/admin/empresas/${company.id}`} className="border border-gray-200 bg-white p-6 shadow-sm transition hover:border-[#D4A62A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4A62A]">
         <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-[#F5F7FA]">{logoUrls[company.id] ? <img src={logoUrls[company.id]} alt={`Logo da ${company.nome}`} className="h-full w-full object-contain p-2"/> : <Building2 size={34} className="text-[#D4A62A]"/>}</div>
         <h2 className="mt-4 break-words text-xl font-semibold text-[#052656]">{company.nome}</h2>
         <p className="mt-1 break-words text-sm text-gray-500">{company.cnpj ? `CNPJ ${formatCnpj(company.cnpj)}` : "CNPJ não informado"}</p>
         <p className="mt-3 break-words text-gray-700"><span className="font-semibold">Responsável:</span> {company.contato_nome || "Não informado"}</p>
-        <div className="mt-4 grid grid-cols-3 gap-2 border-y border-gray-100 py-3 text-center"><JobCount label="Abertas" value={openJobs}/><JobCount label="Pendentes" value={pendingJobs}/><JobCount label="Encerradas" value={closedJobs}/></div>
         <div className="mt-4 flex flex-wrap gap-2"><span className={`rounded-full px-3 py-1 text-sm font-semibold ${hasContract ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>{hasContract ? "Contrato anexado" : "Contrato pendente"}</span><span className={`rounded-full px-3 py-1 text-sm font-semibold ${company.status === "ativo" ? "bg-blue-100 text-[#052656]" : "bg-gray-100 text-gray-600"}`}>{company.status === "ativo" ? "Ativa" : "Inativa"}</span></div>
       </a>;
     })}</div>
@@ -187,5 +175,3 @@ export default function AdminCompaniesPage({ id, newCompany = false }: { id?: st
 function Field({ label, value, onChange, ...props }: { label: string; value: string; onChange: (value: string) => void } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return <label><span className="mb-2 block font-semibold text-[#052656]">{label}</span><input value={value} onChange={(event) => onChange(event.target.value)} className={adminInputClass} {...props}/></label>;
 }
-
-function JobCount({ label, value }: { label: string; value: number }) { return <div className="min-w-0"><strong className="block text-lg text-[#052656]">{value}</strong><span className="block truncate text-xs text-gray-500 sm:text-sm">{label}</span></div>; }
