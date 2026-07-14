@@ -5,6 +5,10 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminNewJobPage from "./pages/AdminNewJobPage";
 import AdminEditJobPage from "./pages/AdminEditJobPage";
+import AdminCandidatesPage from "./pages/AdminCandidatesPage";
+import AdminCandidateFormPage from "./pages/AdminCandidateFormPage";
+import AdminCandidateProfilePage from "./pages/AdminCandidateProfilePage";
+import AdminProcessesPage from "./pages/AdminProcessesPage";
 
 const LOGO_ASSETS = {
   color: {
@@ -783,6 +787,28 @@ export default function App() {
 
   if (caminho === "/admin/nova-vaga") {
     return <AdminNewJobPage />;
+  }
+
+  if (caminho === "/admin/candidatos") {
+    return <AdminCandidatesPage />;
+  }
+
+  if (caminho === "/admin/candidatos/novo") {
+    return <AdminCandidateFormPage />;
+  }
+
+  const editarCandidato = caminho.match(/^\/admin\/candidatos\/([^/]+)\/editar$/);
+  if (editarCandidato) {
+    return <AdminCandidateFormPage id={decodeURIComponent(editarCandidato[1])} />;
+  }
+
+  const perfilCandidato = caminho.match(/^\/admin\/candidatos\/([^/]+)$/);
+  if (perfilCandidato) {
+    return <AdminCandidateProfilePage id={decodeURIComponent(perfilCandidato[1])} />;
+  }
+
+  if (caminho === "/admin/processos") {
+    return <AdminProcessesPage />;
   }
 
   const editarVaga = caminho.match(/^\/admin\/vagas\/([^/]+)\/editar$/);

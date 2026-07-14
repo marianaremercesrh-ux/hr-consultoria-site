@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { createJob } from "../services/jobs";
 import type { JobFormData } from "../types/jobs";
+import AdminNav from "../components/AdminNav";
+import { Save, X } from "lucide-react";
+import { AdminNotice, adminButtonClass, adminInputClass } from "../components/AdminUI";
 
 export default function AdminNewJobPage() {
   const [formulario, setFormulario] = useState<JobFormData>({
@@ -72,22 +75,7 @@ export default function AdminNewJobPage() {
 
   return (
     <main className="min-h-screen bg-[#F5F7FA]">
-      <header className="bg-[#052656] px-5 py-5">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <img
-            src="/assets/hr-consultoria-logo-white.png"
-            alt="HR Consultoria de RH"
-            className="h-auto w-[110px] max-w-[35vw] sm:w-[140px]"
-          />
-
-          <a
-            href="/admin"
-            className="bg-[#D4A62A] px-5 py-2 font-semibold text-[#052656]"
-          >
-            Voltar
-          </a>
-        </div>
-      </header>
+      <AdminNav/>
 
       <section className="mx-auto max-w-5xl px-5 py-10">
         <h1 className="mb-6 text-3xl font-semibold text-[#052656]">
@@ -177,7 +165,7 @@ export default function AdminNewJobPage() {
               name="status"
               value={formulario.status}
               onChange={alterarCampo}
-              className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]"
+              className={adminInputClass}
             >
               <option value="publicada">Publicada</option>
               <option value="rascunho">Rascunho</option>
@@ -226,19 +214,18 @@ export default function AdminNewJobPage() {
           />
 
           {mensagem && (
-            <p className="md:col-span-2 text-sm font-medium text-red-600">
-              {mensagem}
-            </p>
+            <div className="md:col-span-2"><AdminNotice>{mensagem}</AdminNotice></div>
           )}
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 flex flex-wrap gap-3">
             <button
               type="submit"
               disabled={carregando}
-              className="bg-[#D4A62A] px-6 py-3 font-semibold text-[#052656] disabled:opacity-60"
+              className={adminButtonClass("primary")}
             >
-              {carregando ? "Salvando..." : "Salvar vaga"}
+              <Save size={17}/>{carregando ? "Salvando..." : "Salvar vaga"}
             </button>
+            <a href="/admin" className={adminButtonClass("secondary")}><X size={17}/>Cancelar</a>
           </div>
         </form>
       </section>
@@ -272,7 +259,7 @@ function Campo({
   return (
     <div>
       <label className="mb-2 block text-sm font-semibold text-[#052656]">
-        {label}
+        {label}{required && <span className="ml-1 text-red-700" aria-hidden="true">*</span>}
       </label>
       <input
         type={type}
@@ -283,7 +270,7 @@ function Campo({
         placeholder={placeholder}
         min={min}
         step={type === "number" ? "1" : undefined}
-        className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]"
+        className={adminInputClass}
       />
     </div>
   );
@@ -314,7 +301,7 @@ function AreaTexto({
         value={value}
         onChange={onChange}
         rows={4}
-        className="w-full resize-y border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]"
+        className={`${adminInputClass} resize-y`}
       />
     </div>
   );
