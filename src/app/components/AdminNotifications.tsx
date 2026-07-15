@@ -1,11 +1,11 @@
 import { Bell } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import {
-  applyFeedbackAction,
   feedbackDecisionLabel,
   listAdminFeedbacks,
   updateFeedbackService,
 } from "../services/adminFeedbacks";
+import { normalizeFeedbackStatus } from "../lib/feedbackStatus";
 import type { AdminClientFeedback } from "../types/clientPortal";
 import AdminFeedbackActions, { type AdminFeedbackAction } from "./AdminFeedbackActions";
 
@@ -40,17 +40,19 @@ export default function AdminNotifications() {
   }, [load]);
 
   const count = items.filter(
-    (item) => !item.lido_em || item.status_atendimento !== "concluido",
+    (item) => !item.lido_em || normalizeFeedbackStatus(item.status_atendimento) !== "concluido",
   ).length;
 
   async function action(item: AdminClientFeedback, status: AdminFeedbackAction) {
-    setItems((current) =>
-      current.map((candidate) =>
-        candidate.id === item.id ? applyFeedbackAction(candidate, status) : candidate,
-      ),
-    );
     try {
-      await updateFeedbackService(item, status);
+      const updated = await updateFeedbackService(item, status);
+      if (!updated) {
+        await load();
+        return;
+      }
+      setItems((current) =>
+        current.map((candidate) => candidate.id === updated.id ? updated : candidate),
+      );
     } catch (reason) {
       console.error("[Atendimento de feedback]", reason);
       await load();
@@ -85,7 +87,7 @@ export default function AdminNotifications() {
             {items.slice(0, 5).map((item) => (
               <article
                 key={item.id}
-                className={`border-l-4 p-3 ${!item.lido_em ? "border-[#D4A62A] bg-amber-50" : item.status_atendimento === "concluido" ? "border-green-600 bg-green-50" : "border-blue-500 bg-blue-50"}`}
+                className={`border-l-4 p-3 ${!item.lido_em ? "border-[#D4A62A] bg-amber-50" : normalizeFeedbackStatus(item.status_atendimento) === "concluido" ? "border-green-600 bg-green-50" : "border-blue-500 bg-blue-50"}`}
               >
                 <strong>{item.empresa?.nome ?? "Empresa"}</strong>
                 <p>{item.candidatura?.candidato?.nome ?? "Candidato"} · {item.candidatura?.vaga?.titulo ?? "Vaga"}</p>
