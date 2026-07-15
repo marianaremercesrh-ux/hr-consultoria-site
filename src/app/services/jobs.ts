@@ -1,8 +1,9 @@
 import { supabase } from "../lib/supabase";
-import { supabaseErrorDetails } from "../lib/supabaseError";
+import { reportSupabaseError, supabaseErrorDetails } from "../lib/supabaseError";
 import { JOB_STATUS, type Job, type JobFormData, type JobStatus } from "../types/jobs";
 
 const JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
+const PUBLIC_JOB_COLUMNS = "id,titulo,slug,empresa,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
 const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,status,created_at";
 
 export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
@@ -73,10 +74,13 @@ export async function listJobsByCompanyId(empresaId: string) {
 export async function listPublishedJobs() {
   const { data, error } = await supabase
     .from("vagas")
-    .select(JOB_COLUMNS)
+    .select(PUBLIC_JOB_COLUMNS)
     .eq("status", JOB_STATUS.OPEN)
     .order("created_at", { ascending: false });
-  if (error) throw error;
+  if (error) {
+    reportSupabaseError("SELECT público de vagas publicadas", error);
+    throw error;
+  }
   return (data ?? []) as Job[];
 }
 
@@ -93,11 +97,14 @@ export async function getJobById(id: string | number) {
 export async function getPublishedJobBySlug(slug: string) {
   const { data, error } = await supabase
     .from("vagas")
-    .select(JOB_COLUMNS)
+    .select(PUBLIC_JOB_COLUMNS)
     .eq("slug", slug)
     .eq("status", JOB_STATUS.OPEN)
     .maybeSingle();
-  if (error) throw error;
+  if (error) {
+    reportSupabaseError("SELECT público de vaga publicada por slug", error);
+    throw error;
+  }
   return data as Job | null;
 }
 

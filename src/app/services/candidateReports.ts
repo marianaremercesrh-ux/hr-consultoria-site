@@ -10,8 +10,11 @@ function cleanDisplayText(value:string){return value.replace(/movéis/giu,"móve
 function shortText(value:string){const clean=cleanDisplayText(value);return clean.length>240?`${clean.slice(0,237).trimEnd()}…`:clean}
 async function assetDataUrl(path:string){const response=await fetch(path);if(!response.ok)throw new Error(`Não foi possível carregar o recurso ${path}.`);const blob=await response.blob();return await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(reader.error);reader.readAsDataURL(blob)})}
 
+async function svgDataUrlToPng(svgDataUrl:string){return await new Promise<string>((resolve,reject)=>{const image=new Image();image.onload=()=>{const canvas=document.createElement("canvas");canvas.width=2308;canvas.height=1086;const context=canvas.getContext("2d");if(!context){reject(new Error("Não foi possível preparar a logo do relatório."));return}context.drawImage(image,430,0,1448,1086);resolve(canvas.toDataURL("image/png"))};image.onerror=()=>reject(new Error("Não foi possível renderizar a logo do relatório."));image.src=svgDataUrl})}
+
 export async function downloadCandidatesPdf(rows:CandidateReportRow[],filters:string[],kind:CandidateReportKind,includeContact:boolean){
-  const [{jsPDF},logo,fontData]=await Promise.all([import("jspdf"),assetDataUrl("/assets/hr-consultoria-logo.png"),assetDataUrl("/fonts/NotoSans-Variable.ttf")]);
+  const [{jsPDF},logoSvg,fontData]=await Promise.all([import("jspdf"),assetDataUrl("/assets/hr-consultoria-logo-relatorio.svg"),assetDataUrl("/fonts/NotoSans-Variable.ttf")]);
+  const logo=await svgDataUrlToPng(logoSvg);
   const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true,putOnlyUsedFonts:true});
   doc.addFileToVFS("NotoSans.ttf",fontData.split(",")[1]);doc.addFont("NotoSans.ttf","NotoSans","normal");doc.setFont("NotoSans","normal");
   const width=210,height=297,left=14,right=14,bottom=17,contentWidth=width-left-right;

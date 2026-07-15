@@ -22,7 +22,7 @@ export function supabaseErrorDetails(error: unknown): SupabaseErrorDetails {
 
 export function reportSupabaseError(context: string, error: unknown) {
   const details = supabaseErrorDetails(error);
-  if (import.meta.env.DEV) console.error(`[Supabase] ${context}`, details);
+  console.error(`[Supabase] ${context}`, details);
   return details;
 }
 

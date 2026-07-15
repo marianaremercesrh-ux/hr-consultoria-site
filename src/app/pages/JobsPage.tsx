@@ -98,8 +98,7 @@ export function JobsRouter() {
           const published = await listPublishedJobs();
           if (active) setJobs(published.map(toPublicJob));
         }
-      } catch (loadError) {
-        if (import.meta.env.DEV) console.error(loadError);
+      } catch {
         if (active) setError("Não foi possível carregar as vagas.");
       } finally {
         if (active) setLoading(false);
