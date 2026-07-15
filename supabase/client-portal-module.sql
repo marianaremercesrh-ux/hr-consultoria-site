@@ -2,6 +2,8 @@
 -- PRÉ-REQUISITOS, nesta ordem:
 -- 1. client-portal-foundation.sql
 -- 2. client-portal-bootstrap-admin.sql
+-- MIGRAÇÃO HISTÓRICA JÁ APLICADA NESTE PROJETO: NÃO REEXECUTAR.
+-- O novo fluxo está na migration incremental client-portal-access-requests.sql.
 create extension if not exists pgcrypto;
 
 do $$ begin

@@ -19,6 +19,7 @@ import PortalAccessSection from "./components/PortalAccessSection";
 import ClientLoginPage from "./pages/ClientLoginPage";
 import ClientPortalPage from "./pages/ClientPortalPage";
 import AdminPortalPreviewPage from "./pages/AdminPortalPreviewPage";
+import AdminAccessRequestsPage from "./pages/AdminAccessRequestsPage";
 import { supabase } from "./lib/supabase";
 
 const LOGO_ASSETS = {
@@ -838,6 +839,7 @@ export default function App() {
   }
 
   if (caminho === "/admin/empresas") return <AdminAccessGate><AdminCompaniesPage /></AdminAccessGate>;
+  if (caminho === "/admin/solicitacoes-acesso") return <AdminAccessGate><AdminAccessRequestsPage /></AdminAccessGate>;
   if (caminho === "/admin/empresas/nova") return <AdminAccessGate><AdminCompaniesPage newCompany /></AdminAccessGate>;
   const portalPreview = caminho.match(/^\/admin\/empresas\/([^/]+)\/portal-preview$/);
   if (portalPreview) { const empresaId=decodeURIComponent(portalPreview[1]); return <AdminAccessGate><AdminPortalPreviewPage empresaId={empresaId}/></AdminAccessGate>; }
