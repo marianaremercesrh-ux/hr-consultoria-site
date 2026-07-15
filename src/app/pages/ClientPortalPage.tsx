@@ -81,13 +81,13 @@ export default function ClientPortalPage() {
       localStorage.setItem("portal_company", selected);
       const jobs = await listPortalJobs(selected);
       const ids = jobs.map((x) => x.id);
-      const [applications, interviews, feedbacks] = await Promise.all([
+      const [applications, interviews] = await Promise.all([
         listPortalApplications(ids),
         listPortalInterviews(ids),
-        listClientFeedbacks(selected),
       ]);
-      const candidates = await listPortalCandidates([
-        ...new Set(applications.map((x) => x.candidato_id)),
+      const [candidates, feedbacks] = await Promise.all([
+        listPortalCandidates([...new Set(applications.map((x) => x.candidato_id))]),
+        listClientFeedbacks(applications.map((x) => x.id)),
       ]);
       setData({
         ...context,
@@ -578,7 +578,7 @@ function CandidateDetail({
     setMessage("");
     try {
       await saveClientFeedback(authorizedApp.id, company.id, decision, comment);
-      setMessage("Feedback enviado com sucesso.");
+      setMessage("Feedback enviado com sucesso. A HR Consultoria dará continuidade ao processo.");
       await onReload();
     } catch {
       setMessage("Não foi possível enviar o feedback.");
@@ -670,10 +670,12 @@ function CandidateDetail({
         <Field label="Comentário opcional">
           <textarea
             rows={4}
+            maxLength={2000}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="mt-2 w-full border p-3"
           />
+          <span className="mt-1 block text-right text-xs text-gray-500">{comment.length}/2000</span>
         </Field>
         {message && <p className="mt-3 font-semibold">{message}</p>}
         <button

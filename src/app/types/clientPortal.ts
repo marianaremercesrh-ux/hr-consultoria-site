@@ -7,4 +7,6 @@ export type PortalApplication={id:string;candidato_id:string;vaga_id:string|numb
 export type PortalCandidate={id:string;nome:string;cidade:string|null;estado:string|null;curriculo_url:string|null;created_at:string;updated_at:string};
 export type PortalInterview={id:string;candidatura_id:string|null;tipo_entrevista:"cliente";modalidade:"presencial"|"online"|null;data:string;horario:string;local:string|null;status:string;observacoes_cliente:string|null;updated_at:string};
 export type ClientDecision="quero_entrevistar"|"aprovado_empresa"|"nao_aprovado"|"solicitar_informacoes";
-export type ClientFeedback={id:string;candidatura_id:string;empresa_id:string;user_id:string;decisao:ClientDecision;comentario:string|null;created_at:string;updated_at:string};
+export type ClientFeedback={id:string;candidatura_id:string;decisao:ClientDecision;comentario:string|null;created_at:string;updated_at:string};
+export type FeedbackServiceStatus="pendente"|"em_andamento"|"concluido";
+export type AdminClientFeedback=ClientFeedback&{empresa_id:string;user_id:string;lido_em:string|null;lido_por:string|null;status_atendimento:FeedbackServiceStatus;atendimento_iniciado_em:string|null;concluido_em:string|null;tratado_por:string|null;empresa:{id:string;nome:string}|null;candidatura:{id:string;candidato_id:string;vaga_id:string|number|null;candidato:{id:string;nome:string}|null;vaga:{id:string|number;titulo:string}|null}|null};

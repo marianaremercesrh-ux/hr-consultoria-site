@@ -21,6 +21,7 @@ import ClientAuthCallbackPage from "./pages/ClientAuthCallbackPage";
 import ClientPortalPage from "./pages/ClientPortalPage";
 import AdminPortalPreviewPage from "./pages/AdminPortalPreviewPage";
 import AdminAccessRequestsPage from "./pages/AdminAccessRequestsPage";
+import AdminNotificationsPage from "./pages/AdminNotificationsPage";
 import { supabase } from "./lib/supabase";
 import { clientPortalSupabase } from "./lib/clientPortalSupabase";
 
@@ -843,6 +844,7 @@ export default function App() {
 
   if (caminho === "/admin/empresas") return <AdminAccessGate><AdminCompaniesPage /></AdminAccessGate>;
   if (caminho === "/admin/solicitacoes-acesso") return <AdminAccessGate><AdminAccessRequestsPage /></AdminAccessGate>;
+  if (caminho === "/admin/notificacoes") return <AdminAccessGate><AdminNotificationsPage /></AdminAccessGate>;
   if (caminho === "/admin/empresas/nova") return <AdminAccessGate><AdminCompaniesPage newCompany /></AdminAccessGate>;
   const portalPreview = caminho.match(/^\/admin\/empresas\/([^/]+)\/portal-preview$/);
   if (portalPreview) { const empresaId=decodeURIComponent(portalPreview[1]); return <AdminAccessGate><AdminPortalPreviewPage empresaId={empresaId}/></AdminAccessGate>; }
