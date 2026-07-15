@@ -23,7 +23,9 @@ export type Empresa = {
 };
 
 export type EmpresaForm = Omit<Empresa, "id" | "created_at" | "updated_at">;
-export type InterviewStatus = "agendada" | "confirmada" | "realizada" | "reagendada" | "cancelada" | "nao_compareceu";
+export type InterviewStatus = "solicitada" | "agendada" | "confirmada" | "realizada" | "reagendada" | "cancelada" | "nao_compareceu";
+export type InterviewType = "interna" | "cliente";
+export type InterviewModality = "presencial" | "online";
 
 export type Entrevista = {
   id: string;
@@ -31,11 +33,15 @@ export type Entrevista = {
   candidato_nome_manual: string | null;
   vaga_id: string | number | null;
   empresa_id: string | null;
+  candidatura_id?: string | null;
+  tipo_entrevista?: InterviewType;
+  modalidade?: InterviewModality | null;
   data: string;
   horario: string;
   entrevistador: string | null;
   local: string | null;
   observacoes: string | null;
+  observacoes_cliente?: string | null;
   status: InterviewStatus;
   created_at: string;
   updated_at: string;

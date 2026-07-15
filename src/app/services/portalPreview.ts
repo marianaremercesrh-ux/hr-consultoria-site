@@ -1,0 +1,9 @@
+import { supabase } from "../lib/supabase";
+import type { PortalApplication, PortalCandidate, PortalInterview, PortalJob } from "../types/clientPortal";
+
+const JOB_COLUMNS="id,empresa_id,titulo,descricao,atividades,requisitos,beneficios,cidade,estado,modalidade,tipo_contrato,quantidade_vagas,status,created_at";
+const APPLICATION_COLUMNS="id,candidato_id,vaga_id,etapa,portal_liberado,portal_liberado_em,resumo_cliente,pontos_positivos_cliente,pontos_atencao_cliente,curriculo_liberado,data_admissao,created_at,updated_at";
+export async function previewJobs(companyId:string){const{data,error}=await supabase.from("vagas").select(JOB_COLUMNS).eq("empresa_id",companyId).neq("status","excluida").order("created_at",{ascending:false});if(error)throw error;return(data??[])as PortalJob[]}
+export async function previewApplications(jobIds:Array<string|number>){if(!jobIds.length)return[];const{data,error}=await supabase.from("candidaturas").select(APPLICATION_COLUMNS).in("vaga_id",jobIds).eq("portal_liberado",true).order("updated_at",{ascending:false});if(error)throw error;return(data??[])as PortalApplication[]}
+export async function previewCandidates(ids:string[]){if(!ids.length)return[];const{data,error}=await supabase.from("candidatos").select("id,nome,cidade,estado,curriculo_url,created_at,updated_at").in("id",ids);if(error)throw error;return(data??[])as PortalCandidate[]}
+export async function previewInterviews(jobIds:Array<string|number>){if(!jobIds.length)return[];const{data,error}=await supabase.from("entrevistas").select("id,candidatura_id,candidato_id,vaga_id,tipo_entrevista,modalidade,data,horario,local,status,observacoes_cliente,updated_at").in("vaga_id",jobIds).eq("tipo_entrevista","cliente").order("updated_at",{ascending:false});if(error)throw error;return(data??[])as PortalInterview[]}

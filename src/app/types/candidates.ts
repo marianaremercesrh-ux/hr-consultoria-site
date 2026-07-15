@@ -85,6 +85,7 @@ export type Candidatura = {
   pontos_positivos_cliente: string | null;
   pontos_atencao_cliente: string | null;
   curriculo_liberado: boolean;
+  data_admissao: string | null;
 };
 
 export type CandidaturaDetalhada = Candidatura & {

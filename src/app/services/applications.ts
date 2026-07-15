@@ -1,14 +1,14 @@
 import { supabase } from "../lib/supabase";
 import type { Candidatura, CandidaturaDetalhada, EtapaProcesso } from "../types/candidates";
 
-type ApplicationDatabaseRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id" | "etapa" | "observacoes" | "created_at">;
+type ApplicationDatabaseRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id" | "etapa" | "observacoes" | "created_at" | "updated_at" | "data_admissao">;
 export type JobSummaryApplicationRow = Pick<Candidatura, "id" | "candidato_id" | "vaga_id" | "etapa" | "observacoes" | "created_at" | "updated_at">;
 
-const APPLICATION_COLUMNS = "id,candidato_id,vaga_id,etapa,observacoes,created_at";
-const DETAIL_SELECT = `${APPLICATION_COLUMNS},portal_liberado,portal_liberado_em,portal_liberado_por,resumo_cliente,pontos_positivos_cliente,pontos_atencao_cliente,curriculo_liberado,candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status,empresa)`;
+const APPLICATION_COLUMNS = "id,candidato_id,vaga_id,etapa,observacoes,data_admissao,created_at,updated_at";
+const DETAIL_SELECT = `${APPLICATION_COLUMNS},portal_liberado,portal_liberado_em,portal_liberado_por,resumo_cliente,pontos_positivos_cliente,pontos_atencao_cliente,curriculo_liberado,candidato:candidatos(id,nome,telefone,cidade,estado,linkedin,observacoes,curriculo_url,created_at,updated_at),vaga:vagas(id,titulo,status,empresa,empresa_id,empresa_cliente:empresas(id,nome))`;
 
 function normalizeApplication(row: ApplicationDatabaseRow): Candidatura {
-  return { portal_liberado:false,portal_liberado_em:null,portal_liberado_por:null,resumo_cliente:null,pontos_positivos_cliente:null,pontos_atencao_cliente:null,curriculo_liberado:false,...row, updated_at: row.created_at };
+  return { portal_liberado:false,portal_liberado_em:null,portal_liberado_por:null,resumo_cliente:null,pontos_positivos_cliente:null,pontos_atencao_cliente:null,curriculo_liberado:false,...row };
 }
 
 export async function listApplications(): Promise<CandidaturaDetalhada[]> {

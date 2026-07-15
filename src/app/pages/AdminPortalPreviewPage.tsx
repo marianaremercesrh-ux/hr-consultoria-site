@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BriefcaseBusiness, CalendarDays, CheckCircle2, FileText, UsersRound } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { getEmpresa } from "../services/ats";
-import { listPortalApplications, listPortalCandidates, listPortalInterviews, listPortalJobs } from "../services/clientPortal";
+import { previewApplications as listPortalApplications, previewCandidates as listPortalCandidates, previewInterviews as listPortalInterviews, previewJobs as listPortalJobs } from "../services/portalPreview";
 import { etapaLabel } from "../types/candidates";
 import { formatarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
 import type { Empresa } from "../types/ats";
