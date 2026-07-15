@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+import { clientPortalSupabase as supabase } from "../lib/clientPortalSupabase";
 import type { ClientCompany,ClientDecision,ClientFeedback,CompanyUser,PortalApplication,PortalCandidate,PortalInterview,PortalJob } from "../types/clientPortal";
 const LINK_COLUMNS="id,empresa_id,user_id,nome,email,ativo,created_at,updated_at";
 const JOB_COLUMNS="id,empresa_id,titulo,descricao,atividades,requisitos,beneficios,cidade,estado,modalidade,tipo_contrato,quantidade_vagas,status,created_at";

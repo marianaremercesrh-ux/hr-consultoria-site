@@ -17,10 +17,12 @@ import AdminFinancialPage from "./pages/AdminFinancialPage";
 import CompanyContractSection from "./components/CompanyContractSection";
 import PortalAccessSection from "./components/PortalAccessSection";
 import ClientLoginPage from "./pages/ClientLoginPage";
+import ClientAuthCallbackPage from "./pages/ClientAuthCallbackPage";
 import ClientPortalPage from "./pages/ClientPortalPage";
 import AdminPortalPreviewPage from "./pages/AdminPortalPreviewPage";
 import AdminAccessRequestsPage from "./pages/AdminAccessRequestsPage";
 import { supabase } from "./lib/supabase";
+import { clientPortalSupabase } from "./lib/clientPortalSupabase";
 
 const LOGO_ASSETS = {
   color: {
@@ -805,6 +807,7 @@ Mensagem: ${mensagem || "Não informado"}`;
 export default function App() {
   const caminho = window.location.pathname;
 
+  if (caminho === "/cliente/auth/callback") return <ClientAuthCallbackPage />;
   if (caminho === "/cliente/login") return <ClientLoginPage />;
   if (caminho === "/cliente" || caminho.startsWith("/cliente/")) return <ClientAccessGate><ClientPortalPage /></ClientAccessGate>;
 
@@ -868,4 +871,4 @@ export default function App() {
 
 function AdminAccessGate({children}:{children:React.ReactNode}){const[access,setAccess]=useState<"checking"|"allowed"|"client">("checking");useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){window.location.href="/admin/login";return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();setAccess(profile&&["administrador","recrutador"].includes(profile.perfil)?"allowed":"client")})},[]);if(access==="client")return <AdminClientSessionNotice/>;return access==="allowed"?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso administrativo...</main>}
 
-function ClientAccessGate({children}:{children:React.ReactNode}){const[access,setAccess]=useState<"checking"|"client"|"admin"|"anonymous">("checking");useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){setAccess("anonymous");return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();setAccess(profile&&["administrador","recrutador"].includes(profile.perfil)?"admin":"client")})},[]);useEffect(()=>{if(access==="admin"||access==="anonymous")window.location.replace("/cliente/login")},[access]);return access==="client"?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso ao portal...</main>}
+function ClientAccessGate({children}:{children:React.ReactNode}){const[access,setAccess]=useState<"checking"|"client"|"admin"|"anonymous">("checking");useEffect(()=>{void clientPortalSupabase.auth.getSession().then(async({data})=>{if(!data.session){setAccess("anonymous");return}const{data:profile}=await clientPortalSupabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();setAccess(profile&&["administrador","recrutador"].includes(profile.perfil)?"admin":"client")})},[]);useEffect(()=>{if(access==="admin"||access==="anonymous")window.location.replace("/cliente/login")},[access]);return access==="client"?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso ao portal...</main>}

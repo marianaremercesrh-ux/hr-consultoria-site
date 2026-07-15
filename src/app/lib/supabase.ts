@@ -6,5 +6,11 @@ const supabasePublishableKey =
 
 export const supabase = createClient(
   supabaseUrl,
-  supabasePublishableKey
+  supabasePublishableKey,
+  {
+    auth: {
+      // Client auth links belong exclusively to clientPortalSupabase.
+      detectSessionInUrl: !window.location.pathname.startsWith("/cliente"),
+    },
+  }
 );
