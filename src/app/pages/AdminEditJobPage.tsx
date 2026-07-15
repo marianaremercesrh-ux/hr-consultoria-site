@@ -97,6 +97,7 @@ export default function AdminEditJobPage({ id }: { id: string }) {
 
   async function save(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (saving) return;
     setSaving(true);
     setMessage("");
     try {
@@ -118,22 +119,24 @@ export default function AdminEditJobPage({ id }: { id: string }) {
     motivo?: string | null,
   ) {
     try {
-      await updateApplicationStage(applicationId, stage, motivo);
+      const saved = await updateApplicationStage(applicationId, stage, motivo);
       setApplications((current) =>
         current.map((item) =>
           item.id === applicationId
             ? {
                 ...item,
-                etapa: stage,
-                observacoes: motivo === undefined ? item.observacoes : motivo,
+                etapa: saved.etapa,
+                observacoes: saved.observacoes,
               }
             : item,
         ),
       );
       setMessage("Etapa do candidato atualizada.");
+      return saved;
     } catch (error) {
       if (import.meta.env.DEV) console.error(error);
       setMessage("Não foi possível atualizar a etapa.");
+      throw error;
     }
   }
 

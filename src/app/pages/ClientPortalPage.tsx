@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -570,19 +570,37 @@ function CandidateDetail({
       feedback?.decisao ?? "quero_entrevistar",
     ),
     [comment, setComment] = useState(feedback?.comentario ?? ""),
+    [isEditing, setIsEditing] = useState(!feedback),
     [saving, setSaving] = useState(false),
     [message, setMessage] = useState("");
+  const feedbackApplicationRef = useRef(app?.id);
+  useEffect(() => {
+    if (feedbackApplicationRef.current !== app?.id) {
+      feedbackApplicationRef.current = app?.id;
+      setDecision(feedback?.decisao ?? "quero_entrevistar");
+      setComment(feedback?.comentario ?? "");
+      setIsEditing(!feedback);
+      setSaving(false);
+      setMessage("");
+      return;
+    }
+    if (!feedback || isEditing) return;
+    setDecision(feedback.decisao);
+    setComment(feedback.comentario ?? "");
+  }, [app?.id, feedback, isEditing]);
   if (!app || !candidate || !job) return <NotFound />;
   const authorizedApp = app;
   const authorizedCandidate = candidate;
   const interview = data.interviews.find((x) => x.candidatura_id === app.id);
   async function save() {
+    if (saving) return;
     setSaving(true);
     setMessage("");
     try {
       await saveClientFeedback(authorizedApp.id, company.id, decision, comment);
-      setMessage("Feedback enviado com sucesso. A HR Consultoria dará continuidade ao processo.");
       await onReload();
+      setIsEditing(false);
+      setMessage("Feedback enviado com sucesso. A HR Consultoria dará continuidade ao processo.");
     } catch {
       setMessage("Não foi possível enviar o feedback.");
     } finally {
@@ -656,6 +674,7 @@ function CandidateDetail({
       </div>
       <div className="mt-6 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-semibold text-[#052656]">Seu feedback</h2>
+        {!isEditing && feedback ? <div className="mt-4"><p><strong>Decisão:</strong> {feedbackDecisionLabel(feedback.decisao)}</p><p className="mt-2"><strong>Comentário:</strong> {feedback.comentario || "Sem comentário"}</p><button type="button" onClick={()=>{setDecision(feedback.decisao);setComment(feedback.comentario ?? "");setMessage("");setIsEditing(true)}} className="mt-4 border border-[#052656] px-5 py-3 font-semibold text-[#052656]">Alterar feedback</button></div> : <>
         <Field label="Decisão">
           <select
             value={decision}
@@ -686,12 +705,15 @@ function CandidateDetail({
           onClick={() => void save()}
           className="mt-4 bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] disabled:opacity-60"
         >
-          {saving ? "Enviando..." : "Enviar feedback"}
+          {saving ? "Salvando..." : feedback ? "Salvar alterações" : "Enviar feedback"}
         </button>
+        {feedback && <button type="button" disabled={saving} onClick={()=>{setDecision(feedback.decisao);setComment(feedback.comentario ?? "");setMessage("");setIsEditing(false)}} className="ml-3 mt-4 border border-gray-400 px-5 py-3 font-semibold text-gray-700">Cancelar</button>}
+        </>}
       </div>
     </section>
   );
 }
+function feedbackDecisionLabel(value: ClientDecision) { return ({ quero_entrevistar: "Quero entrevistar", aprovado_empresa: "Aprovado pela empresa", nao_aprovado: "Não aprovado", solicitar_informacoes: "Solicitar mais informações" } as const)[value]; }
 function Metric({
   icon,
   label,

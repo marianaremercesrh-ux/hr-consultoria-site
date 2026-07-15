@@ -214,30 +214,28 @@ export async function updateApplicationStage(
   };
   if (observacoes !== undefined)
     changes.observacoes = observacoes?.trim() || null;
-  const { error } = await supabase
+  const { data: saved, error } = await supabase
     .from("candidaturas")
     .update(changes)
-    .eq("id", id);
-  if (error) throw error;
-  const { data: application } = await supabase
-    .from("candidaturas")
-    .select("candidato_id")
     .eq("id", id)
-    .maybeSingle();
-  if (application?.candidato_id) {
+    .select("id,candidato_id,etapa,observacoes,updated_at")
+    .single();
+  if (error) throw error;
+  if (saved.candidato_id) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
     await supabase
       .from("historico_candidatos")
       .insert({
-        candidato_id: application.candidato_id,
+        candidato_id: saved.candidato_id,
         candidatura_id: id,
         evento: `Mudança de etapa: ${etapa}`,
         observacao: observacoes?.trim() || null,
         responsavel: user?.id ?? null,
       });
   }
+  return saved as { id: string; candidato_id: string; etapa: EtapaProcesso; observacoes: string | null; updated_at: string };
 }
 
 export async function updateApplicationProcess(

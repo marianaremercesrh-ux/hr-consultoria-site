@@ -72,7 +72,7 @@ export default function AdminCandidateFormPage({ id }: { id?: string }) {
     setJobValidationError("");
     setSaving(true); setMessage("");
     try {
-      const candidate = id ? (await updateCandidate(id, form), await getCandidate(id)) : await createCandidate(form);
+      const candidate = id ? await updateCandidate(id, form) : await createCandidate(form);
       if (!candidate) throw new Error("Candidato não encontrado após salvar.");
       if (file) {
         const path = await uploadResume(candidate.id, file);

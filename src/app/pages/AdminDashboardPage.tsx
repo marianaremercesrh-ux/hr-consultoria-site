@@ -188,13 +188,15 @@ export default function AdminDashboardPage() {
     setCandidaturaAtualizando(id);
     setErroResumo("");
     try {
-      await updateApplicationStage(id, etapa, motivo);
-      const atualizadas = candidaturas.map((item) => item.id === id ? { ...item, etapa, observacoes: motivo === undefined ? item.observacoes : motivo, updated_at: new Date().toISOString() } : item);
+      const saved = await updateApplicationStage(id, etapa, motivo);
+      const atualizadas = candidaturas.map((item) => item.id === id ? { ...item, etapa: saved.etapa, observacoes: saved.observacoes, updated_at: saved.updated_at } : item);
       setCandidaturas(atualizadas);
       setMensagem("Etapa do candidato atualizada com sucesso.");
+      return saved;
     } catch (error) {
       if (import.meta.env.DEV) console.error(error);
       setErroResumo("Não foi possível atualizar a etapa do candidato.");
+      throw error;
     } finally {
       setCandidaturaAtualizando(null);
     }
@@ -286,7 +288,7 @@ function ResumoPorVaga({ vagas, candidaturas, todasAsVagas, carregando, vagasCom
   onFiltroEtapa: (value: string) => void;
   onDetalhes: (value: string | null) => void;
   onLimpar: () => void;
-  onAlterarEtapa: (id: string, etapa: EtapaProcesso, motivo?: string | null) => Promise<void>;
+  onAlterarEtapa: (id: string, etapa: EtapaProcesso, motivo?: string | null) => Promise<{ etapa: EtapaProcesso; observacoes: string | null }>;
 }) {
   return <section className="mt-8 border border-gray-200 bg-white p-5 shadow-sm sm:p-7" aria-labelledby="resumo-por-vaga">
     <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 id="resumo-por-vaga" className="text-2xl font-semibold text-[#052656]">Resumo por vaga</h2><p className="mt-1 text-gray-600">Acompanhe candidatos e etapas de cada processo.</p></div><button type="button" onClick={onLimpar} className={adminButtonClass("secondary")}><FilterX size={17}/>Limpar filtros</button></div>

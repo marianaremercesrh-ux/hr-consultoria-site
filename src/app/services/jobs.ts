@@ -154,15 +154,18 @@ export async function createJob(form: JobFormData): Promise<Pick<Job, "id" | "ti
 }
 
 export async function updateJob(id: string | number, form: JobFormData) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("vagas")
     .update({
       ...form,
       slug: generateJobSlug(form.titulo, form.cidade),
       updated_at: new Date().toISOString(),
     })
-    .eq("id", id);
+    .eq("id", id)
+    .select(JOB_COLUMNS)
+    .single();
   if (error) throw error;
+  return data as Job;
 }
 
 export async function updateJobStatus(id: string | number, status: JobStatus) {

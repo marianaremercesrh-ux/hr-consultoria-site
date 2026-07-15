@@ -30,6 +30,11 @@ export async function saveClientInterview(input: {
 }
 
 export async function saveAdmission(applicationId: string, stage: EtapaProcesso, admissionDate: string) {
-  const { error } = await supabase.from("candidaturas").update({ etapa: stage, data_admissao: admissionDate || null, updated_at: new Date().toISOString() }).eq("id", applicationId);
+  const { data, error } = await supabase.from("candidaturas")
+    .update({ etapa: stage, data_admissao: admissionDate || null, updated_at: new Date().toISOString() })
+    .eq("id", applicationId)
+    .select("id,etapa,data_admissao,updated_at")
+    .single();
   if (error) throw error;
+  return data as { id: string; etapa: EtapaProcesso; data_admissao: string | null; updated_at: string };
 }

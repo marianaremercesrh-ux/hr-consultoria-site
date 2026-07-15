@@ -56,8 +56,9 @@ export async function createCandidate(form: CandidatoForm): Promise<Candidato> {
 
 export async function updateCandidate(id: string, form: CandidatoForm, curriculoUrl?: string | null) {
   const update = { ...form, updated_at: new Date().toISOString(), ...(curriculoUrl !== undefined ? { curriculo_url: curriculoUrl } : {}) };
-  const { error } = await supabase.from("candidatos").update(update).eq("id", id);
+  const { data, error } = await supabase.from("candidatos").update(update).eq("id", id).select(CANDIDATE_COLUMNS).single();
   if (error) throw error;
+  return data as Candidato;
 }
 
 export async function setCandidateResume(id: string, path: string) {
