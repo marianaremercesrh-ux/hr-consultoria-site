@@ -1,7 +1,120 @@
 import { Bell } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { feedbackDecisionLabel, listAdminFeedbacks, updateFeedbackService } from "../services/adminFeedbacks";
+import {
+  applyFeedbackAction,
+  feedbackDecisionLabel,
+  listAdminFeedbacks,
+  updateFeedbackService,
+} from "../services/adminFeedbacks";
 import type { AdminClientFeedback } from "../types/clientPortal";
+import AdminFeedbackActions, { type AdminFeedbackAction } from "./AdminFeedbackActions";
 
-export default function AdminNotifications(){const[open,setOpen]=useState(false),[items,setItems]=useState<AdminClientFeedback[]>([]),[loading,setLoading]=useState(false);const load=useCallback(async()=>{setLoading(true);try{setItems(await listAdminFeedbacks())}catch(reason){console.error("[Notificações administrativas]",reason)}finally{setLoading(false)}},[]);useEffect(()=>{void load();const focus=()=>void load(),visible=()=>{if(document.visibilityState==="visible")void load()};window.addEventListener("focus",focus);document.addEventListener("visibilitychange",visible);return()=>{window.removeEventListener("focus",focus);document.removeEventListener("visibilitychange",visible)}},[load]);const pending=items.filter(x=>!x.lido_em||x.status_atendimento!=="concluido"),count=pending.length;async function action(id:string,status:"lida"|"em_andamento"|"concluido"){await updateFeedbackService(id,status);await load()}return <div className="relative"><button type="button" onClick={()=>setOpen(!open)} aria-label="Notificações" aria-expanded={open} className={`relative flex h-10 w-10 items-center justify-center border text-white transition focus:outline-none focus:ring-2 focus:ring-[#D4A62A] ${count?"border-[#D4A62A] bg-[#D4A62A]/20":"border-white/20"}`}><Bell size={19}/>{count>0&&<span className="absolute -right-1 -top-1 rounded-full bg-[#D4A62A] px-1.5 text-xs text-[#052656]">{count}</span>}</button>{open&&<div className="absolute right-0 z-50 mt-2 w-[min(94vw,440px)] bg-white p-5 text-[#052656] shadow-xl"><div className="flex items-center justify-between gap-3"><strong>Feedbacks do cliente</strong><button onClick={()=>void load()} disabled={loading} className="text-sm font-semibold underline">{loading?"Atualizando...":"Atualizar"}</button></div><div className="mt-4 max-h-[60vh] space-y-3 overflow-y-auto">{pending.slice(0,5).map(item=><article key={item.id} className={`border-l-4 p-3 ${!item.lido_em?"border-[#D4A62A] bg-amber-50":"border-blue-500 bg-blue-50"}`}><strong>{item.empresa?.nome??"Empresa"}</strong><p>{item.candidatura?.candidato?.nome??"Candidato"} · {item.candidatura?.vaga?.titulo??"Vaga"}</p><p className="text-sm font-semibold">{feedbackDecisionLabel(item.decisao)}</p>{item.comentario&&<p className="mt-1 text-sm">{item.comentario}</p>}<time className="mt-1 block text-xs text-gray-500">{formatDate(item.updated_at)} · {item.status_atendimento.replace("_"," ")}</time><div className="mt-2 flex flex-wrap gap-2"><a href={`/admin/candidatos/${item.candidatura?.candidato_id}?candidatura=${item.candidatura_id}&from=notificacoes#candidatura-${item.candidatura_id}`} className="text-sm font-semibold underline">Abrir candidato</a>{!item.lido_em&&<button onClick={()=>void action(item.id,"lida")} className="text-sm font-semibold underline">Marcar como lida</button>}<button onClick={()=>void action(item.id,"em_andamento")} className="text-sm font-semibold underline">Iniciar atendimento</button><button onClick={()=>void action(item.id,"concluido")} className="text-sm font-semibold underline">Concluir</button></div></article>)}{!pending.length&&<p className="text-sm text-gray-600">Nenhum feedback aguardando acompanhamento.</p>}</div><a href="/admin/notificacoes" className="mt-4 inline-block font-semibold underline">Ver todas as notificações</a></div>}</div>}
-function formatDate(value:string){return new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short"}).format(new Date(value))}
+export default function AdminNotifications() {
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState<AdminClientFeedback[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      setItems(await listAdminFeedbacks());
+    } catch (reason) {
+      console.error("[Notificações administrativas]", reason);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+    const focus = () => void load();
+    const visible = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    window.addEventListener("focus", focus);
+    document.addEventListener("visibilitychange", visible);
+    return () => {
+      window.removeEventListener("focus", focus);
+      document.removeEventListener("visibilitychange", visible);
+    };
+  }, [load]);
+
+  const count = items.filter(
+    (item) => !item.lido_em || item.status_atendimento !== "concluido",
+  ).length;
+
+  async function action(item: AdminClientFeedback, status: AdminFeedbackAction) {
+    setItems((current) =>
+      current.map((candidate) =>
+        candidate.id === item.id ? applyFeedbackAction(candidate, status) : candidate,
+      ),
+    );
+    try {
+      await updateFeedbackService(item, status);
+    } catch (reason) {
+      console.error("[Atendimento de feedback]", reason);
+      await load();
+    }
+  }
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-label="Notificações"
+        aria-expanded={open}
+        className={`relative flex h-10 w-10 items-center justify-center border text-white transition focus:outline-none focus:ring-2 focus:ring-[#D4A62A] ${count ? "border-[#D4A62A] bg-[#D4A62A]/20" : "border-white/20"}`}
+      >
+        <Bell size={19} />
+        {count > 0 && (
+          <span className="absolute -right-1 -top-1 rounded-full bg-[#D4A62A] px-1.5 text-xs text-[#052656]">
+            {count}
+          </span>
+        )}
+      </button>
+      {open && (
+        <div className="absolute right-0 z-50 mt-2 w-[min(94vw,440px)] bg-white p-5 text-[#052656] shadow-xl">
+          <div className="flex items-center justify-between gap-3">
+            <strong>Feedbacks do cliente</strong>
+            <button onClick={() => void load()} disabled={loading} className="text-sm font-semibold underline">
+              {loading ? "Atualizando..." : "Atualizar"}
+            </button>
+          </div>
+          <div className="mt-4 max-h-[60vh] space-y-3 overflow-y-auto">
+            {items.slice(0, 5).map((item) => (
+              <article
+                key={item.id}
+                className={`border-l-4 p-3 ${!item.lido_em ? "border-[#D4A62A] bg-amber-50" : item.status_atendimento === "concluido" ? "border-green-600 bg-green-50" : "border-blue-500 bg-blue-50"}`}
+              >
+                <strong>{item.empresa?.nome ?? "Empresa"}</strong>
+                <p>{item.candidatura?.candidato?.nome ?? "Candidato"} · {item.candidatura?.vaga?.titulo ?? "Vaga"}</p>
+                <p className="text-sm font-semibold">{feedbackDecisionLabel(item.decisao)}</p>
+                {item.comentario && <p className="mt-1 text-sm">{item.comentario}</p>}
+                <time className="mt-1 block text-xs text-gray-500">
+                  {formatDate(item.updated_at)} · {item.status_atendimento.replace("_", " ")}
+                </time>
+                <div className="mt-2">
+                  <AdminFeedbackActions item={item} onAction={action} compact />
+                </div>
+              </article>
+            ))}
+            {!items.length && (
+              <p className="text-sm text-gray-600">Nenhum feedback registrado.</p>
+            )}
+          </div>
+          <a href="/admin/notificacoes" className="mt-4 inline-block font-semibold underline">
+            Ver todas as notificações
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
