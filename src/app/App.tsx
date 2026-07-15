@@ -785,7 +785,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             className="pt-8 border-t text-center text-base leading-relaxed"
             style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}
           >
-            © {new Date().getFullYear()} HR Consultoria de RH. Todos os direitos reservados.
+            © HR Consultoria de RH. Todos os direitos reservados.
           </div>
         </div>
       </footer>
