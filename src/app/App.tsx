@@ -18,6 +18,7 @@ import CompanyContractSection from "./components/CompanyContractSection";
 import PortalAccessSection from "./components/PortalAccessSection";
 import ClientLoginPage from "./pages/ClientLoginPage";
 import ClientPortalPage from "./pages/ClientPortalPage";
+import AdminPortalPreviewPage from "./pages/AdminPortalPreviewPage";
 import { supabase } from "./lib/supabase";
 
 const LOGO_ASSETS = {
@@ -804,7 +805,7 @@ export default function App() {
   const caminho = window.location.pathname;
 
   if (caminho === "/cliente/login") return <ClientLoginPage />;
-  if (caminho === "/cliente" || caminho.startsWith("/cliente/")) return <ClientPortalPage />;
+  if (caminho === "/cliente" || caminho.startsWith("/cliente/")) return <ClientAccessGate><ClientPortalPage /></ClientAccessGate>;
 
   if (caminho === "/admin/login") {
     return <AdminLoginPage />;
@@ -838,6 +839,8 @@ export default function App() {
 
   if (caminho === "/admin/empresas") return <AdminAccessGate><AdminCompaniesPage /></AdminAccessGate>;
   if (caminho === "/admin/empresas/nova") return <AdminAccessGate><AdminCompaniesPage newCompany /></AdminAccessGate>;
+  const portalPreview = caminho.match(/^\/admin\/empresas\/([^/]+)\/portal-preview$/);
+  if (portalPreview) { const empresaId=decodeURIComponent(portalPreview[1]); return <AdminAccessGate><AdminPortalPreviewPage empresaId={empresaId}/></AdminAccessGate>; }
   const empresa = caminho.match(/^\/admin\/empresas\/([^/]+)$/);
   if (empresa) { const empresaId = decodeURIComponent(empresa[1]); return <AdminAccessGate><><AdminCompaniesPage id={empresaId}/><div className="bg-[#F5F7FA] px-5 pb-10"><div className="mx-auto max-w-5xl space-y-8"><PortalAccessSection empresaId={empresaId}/><CompanyContractSection empresaId={empresaId}/></div></div></></AdminAccessGate>; }
   if (caminho === "/admin/agenda") return <AdminAccessGate><AdminAgendaPage /></AdminAccessGate>;
@@ -862,3 +865,5 @@ export default function App() {
 }
 
 function AdminAccessGate({children}:{children:React.ReactNode}){const[access,setAccess]=useState<"checking"|"allowed"|"client">("checking");useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){window.location.href="/admin/login";return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();setAccess(profile&&["administrador","recrutador"].includes(profile.perfil)?"allowed":"client")})},[]);if(access==="client")return <AdminClientSessionNotice/>;return access==="allowed"?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso administrativo...</main>}
+
+function ClientAccessGate({children}:{children:React.ReactNode}){const[access,setAccess]=useState<"checking"|"client"|"admin"|"anonymous">("checking");useEffect(()=>{void supabase.auth.getSession().then(async({data})=>{if(!data.session){setAccess("anonymous");return}const{data:profile}=await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id",data.session.user.id).maybeSingle();setAccess(profile&&["administrador","recrutador"].includes(profile.perfil)?"admin":"client")})},[]);useEffect(()=>{if(access==="admin"||access==="anonymous")window.location.replace("/cliente/login")},[access]);return access==="client"?children:<main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] text-[#052656]">Verificando acesso ao portal...</main>}

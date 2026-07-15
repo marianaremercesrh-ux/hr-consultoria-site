@@ -1,45 +1,45 @@
 import { useEffect, useState } from "react";
-import { Mail } from "lucide-react";
+import { Building2, LayoutDashboard, Mail } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { getClientContext } from "../services/clientPortal";
+
+type AccessState = "checking" | "admin" | "login";
 
 export default function ClientLoginPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
+  const [access, setAccess] = useState<AccessState>("checking");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
     if (params.get("error_description") || hash.get("error_description")) setMessage("O link de acesso é inválido ou expirou. Solicite um novo link.");
     void supabase.auth.getSession().then(async ({ data }) => {
-      if (!data.session) return;
+      if (!data.session) { setAccess("login"); return; }
       const { data: profile } = await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id", data.session.user.id).maybeSingle();
-      if (profile && ["administrador", "recrutador"].includes(profile.perfil)) {
-        window.location.href = "/admin";
-        return;
-      }
+      if (profile && ["administrador", "recrutador"].includes(profile.perfil)) { setAccess("admin"); return; }
       try {
         const context = await getClientContext();
-        if (context.links.length) window.location.href = "/cliente";
-        else setMessage("Este usuário não possui acesso autorizado ao Portal do Cliente.");
-      } catch {
-        setMessage("Não foi possível validar seu acesso.");
-      }
+        if (context.links.length) { window.location.href = "/cliente"; return; }
+        setMessage("Este usuário não possui acesso autorizado ao Portal do Cliente.");
+      } catch { setMessage("Não foi possível validar seu acesso."); }
+      setAccess("login");
     });
   }, []);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (loading) return;
-    setLoading(true);
-    setMessage("");
+    setLoading(true); setMessage("");
     const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/cliente` } });
     if (error) setMessage(error.message.toLowerCase().includes("signups") ? "Este e-mail não está autorizado. Entre em contato com a HR Consultoria." : "Não foi possível enviar o acesso. Verifique o e-mail e tente novamente.");
     else setSent(true);
     setLoading(false);
   }
 
+  if (access === "checking") return <main className="flex min-h-screen items-center justify-center bg-[#052656] text-white">Verificando acesso...</main>;
+  if (access === "admin") return <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12"><section className="w-full max-w-lg bg-white p-8 text-center shadow-xl"><img src="/assets/hr-consultoria-logo.png" alt="HR Consultoria de RH" className="mx-auto mb-7 w-44"/><h1 className="text-3xl font-semibold text-[#052656]">Você está conectada como recrutadora.</h1><p className="mt-3 text-gray-600">Sua sessão administrativa foi mantida. Escolha como deseja continuar.</p><div className="mt-7 grid gap-3"><a href="/admin" className="inline-flex items-center justify-center gap-2 bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656]"><LayoutDashboard size={18}/>Voltar ao painel administrativo</a><a href="/admin/empresas" className="inline-flex items-center justify-center gap-2 border border-[#052656] px-5 py-3 font-semibold text-[#052656]"><Building2 size={18}/>Visualizar portal de uma empresa</a></div><a href="/" className="mt-6 block text-sm font-semibold text-[#052656] underline">Voltar ao site</a></section></main>;
   return <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12"><section className="w-full max-w-md bg-white p-8 shadow-xl"><img src="/assets/hr-consultoria-logo.png" alt="HR Consultoria de RH" className="mx-auto mb-7 w-44"/><h1 className="text-3xl font-semibold text-[#052656]">Área do Cliente</h1><p className="mt-3 text-gray-600">Acompanhe suas vagas e os candidatos encaminhados com segurança.</p>{sent?<div className="mt-7 border-l-4 border-green-600 bg-green-50 p-4 text-green-800"><strong>Verifique seu e-mail</strong><p className="mt-1">Enviamos um link de acesso. Ele possui validade limitada.</p></div>:<form onSubmit={submit} className="mt-7"><label><span className="mb-2 block font-semibold text-[#052656]">E-mail autorizado</span><input type="email" required autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]"/></label>{message&&<p role="alert" className="mt-4 text-sm font-semibold text-red-700">{message}</p>}<button disabled={loading} className="mt-5 inline-flex w-full items-center justify-center gap-2 bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] disabled:opacity-60"><Mail size={18}/>{loading?"Enviando...":"Receber acesso por e-mail"}</button></form>}<a href="/" className="mt-6 block text-center text-sm font-semibold text-[#052656] underline">Voltar ao site</a></section></main>;
 }

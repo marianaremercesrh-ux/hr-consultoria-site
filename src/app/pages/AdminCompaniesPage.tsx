@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Building2, Plus, Save, Upload } from "lucide-react";
+import { Building2, Eye, Plus, Save, Upload } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { AdminNotice, AdminSkeleton, adminButtonClass, adminInputClass } from "../components/AdminUI";
 import { getEmpresa, listEmpresas, saveEmpresa } from "../services/ats";
@@ -129,7 +129,7 @@ export default function AdminCompaniesPage({ id, newCompany = false }: { id?: st
 
   if (newCompany || id) return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><section className="mx-auto max-w-5xl px-5 py-10">
     <a href="/admin/empresas" className={adminButtonClass("secondary")}>← Empresas</a>
-    <h1 className="my-6 text-3xl font-semibold text-[#052656]">{id ? "Empresa" : "Nova empresa"}</h1>
+    <div className="my-6 flex flex-wrap items-center justify-between gap-4"><h1 className="text-3xl font-semibold text-[#052656]">{id ? "Empresa" : "Nova empresa"}</h1>{id&&<a href={`/admin/empresas/${id}/portal-preview`} className={adminButtonClass("secondary")}><Eye size={17}/>Visualizar Portal do Cliente</a>}</div>
     {message && <AdminNotice type="error">{message}</AdminNotice>}
     <form onSubmit={submit} className="grid gap-5 bg-white p-6 shadow-sm md:grid-cols-2">
       <label className="md:col-span-2"><span className="mb-2 block font-semibold text-[#052656]">Logo da empresa</span>
