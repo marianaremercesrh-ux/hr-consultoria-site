@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUp, BriefcaseBusiness, Building2, Clock3, L
 import { CONTACT_EMAIL, Logo, WhatsAppIcon, WHATSAPP_BUTTON_CLASS, whatsappLink } from "../App";
 import { formatarQuantidadeVagasDisponiveis as availableJobsLabel, normalizarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
 import { getPublishedJobBySlug, listPublishedJobs } from "../services/jobs";
-import type { Job } from "../types/jobs";
+import type { PublicJobRecord } from "../services/jobs";
 
 type PublicJob = {
   slug: string;
@@ -35,7 +35,7 @@ function splitJobText(value: string | null) {
   return (value ?? "").split(/\r?\n|;/).map((item) => item.trim()).filter(Boolean);
 }
 
-function toPublicJob(job: Job): PublicJob {
+function toPublicJob(job: PublicJobRecord): PublicJob {
   return {
     slug: job.slug,
     title: job.titulo,
@@ -43,7 +43,7 @@ function toPublicJob(job: Job): PublicJob {
     city: [job.cidade, job.estado].filter(Boolean).join(", "),
     contract: job.tipo_contrato || "Não informado",
     modality: job.modalidade || "Não informada",
-    salary: job.exibir_salario && job.salario ? job.salario : undefined,
+    salary: job.salario || undefined,
     summary: job.descricao || "Consulte os detalhes desta oportunidade.",
     benefits: splitJobText(job.beneficios),
     description: job.descricao || "",

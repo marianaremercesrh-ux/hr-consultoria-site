@@ -3,8 +3,13 @@ import { reportSupabaseError, supabaseErrorDetails } from "../lib/supabaseError"
 import { JOB_STATUS, type Job, type JobFormData, type JobStatus } from "../types/jobs";
 
 const JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
-const PUBLIC_JOB_COLUMNS = "id,titulo,slug,empresa,cidade,estado,modalidade,tipo_contrato,salario,exibir_salario,descricao,atividades,requisitos,beneficios,horario,quantidade_vagas,status,created_at,updated_at";
 const CREATED_JOB_COLUMNS = "id,titulo,slug,empresa,empresa_id,status,created_at";
+
+export type PublicJobRecord = Pick<Job,
+  "titulo" | "slug" | "empresa" | "cidade" | "estado" | "modalidade" |
+  "tipo_contrato" | "salario" | "descricao" | "atividades" | "requisitos" |
+  "beneficios" | "horario" | "quantidade_vagas"
+>;
 
 export type SelectableJob = Pick<Job, "id" | "titulo" | "status" | "empresa">;
 export type JobStatusRecord = Pick<Job, "id" | "status">;
@@ -71,17 +76,13 @@ export async function listJobsByCompanyId(empresaId: string) {
   return (data ?? []) as Array<Pick<Job, "id" | "status" | "empresa_id">>;
 }
 
-export async function listPublishedJobs() {
-  const { data, error } = await supabase
-    .from("vagas")
-    .select(PUBLIC_JOB_COLUMNS)
-    .eq("status", JOB_STATUS.OPEN)
-    .order("created_at", { ascending: false });
+export async function listPublishedJobs(): Promise<PublicJobRecord[]> {
+  const { data, error } = await supabase.rpc("public_list_published_jobs");
   if (error) {
     reportSupabaseError("SELECT público de vagas publicadas", error);
     throw error;
   }
-  return (data ?? []) as Job[];
+  return (data ?? []) as PublicJobRecord[];
 }
 
 export async function getJobById(id: string | number) {
@@ -94,18 +95,15 @@ export async function getJobById(id: string | number) {
   return data as Job;
 }
 
-export async function getPublishedJobBySlug(slug: string) {
+export async function getPublishedJobBySlug(slug: string): Promise<PublicJobRecord | null> {
   const { data, error } = await supabase
-    .from("vagas")
-    .select(PUBLIC_JOB_COLUMNS)
-    .eq("slug", slug)
-    .eq("status", JOB_STATUS.OPEN)
+    .rpc("public_list_published_jobs", { p_slug: slug })
     .maybeSingle();
   if (error) {
     reportSupabaseError("SELECT público de vaga publicada por slug", error);
     throw error;
   }
-  return data as Job | null;
+  return data as PublicJobRecord | null;
 }
 
 export async function findJobBySlug(slug: string): Promise<Pick<Job, "id" | "titulo" | "slug" | "empresa" | "status" | "created_at"> | null> {
