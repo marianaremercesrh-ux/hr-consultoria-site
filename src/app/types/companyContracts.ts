@@ -1,5 +1,9 @@
 export type PaymentStatus="pendente"|"pago"|"parcialmente_pago"|"atrasado"|"cancelado";
-export type CompanyContract={id:string;empresa_id:string;nome_arquivo:string|null;caminho_arquivo:string|null;valor_por_vaga:number;moeda:string;valor_recebido:number;forma_cobranca:string|null;status_pagamento:PaymentStatus;data_vencimento:string|null;observacoes:string|null;contrato_data_upload:string|null;created_at:string;updated_at:string};
+export type ContractStatus="pendente"|"vigente"|"encerrado"|"cancelado";
+export type CompanyContract={id:string;empresa_id:string;nome_arquivo:string|null;caminho_arquivo:string|null;valor_por_vaga:number;moeda:string;valor_recebido:number;forma_cobranca:string|null;status_pagamento:PaymentStatus;status_contrato:ContractStatus;data_vencimento:string|null;observacoes:string|null;contrato_data_upload:string|null;portal_liberado:boolean;portal_liberado_em:string|null;portal_liberado_por:string|null;created_at:string;updated_at:string};
+export type PortalContract={id:string;nome:string;nome_arquivo:string|null;status:ContractStatus;data_envio:string;data_validade:string|null;caminho_arquivo:string};
+export type ContractPortalAudit={id:string;contrato_id:string;empresa_id:string;usuario_id:string;acao:"visualizacao"|"download";created_at:string};
 export type CompanyContractForm={valor_por_vaga:number;moeda:string;valor_recebido:number;forma_cobranca:string;status_pagamento:PaymentStatus;data_vencimento:string;observacoes:string};
 export const PAYMENT_STATUSES:Array<{value:PaymentStatus;label:string}>=[{value:"pendente",label:"Pendente"},{value:"pago",label:"Pago"},{value:"parcialmente_pago",label:"Parcialmente pago"},{value:"atrasado",label:"Atrasado"},{value:"cancelado",label:"Cancelado"}];
+export const CONTRACT_STATUSES:Array<{value:ContractStatus;label:string}>=[{value:"pendente",label:"Pendente"},{value:"vigente",label:"Vigente"},{value:"encerrado",label:"Encerrado"},{value:"cancelado",label:"Cancelado"}];
 export const EMPTY_CONTRACT_FORM:CompanyContractForm={valor_por_vaga:0,moeda:"BRL",valor_recebido:0,forma_cobranca:"",status_pagamento:"pendente",data_vencimento:"",observacoes:""};

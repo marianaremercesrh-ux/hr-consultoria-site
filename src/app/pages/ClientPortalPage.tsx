@@ -9,6 +9,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import ClientLayout from "../components/ClientLayout";
+import ClientDocuments from "../components/ClientDocuments";
 import { clientPortalSupabase as supabase } from "../lib/clientPortalSupabase";
 import {
   getClientContext,
@@ -140,6 +141,8 @@ function RouteContent({
   const path = window.location.pathname;
   const jobMatch = path.match(/^\/cliente\/vagas\/([^/]+)$/);
   const candidateMatch = path.match(/^\/cliente\/candidatos\/([^/]+)$/);
+  if (path === "/cliente/documentos")
+    return <ClientDocuments companyId={company.id} />;
   if (jobMatch)
     return <JobDetail id={decodeURIComponent(jobMatch[1])} data={data} />;
   if (candidateMatch)
