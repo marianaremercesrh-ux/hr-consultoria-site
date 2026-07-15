@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -47,9 +47,11 @@ export default function ClientPortalPage() {
       localStorage.getItem("portal_company") ?? "",
     ),
     [loading, setLoading] = useState(true),
+    [refreshing, setRefreshing] = useState(false),
     [error, setError] = useState("");
-  async function load() {
-    setLoading(true);
+  const load = useCallback(async (background = false) => {
+    if (background) setRefreshing(true); else setLoading(true);
+    setError("");
     try {
       const {
         data: { session },
@@ -97,17 +99,18 @@ export default function ClientPortalPage() {
       });
     } catch (reason) {
       console.error("[Portal do Cliente]", reason);
-      setError("Não foi possível carregar o portal. Tente novamente.");
+      setError("Não foi possível carregar as informações. Tente atualizar.");
     } finally {
-      setLoading(false);
+      if (background) setRefreshing(false); else setLoading(false);
     }
-  }
+  }, [companyId]);
   useEffect(() => {
     void load();
-  }, [companyId]);
+  }, [load]);
+  useEffect(()=>{const refresh=()=>void load(true);const visible=()=>{if(document.visibilityState==="visible")refresh()};window.addEventListener("focus",refresh);document.addEventListener("visibilitychange",visible);return()=>{window.removeEventListener("focus",refresh);document.removeEventListener("visibilitychange",visible)}},[load]);
   if (loading) return <Loading />;
   if (error || !data)
-    return <ErrorPage message={error || "Acesso não encontrado."} />;
+    return <ErrorPage message={error || "Acesso não encontrado."} onRetry={()=>void load()} />;
   const company =
     data.companies.find((x) => x.id === companyId) ?? data.companies[0];
   function changeCompany(id: string) {
@@ -120,6 +123,7 @@ export default function ClientPortalPage() {
       companies={data.companies}
       onCompany={changeCompany}
     >
+      <div className="mx-auto flex max-w-7xl justify-end px-5 pt-5"><button type="button" disabled={refreshing} onClick={()=>void load(true)} className="border border-[#052656] px-4 py-2 font-semibold text-[#052656] disabled:opacity-60">{refreshing?"Atualizando...":"Atualizar informações"}</button></div>
       <RouteContent data={data} company={company} onReload={load} />
     </ClientLayout>
   );
@@ -289,6 +293,9 @@ function RecentUpdates({ data }: { data: Data }) {
               <p className="text-sm text-gray-500">
                 Atualizado em {formatDate(latestUpdate(app, data.interviews))}
               </p>
+              {app.resumo_cliente&&<p className="mt-3 text-gray-700"><strong>Resumo:</strong> {app.resumo_cliente}</p>}
+              {app.pontos_positivos_cliente&&<p className="mt-2 text-gray-700"><strong>Pontos positivos:</strong> {app.pontos_positivos_cliente}</p>}
+              {app.pontos_atencao_cliente&&<p className="mt-2 text-gray-700"><strong>Pontos de atenção:</strong> {app.pontos_atencao_cliente}</p>}
               {interview && (
                 <div className="mt-3 bg-[#D4A62A]/15 p-3">
                   <strong>
@@ -520,13 +527,10 @@ function JobDetail({ id, data }: { id: string; data: Data }) {
                   <p className="text-gray-600">{etapaLabel(app.etapa)}</p>
                 </div>
                 {interview && (
-                  <p className="flex items-center gap-2 text-sm font-semibold text-[#052656]">
-                    <Clock3 size={16} />
-                    {formatDate(interview.data)} às{" "}
-                    {interview.horario.slice(0, 5)}
-                  </p>
+                  <div className="text-right text-sm font-semibold text-[#052656]"><p className="flex items-center gap-2"><Clock3 size={16}/>{formatDate(interview.data)} às {interview.horario.slice(0,5)}</p><p>{interviewLabel(interview.status)} · {interview.modalidade==="presencial"?"Presencial":"Online"}</p>{interview.local&&<p>{interview.local}</p>}</div>
                 )}
               </div>
+              {app.data_admissao&&<p className="mt-3 font-semibold text-[#052656]">Data de admissão: {formatDate(app.data_admissao)}</p>}
             </a>
           );
         })}
@@ -744,7 +748,7 @@ function Loading() {
     </main>
   );
 }
-function ErrorPage({ message }: { message: string }) {
+function ErrorPage({ message,onRetry }: { message: string;onRetry:()=>void }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] px-5">
       <div className="max-w-md bg-white p-8 text-center shadow">
@@ -752,12 +756,7 @@ function ErrorPage({ message }: { message: string }) {
           Não foi possível abrir o portal
         </h1>
         <p className="mt-3 text-gray-600">{message}</p>
-        <a
-          href="/cliente/login"
-          className="mt-5 inline-block bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656]"
-        >
-          Voltar ao acesso
-        </a>
+        <button onClick={onRetry} className="mt-5 inline-block bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656]">Tentar novamente</button>
       </div>
     </main>
   );

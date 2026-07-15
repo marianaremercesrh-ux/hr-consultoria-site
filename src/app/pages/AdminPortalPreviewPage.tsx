@@ -1,23 +1,246 @@
 import { useEffect, useState } from "react";
-import { BriefcaseBusiness, CalendarDays, CheckCircle2, FileText, UsersRound } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CalendarDays,
+  CheckCircle2,
+  FileText,
+  UsersRound,
+} from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { getEmpresa } from "../services/ats";
-import { previewApplications as listPortalApplications, previewCandidates as listPortalCandidates, previewInterviews as listPortalInterviews, previewJobs as listPortalJobs } from "../services/portalPreview";
+import {
+  previewApplications as listPortalApplications,
+  previewCandidates as listPortalCandidates,
+  previewInterviews as listPortalInterviews,
+  previewJobs as listPortalJobs,
+} from "../services/portalPreview";
 import { etapaLabel } from "../types/candidates";
 import { formatarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
 import type { Empresa } from "../types/ats";
-import type { PortalApplication, PortalCandidate, PortalInterview, PortalJob } from "../types/clientPortal";
+import type {
+  PortalApplication,
+  PortalCandidate,
+  PortalInterview,
+  PortalJob,
+} from "../types/clientPortal";
 
-type PreviewData={company:Empresa;jobs:PortalJob[];applications:PortalApplication[];candidates:PortalCandidate[];interviews:PortalInterview[]};
+type PreviewData = {
+  company: Empresa;
+  jobs: PortalJob[];
+  applications: PortalApplication[];
+  candidates: PortalCandidate[];
+  interviews: PortalInterview[];
+};
 
-export default function AdminPortalPreviewPage({empresaId}:{empresaId:string}){
-  const[data,setData]=useState<PreviewData|null>(null),[error,setError]=useState("");
-  useEffect(()=>{void(async()=>{try{const company=await getEmpresa(empresaId);const jobs=await listPortalJobs(empresaId);const jobIds=jobs.map(job=>job.id);const[applications,interviews]=await Promise.all([listPortalApplications(jobIds),listPortalInterviews(jobIds)]);const candidates=await listPortalCandidates([...new Set(applications.map(item=>item.candidato_id))]);setData({company,jobs,applications,candidates,interviews})}catch(reason){console.error("[Prévia do Portal do Cliente]",reason);setError("Não foi possível carregar a prévia desta empresa.")}})()},[empresaId]);
-  if(error)return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><section className="mx-auto max-w-5xl px-5 py-10"><a href={`/admin/empresas/${empresaId}`} className="font-semibold text-[#052656] underline">← Voltar ao perfil da empresa</a><p className="mt-8 border-l-4 border-red-600 bg-white p-5 text-red-700">{error}</p></section></main>;
-  if(!data)return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><p className="p-10 text-center text-[#052656]">Carregando prévia do portal...</p></main>;
-  const open=data.jobs.filter(job=>job.status==="publicada"),scheduled=data.interviews.filter(item=>["agendada","confirmada","reagendada"].includes(item.status));
-  return <main className="min-h-screen bg-[#F5F7FA]"><AdminNav/><div className="border-y border-[#D4A62A] bg-[#FFF8E2] px-5 py-4"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3"><strong className="text-[#052656]">Modo de visualização: você está vendo o portal como recrutadora.</strong><a href={`/admin/empresas/${empresaId}`} className="border border-[#052656] px-4 py-2 font-semibold text-[#052656]">Voltar ao perfil da empresa</a></div></div><section className="mx-auto max-w-7xl px-5 py-10"><h1 className="text-3xl font-semibold text-[#052656]">Olá, {data.company.nome}</h1><p className="mt-2 text-gray-600">Visão somente leitura dos dados reais compartilhados com esta empresa.</p><div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5"><Metric icon={<BriefcaseBusiness/>} label="Vagas abertas" value={open.length}/><Metric icon={<UsersRound/>} label="Posições em aberto" value={open.reduce((sum,job)=>sum+Number(job.quantidade_vagas||0),0)}/><Metric icon={<FileText/>} label="Candidatos liberados" value={data.applications.length}/><Metric icon={<CalendarDays/>} label="Entrevistas agendadas" value={scheduled.length}/><Metric icon={<CheckCircle2/>} label="Aprovados" value={data.applications.filter(item=>["aprovado","contratado"].includes(item.etapa)).length}/></div><h2 className="mt-10 text-2xl font-semibold text-[#052656]">Vagas em andamento</h2><div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{data.jobs.filter(job=>job.status!=="encerrada").map(job=><article key={job.id} className="border border-gray-200 bg-white p-6 shadow-sm"><h3 className="text-xl font-semibold text-[#052656]">{job.titulo}</h3><p className="mt-2 text-gray-600">{formatarQuantidadeVagas(job.quantidade_vagas)} · {job.status}</p><p className="mt-4 font-semibold text-[#052656]">{data.applications.filter(item=>String(item.vaga_id)===String(job.id)).length} candidatos liberados</p></article>)}{!data.jobs.length&&<Empty text="Nenhuma vaga vinculada a esta empresa."/>}</div><h2 className="mt-10 text-2xl font-semibold text-[#052656]">Atualizações recentes</h2><div className="mt-4 space-y-3">{data.applications.slice(0,6).map(item=><article key={item.id} className="border border-gray-200 bg-white p-4"><strong className="text-[#052656]">{data.candidates.find(candidate=>candidate.id===item.candidato_id)?.nome??"Candidato"}</strong><p className="text-sm text-gray-600">{etapaLabel(item.etapa)} · {formatDate(item.portal_liberado_em??item.created_at)}</p></article>)}{!data.applications.length&&<Empty text="Nenhum candidato foi compartilhado ainda."/>}</div><div className="mt-10 border border-blue-200 bg-blue-50 p-5 text-[#052656]"><strong>Prévia somente leitura</strong><p className="mt-1">Feedbacks, liberações e alterações estão desativados neste modo.</p></div></section></main>;
+export default function AdminPortalPreviewPage({
+  empresaId,
+}: {
+  empresaId: string;
+}) {
+  const [data, setData] = useState<PreviewData | null>(null),
+    [error, setError] = useState("");
+  useEffect(() => {
+    void (async () => {
+      try {
+        const company = await getEmpresa(empresaId);
+        const jobs = await listPortalJobs(empresaId);
+        const jobIds = jobs.map((job) => job.id);
+        const [applications, interviews] = await Promise.all([
+          listPortalApplications(jobIds),
+          listPortalInterviews(jobIds),
+        ]);
+        const candidates = await listPortalCandidates([
+          ...new Set(applications.map((item) => item.candidato_id)),
+        ]);
+        setData({ company, jobs, applications, candidates, interviews });
+      } catch (reason) {
+        console.error("[Prévia do Portal do Cliente]", reason);
+        setError("Não foi possível carregar a prévia desta empresa.");
+      }
+    })();
+  }, [empresaId]);
+  if (error)
+    return (
+      <main className="min-h-screen bg-[#F5F7FA]">
+        <AdminNav />
+        <section className="mx-auto max-w-5xl px-5 py-10">
+          <a
+            href={`/admin/empresas/${empresaId}`}
+            className="font-semibold text-[#052656] underline"
+          >
+            ← Voltar ao perfil da empresa
+          </a>
+          <p className="mt-8 border-l-4 border-red-600 bg-white p-5 text-red-700">
+            {error}
+          </p>
+        </section>
+      </main>
+    );
+  if (!data)
+    return (
+      <main className="min-h-screen bg-[#F5F7FA]">
+        <AdminNav />
+        <p className="p-10 text-center text-[#052656]">
+          Carregando prévia do portal...
+        </p>
+      </main>
+    );
+  const open = data.jobs.filter((job) => job.status === "publicada"),
+    scheduled = data.interviews.filter((item) =>
+      ["agendada", "confirmada", "reagendada"].includes(item.status),
+    );
+  return (
+    <main className="min-h-screen bg-[#F5F7FA]">
+      <AdminNav />
+      <div className="border-y border-[#D4A62A] bg-[#FFF8E2] px-5 py-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
+          <strong className="text-[#052656]">
+            Modo de visualização: você está vendo o portal como recrutadora.
+          </strong>
+          <a
+            href={`/admin/empresas/${empresaId}`}
+            className="border border-[#052656] px-4 py-2 font-semibold text-[#052656]"
+          >
+            Voltar ao perfil da empresa
+          </a>
+        </div>
+      </div>
+      <section className="mx-auto max-w-7xl px-5 py-10">
+        <h1 className="text-3xl font-semibold text-[#052656]">
+          Olá, {data.company.nome}
+        </h1>
+        <p className="mt-2 text-gray-600">
+          Visão somente leitura dos dados reais compartilhados com esta empresa.
+        </p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <Metric
+            icon={<BriefcaseBusiness />}
+            label="Vagas abertas"
+            value={open.length}
+          />
+          <Metric
+            icon={<UsersRound />}
+            label="Posições em aberto"
+            value={open.reduce(
+              (sum, job) => sum + Number(job.quantidade_vagas || 0),
+              0,
+            )}
+          />
+          <Metric
+            icon={<FileText />}
+            label="Candidatos liberados"
+            value={data.applications.length}
+          />
+          <Metric
+            icon={<CalendarDays />}
+            label="Entrevistas agendadas"
+            value={scheduled.length}
+          />
+          <Metric
+            icon={<CheckCircle2 />}
+            label="Aprovados"
+            value={
+              data.applications.filter((item) =>
+                ["aprovado", "contratado"].includes(item.etapa),
+              ).length
+            }
+          />
+        </div>
+        <h2 className="mt-10 text-2xl font-semibold text-[#052656]">
+          Vagas em andamento
+        </h2>
+        <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {data.jobs
+            .filter((job) => job.status !== "encerrada")
+            .map((job) => (
+              <article
+                key={job.id}
+                className="border border-gray-200 bg-white p-6 shadow-sm"
+              >
+                <h3 className="text-xl font-semibold text-[#052656]">
+                  {job.titulo}
+                </h3>
+                <p className="mt-2 text-gray-600">
+                  {formatarQuantidadeVagas(job.quantidade_vagas)} · {job.status}
+                </p>
+                <p className="mt-4 font-semibold text-[#052656]">
+                  {
+                    data.applications.filter(
+                      (item) => String(item.vaga_id) === String(job.id),
+                    ).length
+                  }{" "}
+                  candidatos liberados
+                </p>
+              </article>
+            ))}
+          {!data.jobs.length && (
+            <Empty text="Nenhuma vaga vinculada a esta empresa." />
+          )}
+        </div>
+        <h2 className="mt-10 text-2xl font-semibold text-[#052656]">
+          Atualizações recentes
+        </h2>
+        <div className="mt-4 space-y-3">
+          {data.applications.slice(0, 6).map((item) => {const interview=data.interviews.find(x=>x.candidatura_id===item.id),job=data.jobs.find(x=>String(x.id)===String(item.vaga_id));return (
+            <article
+              key={item.id}
+              className="border border-gray-200 bg-white p-4"
+            >
+              <strong className="text-[#052656]">
+                {data.candidates.find(
+                  (candidate) => candidate.id === item.candidato_id,
+                )?.nome ?? "Candidato"}
+              </strong>
+              <p className="font-medium">{job?.titulo??"Vaga não encontrada"}</p>
+              <p className="text-sm text-gray-600">
+                {etapaLabel(item.etapa)} ·{" "}
+                {formatDate(item.updated_at)}
+              </p>
+              {item.resumo_cliente&&<p className="mt-2"><strong>Resumo:</strong> {item.resumo_cliente}</p>}
+              {item.pontos_positivos_cliente&&<p className="mt-2"><strong>Pontos positivos:</strong> {item.pontos_positivos_cliente}</p>}
+              {item.pontos_atencao_cliente&&<p className="mt-2"><strong>Pontos de atenção:</strong> {item.pontos_atencao_cliente}</p>}
+              {interview&&<div className="mt-3 bg-[#D4A62A]/15 p-3"><strong>Entrevista com o cliente: {interview.status.replaceAll("_"," ")}</strong><p>{interview.modalidade==="presencial"?"Presencial":"Online"}: {formatDate(interview.data)} às {interview.horario.slice(0,5)}</p>{interview.local&&<p>{interview.local}</p>}</div>}
+              {item.data_admissao&&<p className="mt-3 font-semibold text-[#052656]">Data de admissão: {formatDate(item.data_admissao)}</p>}
+            </article>
+          )})}
+          {!data.applications.length && (
+            <Empty text="Nenhum candidato foi compartilhado ainda." />
+          )}
+        </div>
+        <div className="mt-10 border border-blue-200 bg-blue-50 p-5 text-[#052656]">
+          <strong>Prévia somente leitura</strong>
+          <p className="mt-1">
+            Feedbacks, liberações e alterações estão desativados neste modo.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
 }
-function Metric({icon,label,value}:{icon:React.ReactNode;label:string;value:number}){return <article className="border-l-4 border-[#D4A62A] bg-white p-5 shadow-sm"><span className="text-[#D4A62A]">{icon}</span><strong className="mt-3 block text-3xl text-[#052656]">{value}</strong><p className="text-sm text-gray-600">{label}</p></article>}
-function Empty({text}:{text:string}){return <p className="border border-dashed border-gray-300 bg-white p-6 text-gray-600">{text}</p>}
-function formatDate(value:string){return new Intl.DateTimeFormat("pt-BR").format(new Date(value))}
+function Metric({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}) {
+  return (
+    <article className="border-l-4 border-[#D4A62A] bg-white p-5 shadow-sm">
+      <span className="text-[#D4A62A]">{icon}</span>
+      <strong className="mt-3 block text-3xl text-[#052656]">{value}</strong>
+      <p className="text-sm text-gray-600">{label}</p>
+    </article>
+  );
+}
+function Empty({ text }: { text: string }) {
+  return (
+    <p className="border border-dashed border-gray-300 bg-white p-6 text-gray-600">
+      {text}
+    </p>
+  );
+}
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("pt-BR").format(new Date(value));
+}
