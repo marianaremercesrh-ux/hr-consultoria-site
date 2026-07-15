@@ -324,14 +324,13 @@ Mensagem: ${mensagem || "Não informado"}`;
       {/* HERO */}
       <section id="inicio" className="relative min-h-screen flex items-center">
         <div
-          className="absolute inset-0"
+          className="home-hero-background absolute inset-0"
           style={{
             backgroundImage: `url(https://images.unsplash.com/photo-1758518731706-be5d5230e5a5?w=1800&h=1000&fit=crop&auto=format)`,
             backgroundSize: "cover",
-            backgroundPosition: "center 30%",
           }}
         >
-          <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(5,38,86,0.90) 0%, rgba(5,38,86,0.66) 60%, rgba(5,38,86,0.36) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(5,38,86,0.84) 0%, rgba(5,38,86,0.58) 60%, rgba(5,38,86,0.28) 100%)" }} />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-32 pb-24 w-full">
@@ -355,7 +354,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                 href={whatsappLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
+                className="inline-flex w-full items-center justify-center gap-3 bg-[#D4A62A] px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:bg-[#B98E20] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4A62A]/35 motion-reduce:transition-none sm:w-auto whitespace-nowrap"
               >
                 <WhatsAppIcon size={20} />
                 Solicitar proposta
@@ -363,7 +362,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               </a>
               <a
                 href="#servicos"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors duration-200 hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/25 whitespace-nowrap"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors duration-200 hover:bg-[#D4A62A]/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4A62A]/30 motion-reduce:transition-none whitespace-nowrap"
               >
                 Conhecer serviços
               </a>
@@ -371,7 +370,7 @@ Mensagem: ${mensagem || "Não informado"}`;
           </div>
         </div>
 
-        <a href="#sobre" className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 hover:text-white/80 transition-colors animate-bounce" aria-label="Ir para a seção Sobre">
+        <a href="#sobre" className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 hover:text-white/80 transition-colors motion-safe:animate-bounce motion-reduce:transition-none" aria-label="Ir para a seção Sobre">
           <ChevronDown size={24} />
         </a>
       </section>
