@@ -344,10 +344,10 @@ Mensagem: ${mensagem || "Não informado"}`;
             <h1
               className="font-['Playfair_Display',serif] text-4xl sm:text-5xl lg:text-6xl leading-[1.08] font-semibold text-white mb-7"
             >
-              HR Consultoria de RH: recrutamento e seleção com clareza, agilidade e segurança.
+              HR Consultoria de RH: recrutamento e seleção
             </h1>
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-10 max-w-2xl font-light">
-              A HR Consultoria de RH atende empresas em todo o Brasil, conduzindo processos seletivos de forma remota e buscando profissionais mais alinhados com a vaga e com a realidade de cada negócio.
+              Consultoria de RH em Belo Horizonte com atendimento para empresas em todo o Brasil, conduzindo recrutamento e seleção para encontrar profissionais alinhados a cada negócio.
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
               <a
@@ -806,6 +806,32 @@ Mensagem: ${mensagem || "Não informado"}`;
 
 export default function App() {
   const caminho = window.location.pathname;
+
+  useEffect(() => {
+    const isJobsPage = caminho === "/vagas" || caminho === "/vagas/";
+    const isPublicPage = caminho === "/" || caminho.startsWith("/vagas");
+    const title = isJobsPage
+      ? "Vagas de emprego em Belo Horizonte | HR Consultoria de RH"
+      : "HR Consultoria de RH | Recrutamento e Seleção";
+    const description = isJobsPage
+      ? "Confira vagas de emprego divulgadas pela HR Consultoria de RH e candidate-se às oportunidades disponíveis."
+      : "Consultoria de RH especializada em recrutamento e seleção, divulgação de vagas e contratação de profissionais em Belo Horizonte e em todo o Brasil.";
+    const canonical = caminho.startsWith("/vagas/")
+      ? `https://hr-consultoria-site.vercel.app${caminho.replace(/\/$/, "")}`
+      : isJobsPage
+        ? "https://hr-consultoria-site.vercel.app/vagas"
+        : "https://hr-consultoria-site.vercel.app/";
+
+    document.title = title;
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", description);
+    document.querySelector<HTMLMetaElement>('meta[name="robots"]')?.setAttribute("content", isPublicPage ? "index, follow" : "noindex, nofollow");
+    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute("content", title);
+    document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute("content", description);
+    document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute("content", canonical);
+    const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (isPublicPage) canonicalLink?.setAttribute("href", canonical);
+    else canonicalLink?.remove();
+  }, [caminho]);
 
   if (caminho === "/cliente/auth/callback") return <ClientAuthCallbackPage />;
   if (caminho === "/cliente/login") return <ClientLoginPage />;
