@@ -11,7 +11,7 @@
 
    `supabase functions deploy invite-client --no-verify-jwt`
 
-9. Configure na função: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` e `CLIENT_PORTAL_URL=https://hr-consultoria-site.vercel.app/cliente`.
+9. Configure na função: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` e `CLIENT_PORTAL_URL=https://www.hrconsultoriaderh.com.br/cliente`.
 10. Faça o deploy do frontend somente depois do SQL e da Edge Function, pois o código exige as novas colunas e políticas.
 11. No perfil de uma empresa, use “Acesso ao Portal” para autorizar e convidar o primeiro responsável.
 12. Na edição de uma vaga vinculada por `empresa_id`, revise o conteúdo e use “Liberar para o cliente” nas candidaturas desejadas.

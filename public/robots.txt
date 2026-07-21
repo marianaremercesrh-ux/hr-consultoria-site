@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hr-consultoria-site.vercel.app/sitemap.xml
+Sitemap: https://www.hrconsultoriaderh.com.br/sitemap.xml

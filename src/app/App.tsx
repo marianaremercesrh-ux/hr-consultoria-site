@@ -817,10 +817,10 @@ export default function App() {
       ? "Confira vagas de emprego divulgadas pela HR Consultoria de RH e candidate-se às oportunidades disponíveis."
       : "Consultoria de RH especializada em recrutamento e seleção, divulgação de vagas e contratação de profissionais em Belo Horizonte e em todo o Brasil.";
     const canonical = caminho.startsWith("/vagas/")
-      ? `https://hr-consultoria-site.vercel.app${caminho.replace(/\/$/, "")}`
+      ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
       : isJobsPage
-        ? "https://hr-consultoria-site.vercel.app/vagas"
-        : "https://hr-consultoria-site.vercel.app/";
+        ? "https://www.hrconsultoriaderh.com.br/vagas"
+        : "https://www.hrconsultoriaderh.com.br/";
 
     document.title = title;
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", description);
@@ -828,6 +828,9 @@ export default function App() {
     document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute("content", title);
     document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute("content", description);
     document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute("content", canonical);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')?.setAttribute("content", title);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')?.setAttribute("content", description);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:url"]')?.setAttribute("content", canonical);
     const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (isPublicPage) canonicalLink?.setAttribute("href", canonical);
     else canonicalLink?.remove();
