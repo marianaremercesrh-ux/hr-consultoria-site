@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole, Building2 } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Settings, Crown, Handshake, SearchCheck, BarChart3, BadgeCheck } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
 import AdminLoginPage, { AdminClientSessionNotice } from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
@@ -175,6 +175,126 @@ function HomeApp() {
     "Serviços gerais e apoio",
     "Vagas técnicas",
     "Recrutamento para pequenos negócios",
+  ];
+
+  const businessSolutions = [
+    {
+      icon: <Users size={24} />,
+      title: "Consultoria de RH",
+      items: [
+        "Recrutamento e Seleção",
+        "Hunting de profissionais",
+        "Entrevistas por competência",
+        "Implantação de RH",
+        "Estruturação de cargos e salários",
+        "Descrição de cargos",
+        "Integração de colaboradores",
+        "Pesquisa de Clima Organizacional",
+        "Avaliação de Desempenho",
+        "Treinamentos para líderes",
+        "Diagnóstico de RH",
+      ],
+    },
+    {
+      icon: <BriefcaseBusiness size={24} />,
+      title: "Departamento Pessoal",
+      items: [
+        "Gestão de admissões",
+        "Gestão de demissões",
+        "Agendamento de exames admissionais e periódicos",
+        "Organização documental",
+        "Interface com a contabilidade",
+        "Controle de documentos dos colaboradores",
+      ],
+    },
+    {
+      icon: <MonitorSmartphone size={24} />,
+      title: "Presença Digital",
+      items: [
+        "Criação de Sites Institucionais",
+        "Landing Pages",
+        "Identidade Visual",
+        "Criação de Logotipos",
+        "Google Meu Negócio",
+        "SEO Local",
+        "Gestão de LinkedIn Empresarial",
+        "Artes para Redes Sociais",
+      ],
+    },
+    {
+      icon: <Settings size={24} />,
+      title: "Gestão Empresarial",
+      items: [
+        "Organização de Processos",
+        "Padronização de Documentos",
+        "Manual do Colaborador",
+        "Indicadores de RH",
+        "Banco de Talentos",
+        "Estruturação de Processos de Recrutamento",
+      ],
+    },
+    {
+      icon: <Crown size={24} />,
+      title: "Soluções Premium",
+      items: [
+        "Employer Branding",
+        "Redução de Turnover",
+        "Plano de Retenção de Talentos",
+        "Mapeamento Comportamental",
+        "Consultoria Estratégica de Pessoas",
+        "Acompanhamento Pós-Contratação",
+      ],
+    },
+  ];
+
+  const businessPackages = [
+    {
+      icon: <SearchCheck size={24} />,
+      name: "Start",
+      description: "Ideal para empresas que precisam contratar rapidamente.",
+      features: [
+        "Divulgação da vaga",
+        "Triagem de currículos",
+        "Entrevistas",
+        "Envio dos candidatos aprovados",
+      ],
+    },
+    {
+      icon: <Handshake size={24} />,
+      name: "Growth",
+      description: "Tudo do Start, com acompanhamento mais completo da contratação.",
+      featured: true,
+      features: [
+        "Relatório completo",
+        "Acompanhamento da contratação",
+        "Garantia de reposição",
+        "Suporte durante o processo",
+      ],
+    },
+    {
+      icon: <BarChart3 size={24} />,
+      name: "Premium",
+      description: "Tudo do Growth, com consultoria estratégica para estruturar o RH.",
+      features: [
+        "Diagnóstico de RH",
+        "Estruturação de processos",
+        "Indicadores",
+        "Consultoria estratégica",
+        "Reuniões periódicas",
+        "Plano de melhoria contínua",
+      ],
+    },
+  ];
+
+  const marketingBenefits = [
+    "Recrutamento e Seleção",
+    "Criação de Site Profissional",
+    "Google Meu Negócio",
+    "LinkedIn Empresarial",
+    "Identidade Visual",
+    "Página Trabalhe Conosco",
+    "Banco de Talentos",
+    "Estratégias para atrair candidatos qualificados",
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -444,6 +564,160 @@ Mensagem: ${mensagem || "Não informado"}`;
                 </p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SOLUÇÕES EMPRESARIAIS */}
+      <section className="py-20 md:py-28 bg-background">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="mb-16 max-w-3xl">
+            <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
+              Soluções Empresariais
+            </span>
+            <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight">
+              Consultoria completa para empresas que querem crescer com estrutura
+            </h2>
+            <p className="mt-6 text-lg leading-[1.75] text-muted-foreground">
+              Integramos RH, departamento pessoal, presença digital e gestão para apoiar empresas em diferentes momentos: contratação, organização interna, fortalecimento da marca empregadora e melhoria contínua.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {businessSolutions.map((solution) => (
+              <article
+                key={solution.title}
+                className="group border border-border bg-white p-7 md:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A62A]/50 hover:shadow-xl hover:shadow-[#052656]/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              >
+                <div className="mb-6 flex h-12 w-12 items-center justify-center bg-[#052656] text-[#D4A62A] transition-colors duration-300 group-hover:bg-[#D4A62A] group-hover:text-[#052656] motion-reduce:transition-none">
+                  {solution.icon}
+                </div>
+                <h3 className="font-['Playfair_Display',serif] text-2xl font-semibold leading-tight text-foreground mb-5">
+                  {solution.title}
+                </h3>
+                <ul className="space-y-3">
+                  {solution.items.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-base leading-[1.55] text-muted-foreground">
+                      <Check size={16} className="mt-1 shrink-0 text-[#D4A62A]" strokeWidth={2.6} aria-hidden="true" />
+                      <span className="min-w-0 flex-1">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PACOTES EMPRESARIAIS */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#FFFFFF" }}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="mb-16 text-center">
+            <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
+              Pacotes Empresariais
+            </span>
+            <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight">
+              Escolha o nível de apoio ideal para sua empresa
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {businessPackages.map((pack) => (
+              <article
+                key={pack.name}
+                className={`group relative flex h-full flex-col border p-7 md:p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#052656]/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
+                  pack.featured
+                    ? "border-[#D4A62A] bg-[#052656] text-white"
+                    : "border-border bg-white text-foreground"
+                }`}
+              >
+                {pack.featured && (
+                  <span className="absolute right-6 top-6 bg-[#D4A62A] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#052656]">
+                    Mais completo
+                  </span>
+                )}
+                <div className={`mb-6 flex h-12 w-12 items-center justify-center ${pack.featured ? "bg-white/10 text-[#D4A62A]" : "bg-[#052656] text-[#D4A62A]"}`}>
+                  {pack.icon}
+                </div>
+                <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold uppercase leading-tight mb-4">
+                  {pack.name}
+                </h3>
+                <p className={`text-lg leading-[1.65] mb-7 ${pack.featured ? "text-white/70" : "text-muted-foreground"}`}>
+                  {pack.description}
+                </p>
+                <ul className="mt-auto space-y-3">
+                  {pack.features.map((feature) => (
+                    <li key={feature} className={`flex items-start gap-3 text-base leading-[1.55] ${pack.featured ? "text-white/82" : "text-foreground"}`}>
+                      <Check size={16} className="mt-1 shrink-0 text-[#D4A62A]" strokeWidth={2.6} aria-hidden="true" />
+                      <span className="min-w-0 flex-1">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* RH + MARKETING */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-center">
+          <div>
+            <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
+              RH + Marketing
+            </span>
+            <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-white leading-tight mb-6">
+              Contratamos os profissionais certos e fortalecemos a imagem da sua empresa.
+            </h2>
+            <p className="text-lg leading-[1.75]" style={{ color: "rgba(255,255,255,0.70)" }}>
+              Uma combinação estratégica para atrair melhores candidatos, melhorar a percepção da marca e transformar recrutamento em vantagem competitiva.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10">
+            {marketingBenefits.map((benefit) => (
+              <article key={benefit} className="group bg-[#052656] p-6 transition-colors duration-200 hover:bg-[#08346F] motion-reduce:transition-none">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center bg-[#D4A62A] text-[#052656]">
+                  <BadgeCheck size={18} strokeWidth={2.5} aria-hidden="true" />
+                </div>
+                <h3 className="text-lg font-semibold leading-snug text-white">
+                  {benefit}
+                </h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA EMPRESARIAL */}
+      <section className="py-20 md:py-28 bg-background">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6 lg:px-10 text-center">
+          <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
+            Crescimento empresarial
+          </span>
+          <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight mb-6">
+            Tudo o que sua empresa precisa para crescer, em um só lugar.
+          </h2>
+          <p className="text-xl leading-[1.7] text-muted-foreground mb-10">
+            Da contratação ao fortalecimento da sua marca, oferecemos soluções completas para impulsionar o crescimento do seu negócio.
+          </p>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4">
+            <a
+              href={emailLink("Olá, gostaria de solicitar uma proposta para soluções empresariais.", "Solicitação de proposta - Soluções Empresariais")}
+              className={`${EMAIL_BUTTON_CLASS} w-full sm:w-auto`}
+            >
+              <Mail size={20} aria-hidden="true" />
+              Solicitar Proposta
+            </a>
+            <a
+              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar sobre as soluções empresariais da HR Consultoria de RH.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
+            >
+              <WhatsAppIcon size={20} />
+              Falar no WhatsApp
+            </a>
           </div>
         </div>
       </section>
@@ -815,7 +1089,7 @@ export default function App() {
       : "HR Consultoria de RH | Recrutamento e Seleção";
     const description = isJobsPage
       ? "Confira vagas de emprego divulgadas pela HR Consultoria de RH e candidate-se às oportunidades disponíveis."
-      : "Consultoria de RH especializada em recrutamento e seleção, divulgação de vagas e contratação de profissionais em Belo Horizonte e em todo o Brasil.";
+      : "Consultoria empresarial de RH com recrutamento e seleção, departamento pessoal, presença digital, gestão de processos e soluções estratégicas para empresas.";
     const canonical = caminho.startsWith("/vagas/")
       ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
       : isJobsPage
