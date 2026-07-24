@@ -63,7 +63,7 @@ function JobsHeader() {
       <div className="hidden xl:flex items-center gap-3"><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className={INSTAGRAM_BUTTON_CLASS}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>
       <button type="button" className="xl:hidden p-2" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open}>{open ? <X size={22} color="#052656"/> : <Menu size={22} color="#052656"/>}</button>
     </div>
-    {open && <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">{link.label}</a>)}<a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className={`${INSTAGRAM_BUTTON_CLASS} w-full text-[#052656]`}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>}
+    {open && <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">{link.label}</a>)}<a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className={`${INSTAGRAM_BUTTON_CLASS} w-full`}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>}
   </header>;
 }
 
@@ -121,7 +121,7 @@ function JobsFooter() {
                 <Mail size={18} aria-hidden="true" />
                 {CONTACT_EMAIL}
               </a>
-              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className="inline-flex w-fit items-center gap-3 border border-[#D4A62A]/45 bg-[#D4A62A]/10 px-5 py-3 text-lg font-semibold text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20">
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className={`${INSTAGRAM_BUTTON_CLASS} w-fit`}>
                 <Instagram size={18} aria-hidden="true" />
                 Instagram
               </a>

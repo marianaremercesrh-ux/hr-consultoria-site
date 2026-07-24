@@ -62,7 +62,7 @@ export const INSTAGRAM_URL = "https://www.instagram.com/hrconsultoriaderh/";
 export const CONTACT_EMAIL = "hrconsultoriarecrutamento@gmail.com";
 export const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
-export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 border border-[#D4A62A]/55 bg-[#D4A62A]/10 px-5 py-3 text-lg font-medium tracking-wide text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/25 whitespace-nowrap";
+export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] px-5 py-3 text-lg font-medium tracking-wide text-white shadow-sm shadow-[#E1306C]/20 transition-all duration-200 hover:scale-[1.03] hover:shadow-md hover:shadow-[#E1306C]/30 focus:outline-none focus:ring-4 focus:ring-[#E1306C]/25 motion-reduce:transform-none whitespace-nowrap";
 const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
 
 export function WhatsAppIcon({ size = 18 }: { size?: number }) {
@@ -454,7 +454,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
-              className={`${INSTAGRAM_BUTTON_CLASS} w-full text-[#052656]`}
+              className={`${INSTAGRAM_BUTTON_CLASS} w-full`}
             >
               <Instagram size={18} aria-hidden="true" />
               Instagram
@@ -1078,7 +1078,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
-                  className="inline-flex w-fit items-center gap-3 border border-[#D4A62A]/45 bg-[#D4A62A]/10 px-5 py-3 text-lg font-semibold text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20"
+                  className={`${INSTAGRAM_BUTTON_CLASS} w-fit`}
                 >
                   <Instagram size={18} aria-hidden="true" />
                   Instagram
