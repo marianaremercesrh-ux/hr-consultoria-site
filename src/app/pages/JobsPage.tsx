@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, ArrowUp, BriefcaseBusiness, Building2, Clock3, LockKeyhole, Mail, MapPin, Menu, Search, WalletCards, X } from "lucide-react";
-import { CONTACT_EMAIL, Logo, WhatsAppIcon, WHATSAPP_BUTTON_CLASS, whatsappLink } from "../App";
+import { ArrowLeft, ArrowRight, ArrowUp, BriefcaseBusiness, Building2, Clock3, Instagram, LockKeyhole, Mail, MapPin, Menu, Search, WalletCards, X } from "lucide-react";
+import { CONTACT_EMAIL, INSTAGRAM_BUTTON_CLASS, INSTAGRAM_URL, Logo, WhatsAppIcon, WHATSAPP_BUTTON_CLASS, whatsappLink } from "../App";
 import { formatarQuantidadeVagasDisponiveis as availableJobsLabel, normalizarQuantidadeVagas } from "../lib/formatarQuantidadeVagas";
 import { getPublishedJobBySlug, listPublishedJobs } from "../services/jobs";
 import type { PublicJobRecord } from "../services/jobs";
@@ -60,15 +60,81 @@ function JobsHeader() {
     <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
       <a href="/#inicio" className="flex items-center" aria-label="Ir para o início"><Logo variant="color" showText={false} className="h-14 sm:h-16 w-auto max-w-[145px] sm:max-w-[180px]" /></a>
       <nav className="hidden xl:flex items-center gap-7" aria-label="Menu principal">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} aria-current={link.href === "/vagas" ? "page" : undefined} className={`text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70 ${link.href === "/vagas" ? "border-b-2 border-[#D4A62A]" : ""}`}>{link.label}</a>)}</nav>
-      <div className="hidden xl:flex items-center gap-3"><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>
+      <div className="hidden xl:flex items-center gap-3"><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className={INSTAGRAM_BUTTON_CLASS}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>
       <button type="button" className="xl:hidden p-2" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open}>{open ? <X size={22} color="#052656"/> : <Menu size={22} color="#052656"/>}</button>
     </div>
-    {open && <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">{link.label}</a>)}</div>}
+    {open && <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">{link.label}</a>)}<a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className={`${INSTAGRAM_BUTTON_CLASS} w-full text-[#052656]`}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>}
   </header>;
 }
 
-function JobsFooter() {
+function JobsFooterBase() {
   return <footer style={{ backgroundColor: "#052656" }} className="py-16"><div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10"><div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14"><div><div className="mb-4"><Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" /></div><p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>A HR Consultoria de RH oferece recrutamento e seleção com processo claro, triagem cuidadosa e comunicação próxima.</p></div><div><p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Navegação</p><ul className="space-y-3" lang="pt-BR" translate="no">{NAV_LINKS.map((link) => <li key={link.href}><a href={link.href} className="text-lg transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>{link.label}</a></li>)}<li><a href="/admin/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]"><LockKeyhole size={17} className="mt-1" aria-hidden="true"/><span><strong className="block text-lg">Área do Recrutador</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Gestão administrativa e processos seletivos</span></span></a></li><li><a href="/cliente/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]"><Building2 size={17} className="mt-1" aria-hidden="true"/><span><strong className="block text-lg">Área do Cliente</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Acompanhamento de vagas e candidatos liberados</span></span></a></li></ul></div><div><p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Contato</p><div className="flex flex-col gap-4"><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-3 bg-[#25D366] px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25"><WhatsAppIcon size={18} />WhatsApp</a><a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex w-fit items-center gap-3 border border-white/15 bg-white/5 px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20"><Mail size={18} aria-hidden="true" />{CONTACT_EMAIL}</a></div></div></div><div className="pt-8 border-t text-center text-base leading-relaxed" style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}>© HR Consultoria de RH. Todos os direitos reservados.</div></div></footer>;
+}
+
+function JobsFooter() {
+  return (
+    <footer style={{ backgroundColor: "#052656" }} className="py-16">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
+          <div>
+            <div className="mb-4">
+              <Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" />
+            </div>
+            <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
+              A HR Consultoria de RH oferece recrutamento e seleção com processo claro, triagem cuidadosa e comunicação próxima.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Navegação</p>
+            <ul className="space-y-3" lang="pt-BR" translate="no">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="text-lg transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a href="/admin/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
+                  <LockKeyhole size={17} className="mt-1" aria-hidden="true" />
+                  <span><strong className="block text-lg">Área do Recrutador</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Gestão administrativa e processos seletivos</span></span>
+                </a>
+              </li>
+              <li>
+                <a href="/cliente/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
+                  <Building2 size={17} className="mt-1" aria-hidden="true" />
+                  <span><strong className="block text-lg">Área do Cliente</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Acompanhamento de vagas e candidatos liberados</span></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Contato</p>
+            <div className="flex flex-col gap-4">
+              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-3 bg-[#25D366] px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25">
+                <WhatsAppIcon size={18} />
+                WhatsApp
+              </a>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex w-fit items-center gap-3 border border-white/15 bg-white/5 px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20">
+                <Mail size={18} aria-hidden="true" />
+                {CONTACT_EMAIL}
+              </a>
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba" className="inline-flex w-fit items-center gap-3 border border-[#D4A62A]/45 bg-[#D4A62A]/10 px-5 py-3 text-lg font-semibold text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20">
+                <Instagram size={18} aria-hidden="true" />
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-8 border-t text-center text-base leading-relaxed" style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}>
+          © HR Consultoria de RH. Todos os direitos reservados.
+        </div>
+      </div>
+    </footer>
+  );
 }
 
 export function JobsRouter() {

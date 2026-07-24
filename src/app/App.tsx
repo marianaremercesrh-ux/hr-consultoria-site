@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Settings, Crown, Handshake, SearchCheck, BarChart3, BadgeCheck } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Settings, Crown, Handshake, SearchCheck, BarChart3, BadgeCheck, Instagram } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
 import AdminLoginPage, { AdminClientSessionNotice } from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
@@ -58,9 +58,11 @@ export function Logo({
 }
 
 const WHATSAPP_NUMBER = "5531994773992";
+export const INSTAGRAM_URL = "https://www.instagram.com/hrconsultoriaderh/";
 export const CONTACT_EMAIL = "Marianaremercesrh@gmail.com";
 export const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
+export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 border border-[#D4A62A]/55 bg-[#D4A62A]/10 px-5 py-3 text-lg font-medium tracking-wide text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/25 whitespace-nowrap";
 const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
 
 export function WhatsAppIcon({ size = 18 }: { size?: number }) {
@@ -391,6 +393,16 @@ Mensagem: ${mensagem || "Não informado"}`;
           {/* CTA */}
           <div className="hidden xl:flex items-center gap-3">
             <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
+              className={INSTAGRAM_BUTTON_CLASS}
+            >
+              <Instagram size={18} aria-hidden="true" />
+              Instagram
+            </a>
+            <a
               href={whatsappLink()}
               target="_blank"
               rel="noopener noreferrer"
@@ -436,6 +448,16 @@ Mensagem: ${mensagem || "Não informado"}`;
             >
               <WhatsAppIcon size={18} />
               Fale conosco
+            </a>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
+              className={`${INSTAGRAM_BUTTON_CLASS} w-full text-[#052656]`}
+            >
+              <Instagram size={18} aria-hidden="true" />
+              Instagram
             </a>
           </div>
         )}
@@ -1050,6 +1072,16 @@ Mensagem: ${mensagem || "Não informado"}`;
                 >
                   <Mail size={18} aria-hidden="true" />
                   {CONTACT_EMAIL}
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
+                  className="inline-flex w-fit items-center gap-3 border border-[#D4A62A]/45 bg-[#D4A62A]/10 px-5 py-3 text-lg font-semibold text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20"
+                >
+                  <Instagram size={18} aria-hidden="true" />
+                  Instagram
                 </a>
               </div>
             </div>
