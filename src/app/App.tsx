@@ -59,7 +59,7 @@ export function Logo({
 
 const WHATSAPP_NUMBER = "5531994773992";
 export const INSTAGRAM_URL = "https://www.instagram.com/hrconsultoriaderh/";
-export const CONTACT_EMAIL = "Marianaremercesrh@gmail.com";
+export const CONTACT_EMAIL = "hrconsultoriarecrutamento@gmail.com";
 export const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
 export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 border border-[#D4A62A]/55 bg-[#D4A62A]/10 px-5 py-3 text-lg font-medium tracking-wide text-[#D4A62A] transition-all duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A] hover:text-[#052656] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/25 whitespace-nowrap";
