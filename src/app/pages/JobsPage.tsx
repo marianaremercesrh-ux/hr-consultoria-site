@@ -23,12 +23,12 @@ type PublicJob = {
 };
 
 const NAV_LINKS = [
-  { label: "InÃ­cio", href: "/#inicio" },
+  { label: "Início", href: "/#inicio" },
+  { label: "Recrutamento e Seleção", href: "/solucoes/recrutamento-selecao" },
   { label: "Vagas", href: "/vagas" },
-  { label: "Sobre", href: "/#sobre" },
-  { label: "ServiÃ§os", href: "/#servicos" },
-  { label: "Processo", href: "/#processo" },
-  { label: "Contato", href: "/#contato" },
+  { label: "Design & Marketing", href: "/solucoes/design-marca" },
+  { label: "Sites", href: "/solucoes/criacao-de-sites" },
+  { label: "Diferenciais", href: "/#diferenciais" },
 ];
 
 function splitJobText(value: string | null) {
@@ -57,13 +57,13 @@ function toPublicJob(job: PublicJobRecord): PublicJob {
 function JobsHeader() {
   const [open, setOpen] = useState(false);
   return <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-    <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+    <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between gap-6">
       <a href="/#inicio" className="flex items-center" aria-label="Ir para o inÃ­cio"><Logo variant="color" showText={false} className="h-14 sm:h-16 w-auto max-w-[145px] sm:max-w-[180px]" /></a>
-      <nav className="hidden xl:flex items-center gap-7" aria-label="Menu principal">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} aria-current={link.href === "/vagas" ? "page" : undefined} className={`text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70 ${link.href === "/vagas" ? "border-b-2 border-[#D4A62A]" : ""}`}>{link.label}</a>)}</nav>
-      <div className="hidden xl:flex items-center gap-3"><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Solutions em nova aba" className={INSTAGRAM_BUTTON_CLASS}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>
+      <nav className="hidden xl:flex flex-1 items-center justify-center gap-5" aria-label="Menu principal">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} aria-current={link.href === "/vagas" ? "page" : undefined} className={`relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:bg-[#D4A62A] after:transition-all ${link.href === "/vagas" ? "text-[#D4A62A] after:w-full" : "text-[#052656] hover:text-[#D4A62A] after:w-0 hover:after:w-full"}`}>{link.label}</a>)}</nav>
+      <div className="hidden xl:flex shrink-0 items-center gap-2"><a href="/cliente/login" className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10"><Building2 size={16} aria-hidden="true"/>Área do Cliente</a><a href="/admin/login" className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10"><LockKeyhole size={16} aria-hidden="true"/>Área do Recrutador</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#052656] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0B3470]"><WhatsAppIcon/> Falar com especialista</a></div>
       <button type="button" className="xl:hidden p-2" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open}>{open ? <X size={22} color="#052656"/> : <Menu size={22} color="#052656"/>}</button>
     </div>
-    {open && <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">{link.label}</a>)}<a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Solutions em nova aba" className={`${INSTAGRAM_BUTTON_CLASS} w-full`}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Fale conosco</a></div>}
+    {open && <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">{NAV_LINKS.map((link) => <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">{link.label}</a>)}<a href="/cliente/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]"><Building2 size={17} aria-hidden="true"/>Área do Cliente</a><a href="/admin/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]"><LockKeyhole size={17} aria-hidden="true"/>Área do Recrutador</a><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da HR Solutions em nova aba" className={`${INSTAGRAM_BUTTON_CLASS} w-full`}><Instagram size={18} aria-hidden="true"/>Instagram</a><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors hover:bg-[#1EBE57]"><WhatsAppIcon/> Falar com especialista</a></div>}
   </header>;
 }
 

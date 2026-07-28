@@ -83,14 +83,27 @@ export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center g
 const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
 
 const MAIN_NAV_LINKS = [
-  { label: "Início", href: "/" },
-  { label: "Recrutamento & Seleção", href: "/solucoes/recrutamento-selecao" },
-  { label: "Consultoria de RH", href: "/#consultoria-rh" },
-  { label: "Design & Marca", href: "/solucoes/design-marca" },
+  { label: "Início", href: "#inicio", sectionId: "inicio" },
+  { label: "Recrutamento e Seleção", href: "#recrutamento-selecao", sectionId: "recrutamento-selecao" },
+  { label: "Vagas", href: "/vagas" },
+  { label: "Design & Marketing", href: "#design-marca", sectionId: "design-marca" },
+  { label: "Sites", href: "#sites", sectionId: "sites" },
+  { label: "Diferenciais", href: "#diferenciais", sectionId: "diferenciais" },
+];
+
+const PUBLIC_SOLUTION_LINKS = [
+  { label: "Recrutamento e Seleção", href: "/solucoes/recrutamento-selecao" },
+  { label: "Design & Marketing", href: "/solucoes/design-marca" },
   { label: "Sites", href: "/solucoes/criacao-de-sites" },
-  { label: "Sobre", href: "/#sobre" },
-  { label: "Portfólio", href: "/#portfolio" },
-  { label: "Contato", href: "/#contato" },
+];
+
+const PUBLIC_HEADER_LINKS = [
+  { label: "Início", href: "/" },
+  PUBLIC_SOLUTION_LINKS[0],
+  { label: "Vagas", href: "/vagas" },
+  PUBLIC_SOLUTION_LINKS[1],
+  PUBLIC_SOLUTION_LINKS[2],
+  { label: "Diferenciais", href: "/#diferenciais" },
 ];
 
 const SOLUTION_CARDS = [
@@ -161,7 +174,489 @@ function emailLink(
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+function FloatingBackToTop({ targetId = "inicio" }: { targetId?: string }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 320);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleClick = () => {
+    const target = document.getElementById(targetId);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <button
+      type="button"
+      aria-label="Voltar ao topo"
+      onClick={handleClick}
+      className={`fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#D4A62A] text-[#052656] shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#E0B33A] focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/30 sm:bottom-7 sm:right-7 sm:h-14 sm:w-14 ${
+        visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+      }`}
+    >
+      <ArrowUp size={22} strokeWidth={2.4} aria-hidden="true" />
+    </button>
+  );
+}
+
 function HomeApp() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("inicio");
+  const [contactForm, setContactForm] = useState({
+    nome: "",
+    email: "",
+    telefone: "",
+    necessidade: "",
+  });
+  const [formError, setFormError] = useState("");
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = MAIN_NAV_LINKS.map((link) => link.sectionId ? document.getElementById(link.sectionId) : null).filter(Boolean);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-30% 0px -45% 0px", threshold: [0.15, 0.35, 0.6] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  const solutions = [
+    {
+      icon: <Users size={28} aria-hidden="true" />,
+      title: "Recrutamento & Seleção",
+      desc: "Encontramos talentos alinhados ao propósito e às necessidades da sua empresa.",
+      href: "/solucoes/recrutamento-selecao",
+      sectionId: "recrutamento-selecao",
+    },
+    {
+      icon: <Palette size={28} aria-hidden="true" />,
+      title: "Design & Marca",
+      desc: "Criamos identidades visuais e materiais que fortalecem sua comunicação.",
+      href: "/solucoes/design-marca",
+      sectionId: "design-marca",
+    },
+    {
+      icon: <MonitorSmartphone size={28} aria-hidden="true" />,
+      title: "Sites & Soluções Digitais",
+      desc: "Desenvolvemos experiências digitais para empresas modernas.",
+      href: "/solucoes/criacao-de-sites",
+      sectionId: "sites",
+    },
+  ];
+
+  const differentials = [
+    { icon: <Target size={24} aria-hidden="true" />, title: "Estratégia personalizada" },
+    { icon: <BriefcaseBusiness size={24} aria-hidden="true" />, title: "Soluções completas" },
+    { icon: <BarChart3 size={24} aria-hidden="true" />, title: "Visão de negócio" },
+    { icon: <BadgeCheck size={24} aria-hidden="true" />, title: "Criatividade e tecnologia" },
+  ];
+
+  const niches = ["Empresas em crescimento", "Pequenos negócios", "Indústria e comércio", "Serviços profissionais", "Projetos digitais", "Marcas em reposicionamento"];
+
+  const handleContactChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setContactForm((current) => ({ ...current, [name]: value }));
+    if (formError) setFormError("");
+  };
+
+  const handleContactSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const nome = contactForm.nome.trim();
+    const email = contactForm.email.trim();
+    const telefone = contactForm.telefone.trim();
+    const necessidade = contactForm.necessidade.trim();
+
+    if (!nome || !email || !telefone || !necessidade) {
+      setFormError("Preencha todos os campos para continuar.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFormError("Informe um e-mail válido.");
+      return;
+    }
+
+    const body = `Olá, gostaria de entrar em contato com a HR Solutions.
+
+Nome: ${nome}
+E-mail: ${email}
+Telefone: ${telefone}
+Descrição da necessidade: ${necessidade}`;
+
+    window.location.href = emailLink(body, "Contato pelo site - HR Solutions");
+  };
+
+  const navLinkClass = (sectionId: string) =>
+    `relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:bg-[#D4A62A] after:transition-all ${
+      activeSection === sectionId
+        ? "text-[#D4A62A] after:w-full"
+        : "text-[#052656] hover:text-[#D4A62A] after:w-0 hover:after:w-full"
+    }`;
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#F8F8F6] font-['Inter',sans-serif] text-[#052656] antialiased">
+      <header
+        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+          scrolled ? "border-b border-[#052656]/10 bg-white/95 shadow-sm backdrop-blur" : "bg-transparent"
+        }`}
+      >
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-5 sm:px-6 lg:px-10">
+          <a href="#inicio" aria-label="Ir para o início">
+            <Logo variant="color" showText={false} className="h-14 w-auto shrink-0 sm:h-16" />
+          </a>
+
+          <nav className="hidden flex-1 items-center justify-center gap-5 xl:flex" aria-label="Menu principal">
+            {MAIN_NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => link.sectionId && setActiveSection(link.sectionId)}
+                className={link.sectionId ? navLinkClass(link.sectionId) : "relative text-sm font-semibold tracking-wide text-[#052656] transition-colors hover:text-[#D4A62A]"}
+                aria-current={link.sectionId && activeSection === link.sectionId ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden shrink-0 items-center gap-2 xl:flex">
+            <a
+              href="/cliente/login"
+              className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10"
+            >
+              <Building2 size={16} aria-hidden="true" />
+              Área do Cliente
+            </a>
+            <a
+              href="/admin/login"
+              className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10"
+            >
+              <LockKeyhole size={16} aria-hidden="true" />
+              Área do Recrutador
+            </a>
+            <a
+              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-[#052656] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0B3470]"
+            >
+              <WhatsAppIcon size={18} />
+              Falar com especialista
+            </a>
+          </div>
+
+          <button
+            type="button"
+            className="p-2 xl:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {menuOpen && (
+          <div className="border-t border-[#052656]/10 bg-white px-6 py-6 shadow-xl xl:hidden">
+            <div className="flex flex-col gap-5">
+              {MAIN_NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => {
+                    if (link.sectionId) setActiveSection(link.sectionId);
+                    setMenuOpen(false);
+                  }}
+                  className={`text-lg font-semibold transition-colors ${link.sectionId && activeSection === link.sectionId ? "text-[#D4A62A]" : "text-[#052656]"}`}
+                  aria-current={link.sectionId && activeSection === link.sectionId ? "page" : undefined}
+                >
+                  {link.label}
+                </a>
+              ))}
+              <a href="/cliente/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
+                <Building2 size={17} aria-hidden="true" />
+                Área do Cliente
+              </a>
+              <a href="/admin/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
+                <LockKeyhole size={17} aria-hidden="true" />
+                Área do Recrutador
+              </a>
+              <a
+                href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}
+              >
+                <WhatsAppIcon size={18} />
+                Falar com especialista
+              </a>
+            </div>
+          </div>
+        )}
+      </header>
+
+      <main>
+        <section id="inicio" className="relative overflow-hidden bg-white pt-28 md:pt-32">
+          <div className="mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-24">
+            <div className="motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
+              <span className="mb-6 inline-flex border border-[#D4A62A]/30 bg-[#D4A62A]/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#8C6A10]">
+                Consultoria estratégica
+              </span>
+              <h1 className="font-['Playfair_Display',serif] text-5xl font-semibold leading-[1.02] text-[#052656] sm:text-6xl lg:text-7xl">
+                Pessoas, marcas e tecnologia para transformar negócios.
+              </h1>
+              <p className="mt-7 max-w-2xl text-xl leading-[1.75] text-[#4B4B4B]">
+                A HR Solutions conecta estratégia, criatividade e inovação para ajudar empresas a crescerem.
+              </p>
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <a href="#solucoes" className="inline-flex w-full items-center justify-center gap-3 bg-[#D4A62A] px-8 py-4 text-lg font-semibold text-[#052656] transition-colors hover:bg-[#E0B33A] sm:w-auto">
+                  Conheça nossas soluções
+                  <ArrowRight size={18} aria-hidden="true" />
+                </a>
+                <a
+                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-3 border border-[#052656]/18 bg-white px-8 py-4 text-lg font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 sm:w-auto"
+                >
+                  <WhatsAppIcon size={20} />
+                  Falar com especialista
+                </a>
+              </div>
+            </div>
+
+            <div className="relative motion-safe:animate-[fadeInUp_850ms_ease-out_120ms_both]">
+              <div className="absolute -left-6 top-10 h-28 w-28 border border-[#D4A62A]/30" />
+              <div className="relative overflow-hidden bg-[#052656] shadow-2xl shadow-[#052656]/18">
+                <img
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&h=1050&fit=crop&auto=format"
+                  alt="Equipe de consultoria em uma reunião estratégica"
+                  className="h-[440px] w-full object-cover opacity-90 sm:h-[560px]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#052656]/45 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 bg-white/94 p-5 shadow-xl backdrop-blur">
+                  <p className="text-base font-semibold uppercase tracking-[0.16em] text-[#D4A62A]">Três pilares</p>
+                  <p className="mt-2 text-xl font-semibold leading-snug text-[#052656]">
+                    Pessoas, criatividade e digital trabalhando juntos.
+                  </p>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -right-6 h-40 w-40 bg-[#D4A62A]/16" />
+            </div>
+          </div>
+        </section>
+
+        <section id="nichos" className="bg-[#F8F8F6] py-16 md:py-20">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+              <div>
+                <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Nichos</span>
+                <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-[#052656] md:text-5xl">
+                  Soluções para diferentes momentos de negócio.
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {niches.map((niche) => (
+                  <div key={niche} className="border border-[#052656]/10 bg-white px-5 py-4 text-base font-semibold text-[#052656] shadow-sm">
+                    {niche}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="solucoes" className="bg-[#F8F8F6] py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
+            <div className="mx-auto mb-14 max-w-3xl text-center motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
+              <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Nossas soluções</span>
+              <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-[#052656] md:text-5xl">
+                Escolha o caminho certo para o momento da sua empresa.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {solutions.map((solution) => (
+                <a
+                  key={solution.title}
+                  id={solution.sectionId}
+                  href={solution.href}
+                  className="group flex min-h-[360px] flex-col border border-[#052656]/10 bg-white p-8 shadow-lg shadow-[#052656]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A62A]/70 hover:shadow-2xl hover:shadow-[#052656]/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                >
+                  <div className="mb-8 flex h-14 w-14 items-center justify-center bg-[#052656] text-[#D4A62A] transition-colors group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
+                    {solution.icon}
+                  </div>
+                  <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold leading-tight text-[#052656]">{solution.title}</h3>
+                  <p className="mt-5 text-lg leading-[1.7] text-[#4B4B4B]">{solution.desc}</p>
+                  <span className="mt-auto inline-flex items-center gap-2 pt-8 text-base font-semibold text-[#052656] transition-colors group-hover:text-[#D4A62A]">
+                    Conhecer solução
+                    <ArrowRight size={17} aria-hidden="true" />
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="diferenciais" className="bg-white py-20 md:py-28">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
+            <div>
+              <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Diferenciais</span>
+              <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-[#052656] md:text-5xl">
+                Uma visão integrada para transformar intenção em resultado.
+              </h2>
+              <p className="mt-6 text-lg leading-[1.75] text-[#4B4B4B]">
+                A HR Solutions combina análise, criação e execução digital para apoiar empresas com soluções bem direcionadas, sem excesso de complexidade.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {differentials.map((item) => (
+                <article key={item.title} className="border border-[#052656]/10 bg-[#F8F8F6] p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-[#052656]/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center bg-[#D4A62A]/16 text-[#8C6A10]">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-2xl font-semibold leading-tight text-[#052656]">{item.title}</h3>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contato" className="bg-[#052656] py-20 md:py-28">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
+            <div>
+              <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Próximo passo</span>
+              <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-white md:text-5xl">
+                Vamos transformar sua ideia em resultado?
+              </h2>
+              <p className="mt-6 max-w-2xl text-xl leading-[1.7] text-white/70">
+                Conte o que sua empresa precisa e direcionamos a melhor solução dentro dos pilares da HR Solutions.
+              </p>
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+                <a
+                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de entrar em contato com a HR Solutions.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
+                >
+                  <WhatsAppIcon size={20} />
+                  Entrar em contato
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
+                  className={`${INSTAGRAM_BUTTON_CLASS} w-full sm:w-auto`}
+                >
+                  <Instagram size={20} aria-hidden="true" />
+                  Instagram
+                </a>
+              </div>
+            </div>
+
+            <form onSubmit={handleContactSubmit} className="bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="nome" className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#052656]">
+                    Nome
+                  </label>
+                  <input
+                    id="nome"
+                    name="nome"
+                    type="text"
+                    value={contactForm.nome}
+                    onChange={handleContactChange}
+                    className="w-full border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    placeholder="Seu nome"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#052656]">
+                    E-mail
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={contactForm.email}
+                    onChange={handleContactChange}
+                    className="w-full border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    placeholder="voce@empresa.com"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label htmlFor="telefone" className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#052656]">
+                    Telefone
+                  </label>
+                  <input
+                    id="telefone"
+                    name="telefone"
+                    type="tel"
+                    value={contactForm.telefone}
+                    onChange={handleContactChange}
+                    className="w-full border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    placeholder="(31) 99999-9999"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label htmlFor="necessidade" className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#052656]">
+                    Descrição da necessidade
+                  </label>
+                  <textarea
+                    id="necessidade"
+                    name="necessidade"
+                    rows={5}
+                    value={contactForm.necessidade}
+                    onChange={handleContactChange}
+                    className="w-full resize-none border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    placeholder="Fale sobre o desafio, projeto ou solução que sua empresa precisa."
+                  />
+                </div>
+              </div>
+
+              {formError && (
+                <p className="mt-4 border border-red-200 bg-red-50 px-4 py-3 text-base font-medium text-red-700">
+                  {formError}
+                </p>
+              )}
+
+              <button type="submit" className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-[#D4A62A] px-8 py-4 text-lg font-semibold text-[#052656] transition-colors hover:bg-[#E0B33A]">
+                <Mail size={20} aria-hidden="true" />
+                Entrar em contato
+              </button>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <PublicFooter />
+      <FloatingBackToTop targetId="inicio" />
+    </div>
+  );
+}
+
+function LegacyHomeApp() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [formData, setFormData] = useState({
@@ -1224,45 +1719,39 @@ type SolutionPageProps = {
 
 function PublicHeader({ active }: { active?: string }) {
   const [open, setOpen] = useState(false);
-  const solutionLinks = MAIN_NAV_LINKS.slice(1, 5);
-  const rootLinks = [
-    { label: "Início", href: "/" },
-    { label: "Sobre", href: "/#sobre" },
-    { label: "Portfólio", href: "/#portfolio" },
-    { label: "Contato", href: "/#contato" },
-  ];
+  const headerLinks = PUBLIC_HEADER_LINKS;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between gap-6">
         <a href="/" className="flex items-center" aria-label="Ir para o início">
-          <Logo variant="color" showText={false} className="h-14 sm:h-16 w-auto max-w-[145px] sm:max-w-[180px]" />
+          <Logo variant="color" showText={false} className="h-14 w-auto shrink-0 sm:h-16" />
         </a>
-        <nav className="hidden xl:flex items-center gap-7" aria-label="Menu principal">
-          <a href="/" className="text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70">Início</a>
-          <div className="group relative">
-            <button type="button" className="inline-flex items-center gap-1 text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70">
-              Soluções
-              <ChevronDown size={16} aria-hidden="true" />
-            </button>
-            <div className="invisible absolute left-0 top-full min-w-[260px] translate-y-3 border border-border bg-white p-2 opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
-              {solutionLinks.map((link) => (
-                <a key={link.href} href={link.href} className={`block px-4 py-3 text-base font-semibold transition-colors hover:bg-[#F5F7FA] ${active === link.href ? "text-[#D4A62A]" : "text-[#052656]"}`}>
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-          {rootLinks.slice(1).map((link) => (
-            <a key={link.href} href={link.href} className="text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70">
+        <nav className="hidden xl:flex flex-1 items-center justify-center gap-5" aria-label="Menu principal">
+          {headerLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className={`relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:bg-[#D4A62A] after:transition-all ${
+                active === link.href ? "text-[#D4A62A] after:w-full" : "text-[#052656] hover:text-[#D4A62A] after:w-0 hover:after:w-full"
+              }`}
+            >
               {link.label}
             </a>
           ))}
         </nav>
-        <div className="hidden xl:flex items-center gap-3">
-          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className={WHATSAPP_HEADER_BUTTON_CLASS}>
+        <div className="hidden xl:flex shrink-0 items-center gap-2">
+          <a href="/cliente/login" className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
+            <Building2 size={16} aria-hidden="true" />
+            Área do Cliente
+          </a>
+          <a href="/admin/login" className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
+            <LockKeyhole size={16} aria-hidden="true" />
+            Área do Recrutador
+          </a>
+          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#052656] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0B3470]">
             <WhatsAppIcon size={18} />
-            Fale conosco
+            Falar com especialista
           </a>
         </div>
         <button type="button" className="xl:hidden p-2" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open}>
@@ -1271,14 +1760,22 @@ function PublicHeader({ active }: { active?: string }) {
       </div>
       {open && (
         <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">
-          {MAIN_NAV_LINKS.map((link) => (
+          {headerLinks.map((link) => (
             <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">
               {link.label}
             </a>
           ))}
-          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}>
+          <a href="/cliente/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
+            <Building2 size={17} aria-hidden="true" />
+            Área do Cliente
+          </a>
+          <a href="/admin/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
+            <LockKeyhole size={17} aria-hidden="true" />
+            Área do Recrutador
+          </a>
+          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}>
             <WhatsAppIcon size={18} />
-            Fale conosco
+            Falar com especialista
           </a>
         </div>
       )}
@@ -1293,7 +1790,12 @@ function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
           <div>
             <div className="mb-4">
-              <Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" />
+              <div className="inline-flex flex-col items-center" aria-label="HR Solutions">
+                <Logo variant="white" showText={false} className="h-20 w-auto" />
+                <span className="mt-1 font-['Playfair_Display',serif] text-2xl font-semibold leading-none text-white">
+                  Solutions
+                </span>
+              </div>
             </div>
             <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
               Pessoas, marcas e tecnologia para transformar negócios.
@@ -1302,7 +1804,7 @@ function PublicFooter() {
           <div>
             <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Soluções</p>
             <ul className="space-y-3">
-              {MAIN_NAV_LINKS.slice(1, 5).map((link) => (
+              {PUBLIC_SOLUTION_LINKS.map((link) => (
                 <li key={link.href}><a href={link.href} className="text-lg transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>{link.label}</a></li>
               ))}
             </ul>
@@ -1317,6 +1819,16 @@ function PublicFooter() {
               <a href={emailLink()} className="inline-flex w-fit items-center gap-3 border border-white/15 bg-white/5 px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
                 <Mail size={18} aria-hidden="true" />
                 {CONTACT_EMAIL}
+              </a>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
+                className={`${INSTAGRAM_BUTTON_CLASS} w-fit`}
+              >
+                <Instagram size={18} aria-hidden="true" />
+                Instagram
               </a>
             </div>
           </div>
@@ -1335,7 +1847,7 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
     <div className="min-h-screen bg-background text-foreground font-['Inter',sans-serif] antialiased">
       <PublicHeader active={active} />
       <main className="pt-20">
-        <section className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
+        <section id="inicio" className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
             <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
               {eyebrow}
@@ -1417,6 +1929,7 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
         </section>
       </main>
       <PublicFooter />
+      <FloatingBackToTop targetId="inicio" />
     </div>
   );
 }
@@ -1447,7 +1960,7 @@ export default function App() {
       : "HR Solutions | Soluções estratégicas para empresas");
     const description = pageMeta[caminho]?.description ?? (isJobsPage
       ? "Confira vagas de emprego divulgadas pela HR Solutions e candidate-se às oportunidades disponíveis."
-      : "Pessoas, marcas e tecnologia para transformar negócios. Soluções estratégicas em RH, Design e criação de sites.");
+      : "Pessoas, marcas e tecnologia para transformar negócios. Soluções estratégicas em recrutamento, design, marca, sites e experiências digitais.");
     const canonical = caminho.startsWith("/vagas/")
       ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
       : isJobsPage
