@@ -45,12 +45,29 @@ export function Logo({
   showText?: boolean;
   className?: string;
 }) {
-  const src = showText ? LOGO_ASSETS[variant].full : LOGO_ASSETS[variant].mark;
+  const src = LOGO_ASSETS[variant].mark;
+  const textColor = variant === "white" ? "text-white" : "text-[#052656]";
+
+  if (showText) {
+    return (
+      <div className={`flex items-center gap-3 ${className}`} aria-label="HR Solutions">
+        <img
+          src={src}
+          alt=""
+          className="block h-full w-auto object-contain"
+          draggable={false}
+        />
+        <span className={`font-['Playfair_Display',serif] text-2xl font-semibold leading-none ${textColor}`}>
+          HR Solutions
+        </span>
+      </div>
+    );
+  }
 
   return (
     <img
       src={src}
-      alt="HR Consultoria de RH"
+      alt="HR Solutions"
       className={`block object-contain ${className}`}
       draggable={false}
     />
@@ -86,7 +103,7 @@ export function whatsappLink() {
 
 function emailLink(
   body = "Olá, gostaria de solicitar um orçamento.",
-  subject = "Solicitação de orçamento - HR Consultoria",
+  subject = "Solicitação de orçamento - HR Solutions",
 ) {
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
@@ -120,33 +137,18 @@ function HomeApp() {
   const services = [
     {
       icon: <Users size={22} />,
-      title: "Recrutamento e Seleção",
-      desc: "Condução do processo seletivo desde a abertura da vaga até a apresentação dos profissionais mais aderentes.",
+      title: "Pessoas & Gestão",
+      desc: "Recrutamento e seleção, consultoria de RH e soluções para equipes.",
     },
     {
       icon: <Target size={22} />,
-      title: "Alinhamento de Perfil",
-      desc: "Mapeamento da vaga, rotina, requisitos técnicos, comportamento esperado e contexto real da empresa.",
+      title: "Design & Marca",
+      desc: "Identidade visual, materiais digitais e comunicação empresarial.",
     },
     {
-      icon: <Megaphone size={22} />,
-      title: "Divulgação de Vagas",
-      desc: "Publicação em canais adequados para atrair candidatos compatíveis com o perfil buscado.",
-    },
-    {
-      icon: <Filter size={22} />,
-      title: "Triagem de Candidatos",
-      desc: "Análise cuidadosa dos currículos e contatos iniciais para reduzir ruídos antes das entrevistas.",
-    },
-    {
-      icon: <ClipboardList size={22} />,
-      title: "Entrevistas",
-      desc: "Conversas estruturadas para avaliar experiência, postura, disponibilidade e aderência ao desafio.",
-    },
-    {
-      icon: <FileText size={22} />,
-      title: "Apresentação de Candidatos",
-      desc: "Envio de perfis finalistas com informações objetivas para apoiar a decisão da empresa.",
+      icon: <MonitorSmartphone size={22} />,
+      title: "Soluções Digitais",
+      desc: "Criação de sites, landing pages e presença online.",
     },
   ];
 
@@ -182,7 +184,7 @@ function HomeApp() {
   const businessSolutions = [
     {
       icon: <Users size={24} />,
-      title: "Consultoria de RH",
+      title: "Pessoas & Gestão",
       items: [
         "Recrutamento e Seleção",
         "Hunting de profissionais",
@@ -198,53 +200,28 @@ function HomeApp() {
       ],
     },
     {
-      icon: <BriefcaseBusiness size={24} />,
-      title: "Departamento Pessoal",
+      icon: <Megaphone size={24} />,
+      title: "Design & Marca",
       items: [
-        "Gestão de admissões",
-        "Gestão de demissões",
-        "Agendamento de exames admissionais e periódicos",
-        "Organização documental",
-        "Interface com a contabilidade",
-        "Controle de documentos dos colaboradores",
+        "Identidade visual",
+        "Criação de logotipos",
+        "Materiais digitais",
+        "Artes para redes sociais",
+        "Comunicação empresarial",
+        "Apresentações comerciais",
       ],
     },
     {
       icon: <MonitorSmartphone size={24} />,
-      title: "Presença Digital",
+      title: "Soluções Digitais",
       items: [
         "Criação de Sites Institucionais",
         "Landing Pages",
-        "Identidade Visual",
-        "Criação de Logotipos",
+        "Presença online",
         "Google Meu Negócio",
         "SEO Local",
         "Gestão de LinkedIn Empresarial",
-        "Artes para Redes Sociais",
-      ],
-    },
-    {
-      icon: <Settings size={24} />,
-      title: "Gestão Empresarial",
-      items: [
-        "Organização de Processos",
-        "Padronização de Documentos",
-        "Manual do Colaborador",
-        "Indicadores de RH",
-        "Banco de Talentos",
-        "Estruturação de Processos de Recrutamento",
-      ],
-    },
-    {
-      icon: <Crown size={24} />,
-      title: "Soluções Premium",
-      items: [
-        "Employer Branding",
-        "Redução de Turnover",
-        "Plano de Retenção de Talentos",
-        "Mapeamento Comportamental",
-        "Consultoria Estratégica de Pessoas",
-        "Acompanhamento Pós-Contratação",
+        "Materiais para presença digital",
       ],
     },
   ];
@@ -319,7 +296,7 @@ function HomeApp() {
       return;
     }
 
-    const texto = `Olá, tenho interesse em solicitar uma proposta para recrutamento e seleção.
+    const texto = `Olá, tenho interesse em solicitar uma proposta da HR Solutions.
 
 Nome: ${nome}
 Empresa: ${empresa}
@@ -344,9 +321,9 @@ Mensagem: ${mensagem || "Não informado"}`;
       return;
     }
 
-    const subject = "Solicitação de proposta - HR Consultoria de RH";
+    const subject = "Solicitação de proposta - HR Solutions";
 
-    const body = `Olá, tenho interesse em solicitar uma proposta para recrutamento e seleção.
+    const body = `Olá, tenho interesse em solicitar uma proposta da HR Solutions.
 
 Nome: ${nome}
 Empresa: ${empresa}
@@ -396,7 +373,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
+              aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
               className={INSTAGRAM_BUTTON_CLASS}
             >
               <Instagram size={18} aria-hidden="true" />
@@ -453,7 +430,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
+              aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
               className={`${INSTAGRAM_BUTTON_CLASS} w-full`}
             >
               <Instagram size={18} aria-hidden="true" />
@@ -481,15 +458,15 @@ Mensagem: ${mensagem || "Não informado"}`;
               className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-8"
               style={{ color: "#D4A62A" }}
             >
-              Consultoria de RH para empresas
+              Soluções estratégicas para empresas
             </span>
             <h1
               className="font-['Playfair_Display',serif] text-4xl sm:text-5xl lg:text-6xl leading-[1.08] font-semibold text-white mb-7"
             >
-              HR Consultoria de RH: recrutamento e seleção
+              HR Solutions
             </h1>
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-10 max-w-2xl font-light">
-              Consultoria de RH em Belo Horizonte com atendimento para empresas em todo o Brasil, conduzindo recrutamento e seleção para encontrar profissionais alinhados a cada negócio.
+              Unimos pessoas, criatividade e tecnologia para ajudar empresas a crescerem. Oferecemos soluções em Recursos Humanos, Design e Presença Digital.
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
               <a
@@ -525,14 +502,14 @@ Mensagem: ${mensagem || "Não informado"}`;
               Quem somos
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground mb-6">
-              Sobre a HR Consultoria de RH
+              Sobre a HR Solutions
             </h2>
             <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
             <p className="text-lg leading-[1.75] text-muted-foreground mb-6">
-              A HR Consultoria de RH atua com recrutamento e seleção para empresas que precisam contratar com mais segurança, mas não querem perder tempo com processos confusos ou triagens superficiais.
+              A HR Solutions une pessoas, criatividade e tecnologia para ajudar empresas a crescerem com mais clareza, presença e estratégia.
             </p>
             <p className="text-lg leading-[1.75] text-muted-foreground">
-              Antes de divulgar uma vaga, entendemos o que a empresa realmente precisa: rotina da função, perfil técnico, comportamento esperado e contexto da equipe. A partir disso, conduzimos a busca com critério e comunicação próxima.
+              Atuamos em Recursos Humanos, Design e Soluções Digitais, conectando gestão, marca e presença online em uma experiência consultiva e próxima.
             </p>
           </div>
 
@@ -564,10 +541,10 @@ Mensagem: ${mensagem || "Não informado"}`;
               O que fazemos
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-white leading-tight max-w-2xl">
-              Apoio completo para encontrar o profissional certo
+              Soluções estratégicas para empresas
             </h2>
             <p className="mt-6 max-w-2xl text-lg leading-[1.7]" style={{ color: "rgba(255,255,255,0.72)" }}>
-              A HR Consultoria de RH oferece suporte completo para empresas que desejam contratar com mais segurança, clareza e agilidade.
+              Organizamos soluções em três frentes para apoiar empresas que querem crescer com estrutura, comunicação e presença digital.
             </p>
           </div>
 
@@ -598,10 +575,10 @@ Mensagem: ${mensagem || "Não informado"}`;
               Soluções Empresariais
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight">
-              Consultoria completa para empresas que querem crescer com estrutura
+              Pessoas, marca e tecnologia trabalhando juntas
             </h2>
             <p className="mt-6 text-lg leading-[1.75] text-muted-foreground">
-              Integramos RH, departamento pessoal, presença digital e gestão para apoiar empresas em diferentes momentos: contratação, organização interna, fortalecimento da marca empregadora e melhoria contínua.
+              Combinamos gestão de pessoas, design e soluções digitais para apoiar empresas em diferentes momentos: contratação, organização interna, fortalecimento de marca e presença online.
             </p>
           </div>
 
@@ -686,13 +663,13 @@ Mensagem: ${mensagem || "Não informado"}`;
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-center">
           <div>
             <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
-              RH + Marketing
+              Pessoas + Design + Digital
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-white leading-tight mb-6">
-              Contratamos os profissionais certos e fortalecemos a imagem da sua empresa.
+              Fortalecemos equipes, marcas e canais digitais com uma visão estratégica.
             </h2>
             <p className="text-lg leading-[1.75]" style={{ color: "rgba(255,255,255,0.70)" }}>
-              Uma combinação estratégica para atrair melhores candidatos, melhorar a percepção da marca e transformar recrutamento em vantagem competitiva.
+              Uma combinação estratégica para melhorar gestão, comunicação e presença digital sem perder o cuidado humano em cada entrega.
             </p>
           </div>
 
@@ -732,7 +709,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Solicitar Proposta
             </a>
             <a
-              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar sobre as soluções empresariais da HR Consultoria de RH.")}`}
+              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar sobre as soluções empresariais da HR Solutions.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
@@ -757,7 +734,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               </h2>
               <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
               <p className="text-lg leading-[1.75] text-muted-foreground">
-                A HR Consultoria de RH atua no recrutamento e seleção para diferentes áreas e níveis de contratação. Atendemos desde vagas operacionais até posições administrativas, comerciais, técnicas e de tecnologia, sempre buscando entender a necessidade da empresa e o perfil ideal para cada função.
+                A HR Solutions atua com soluções para empresas em diferentes áreas: gestão de pessoas, comunicação visual e presença digital. Em Recursos Humanos, seguimos apoiando contratações de diferentes níveis com análise cuidadosa do perfil ideal para cada função.
               </p>
             </div>
 
@@ -788,7 +765,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Um processo claro do briefing à contratação
             </h2>
             <p className="mt-6 max-w-3xl text-lg leading-[1.75] text-muted-foreground">
-              A HR Consultoria de RH organiza cada etapa com clareza, acompanhamento próximo e foco em uma contratação mais assertiva.
+              A HR Solutions organiza cada etapa com clareza, acompanhamento próximo e foco em soluções mais assertivas para a realidade de cada empresa.
             </p>
           </div>
 
@@ -817,7 +794,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Atendimento remoto para todo o Brasil
             </h3>
             <p className="text-lg leading-[1.7] text-muted-foreground">
-              A HR Consultoria de RH atende empresas em todo o Brasil, conduzindo processos seletivos de forma remota, com alinhamentos por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
+              A HR Solutions atende empresas em todo o Brasil, conduzindo projetos e alinhamentos de forma remota, por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
             </p>
           </div>
         </div>
@@ -831,7 +808,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Nossos diferenciais
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight mb-4">
-              Por que escolher a HR Consultoria de RH?
+              Por que escolher a HR Solutions?
             </h2>
             <div className="w-12 h-px mb-10" style={{ backgroundColor: "#D4A62A" }} />
             <ul className="space-y-4">
@@ -912,14 +889,14 @@ Mensagem: ${mensagem || "Não informado"}`;
             </h2>
             <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
             <p className="text-lg text-muted-foreground leading-[1.75] mb-10">
-              Fale com a HR Consultoria de RH e conte qual contratação sua empresa precisa realizar. Preencha o formulário para receber um retorno sobre os próximos passos.
+              Fale com a HR Solutions e conte qual solução sua empresa precisa. Preencha o formulário para receber um retorno sobre os próximos passos.
             </p>
             <div className="rounded-2xl border border-[#D4A62A]/20 bg-[#D4A62A]/8 p-5 mb-8">
               <p className="text-base font-medium tracking-[0.18em] uppercase mb-2" style={{ color: "#D4A62A" }}>
                 Atendimento remoto para todo o Brasil
               </p>
               <p className="text-lg leading-[1.7] text-muted-foreground">
-                A HR Consultoria de RH atende empresas em todo o Brasil, conduzindo processos seletivos de forma remota, com alinhamentos por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
+                A HR Solutions atende empresas em todo o Brasil, conduzindo projetos e alinhamentos de forma remota, por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
@@ -1019,7 +996,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                 <Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" />
               </div>
               <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
-                A HR Consultoria de RH oferece recrutamento e seleção com processo claro, triagem cuidadosa e comunicação próxima.
+                A HR Solutions une Recursos Humanos, Design e Soluções Digitais para ajudar empresas a crescerem com estratégia, criatividade e presença.
               </p>
             </div>
 
@@ -1077,7 +1054,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                   href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Abrir Instagram oficial da HR Consultoria de RH em nova aba"
+                  aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
                   className={`${INSTAGRAM_BUTTON_CLASS} w-fit`}
                 >
                   <Instagram size={18} aria-hidden="true" />
@@ -1091,7 +1068,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             className="pt-8 border-t text-center text-base leading-relaxed"
             style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}
           >
-            © HR Consultoria de RH. Todos os direitos reservados.
+            © HR Solutions. Todos os direitos reservados.
           </div>
         </div>
       </footer>
@@ -1117,11 +1094,11 @@ export default function App() {
     const isJobsPage = caminho === "/vagas" || caminho === "/vagas/";
     const isPublicPage = caminho === "/" || caminho.startsWith("/vagas");
     const title = isJobsPage
-      ? "Vagas de emprego em Belo Horizonte | HR Consultoria de RH"
-      : "HR Consultoria de RH | Recrutamento e Seleção";
+      ? "Vagas de emprego em Belo Horizonte | HR Solutions"
+      : "HR Solutions | Soluções estratégicas para empresas";
     const description = isJobsPage
-      ? "Confira vagas de emprego divulgadas pela HR Consultoria de RH e candidate-se às oportunidades disponíveis."
-      : "Consultoria empresarial de RH com recrutamento e seleção, departamento pessoal, presença digital, gestão de processos e soluções estratégicas para empresas.";
+      ? "Confira vagas de emprego divulgadas pela HR Solutions e candidate-se às oportunidades disponíveis."
+      : "Soluções estratégicas para empresas em Recursos Humanos, Design, criação de sites, landing pages e presença online.";
     const canonical = caminho.startsWith("/vagas/")
       ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
       : isJobsPage

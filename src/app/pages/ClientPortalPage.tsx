@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -100,7 +100,7 @@ export default function ClientPortalPage() {
       });
     } catch (reason) {
       console.error("[Portal do Cliente]", reason);
-      setError("Não foi possível carregar as informações. Tente atualizar.");
+      setError("NÃ£o foi possÃ­vel carregar as informaÃ§Ãµes. Tente atualizar.");
     } finally {
       if (background) setRefreshing(false); else setLoading(false);
     }
@@ -111,7 +111,7 @@ export default function ClientPortalPage() {
   useEffect(()=>{const refresh=()=>void load(true);const visible=()=>{if(document.visibilityState==="visible")refresh()};window.addEventListener("focus",refresh);document.addEventListener("visibilitychange",visible);return()=>{window.removeEventListener("focus",refresh);document.removeEventListener("visibilitychange",visible)}},[load]);
   if (loading) return <Loading />;
   if (error || !data)
-    return <ErrorPage message={error || "Acesso não encontrado."} onRetry={()=>void load()} />;
+    return <ErrorPage message={error || "Acesso nÃ£o encontrado."} onRetry={()=>void load()} />;
   const company =
     data.companies.find((x) => x.id === companyId) ?? data.companies[0];
   function changeCompany(id: string) {
@@ -124,7 +124,7 @@ export default function ClientPortalPage() {
       companies={data.companies}
       onCompany={changeCompany}
     >
-      <div className="mx-auto flex max-w-7xl justify-end px-5 pt-5"><button type="button" disabled={refreshing} onClick={()=>void load(true)} className="border border-[#052656] px-4 py-2 font-semibold text-[#052656] disabled:opacity-60">{refreshing?"Atualizando...":"Atualizar informações"}</button></div>
+      <div className="mx-auto flex max-w-7xl justify-end px-5 pt-5"><button type="button" disabled={refreshing} onClick={()=>void load(true)} className="border border-[#052656] px-4 py-2 font-semibold text-[#052656] disabled:opacity-60">{refreshing?"Atualizando...":"Atualizar informaÃ§Ãµes"}</button></div>
       <RouteContent data={data} company={company} onReload={load} />
     </ClientLayout>
   );
@@ -165,10 +165,10 @@ function Overview({ data, company }: { data: Data; company: ClientCompany }) {
   return (
     <section className="mx-auto max-w-7xl px-5 py-10">
       <h1 className="text-3xl font-semibold text-[#052656]">
-        Olá, {company.nome}
+        OlÃ¡, {company.nome}
       </h1>
       <p className="mt-2 text-gray-600">
-        Visão geral dos processos compartilhados pela HR Consultoria.
+        VisÃ£o geral dos processos compartilhados pela HR Solutions.
       </p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <Metric
@@ -178,7 +178,7 @@ function Overview({ data, company }: { data: Data; company: ClientCompany }) {
         />
         <Metric
           icon={<UsersRound />}
-          label="Posições em aberto"
+          label="PosiÃ§Ãµes em aberto"
           value={open.reduce((n, x) => n + Number(x.quantidade_vagas || 0), 0)}
         />
         <Metric
@@ -234,7 +234,7 @@ function RecentUpdates({ data }: { data: Data }) {
   return (
     <section>
       <h2 className="mt-10 text-2xl font-semibold text-[#052656]">
-        Atualizações recentes
+        AtualizaÃ§Ãµes recentes
       </h2>
       <div className="mt-4 grid gap-3 bg-white p-4 sm:grid-cols-2">
         <label>
@@ -288,7 +288,7 @@ function RecentUpdates({ data }: { data: Data }) {
                 {candidate?.nome ?? "Candidato"}
               </h3>
               <p className="font-medium">
-                {vacancy?.titulo ?? "Vaga não encontrada"}
+                {vacancy?.titulo ?? "Vaga nÃ£o encontrada"}
               </p>
               <p className="mt-2">
                 Status: <strong>{interviewStatus(interview, app)}</strong>
@@ -298,7 +298,7 @@ function RecentUpdates({ data }: { data: Data }) {
               </p>
               {app.resumo_cliente&&<p className="mt-3 text-gray-700"><strong>Resumo:</strong> {app.resumo_cliente}</p>}
               {app.pontos_positivos_cliente&&<p className="mt-2 text-gray-700"><strong>Pontos positivos:</strong> {app.pontos_positivos_cliente}</p>}
-              {app.pontos_atencao_cliente&&<p className="mt-2 text-gray-700"><strong>Pontos de atenção:</strong> {app.pontos_atencao_cliente}</p>}
+              {app.pontos_atencao_cliente&&<p className="mt-2 text-gray-700"><strong>Pontos de atenÃ§Ã£o:</strong> {app.pontos_atencao_cliente}</p>}
               {interview && (
                 <div className="mt-3 bg-[#D4A62A]/15 p-3">
                   <strong>
@@ -308,7 +308,7 @@ function RecentUpdates({ data }: { data: Data }) {
                     {interview.modalidade === "presencial"
                       ? "Presencial"
                       : "Online"}
-                    : {formatDate(interview.data)} às{" "}
+                    : {formatDate(interview.data)} Ã s{" "}
                     {interview.horario.slice(0, 5)}
                   </p>
                   {interview.local && (
@@ -323,7 +323,7 @@ function RecentUpdates({ data }: { data: Data }) {
               )}
               {app.data_admissao && (
                 <p className="mt-3 font-semibold text-[#052656]">
-                  Data de admissão: {formatDate(app.data_admissao)}
+                  Data de admissÃ£o: {formatDate(app.data_admissao)}
                 </p>
               )}
               <a
@@ -366,7 +366,7 @@ function interviewLabel(status: string) {
         reagendada: "reagendada",
         realizada: "realizada",
         cancelada: "cancelada",
-        nao_compareceu: "não compareceu",
+        nao_compareceu: "nÃ£o compareceu",
       } as Record<string, string>
     )[status] ?? status
   );
@@ -419,7 +419,7 @@ function Jobs({ data }: { data: Data }) {
           >
             <option value="">Todos</option>
             <option value="publicada">Aberta</option>
-            <option value="rascunho">Em preparação</option>
+            <option value="rascunho">Em preparaÃ§Ã£o</option>
             <option value="encerrada">Encerrada</option>
           </select>
         </Field>
@@ -452,7 +452,7 @@ function JobCards({
         >
           <h3 className="text-xl font-semibold text-[#052656]">{job.titulo}</h3>
           <p className="mt-2 text-gray-600">
-            {formatarQuantidadeVagas(job.quantidade_vagas)} ·{" "}
+            {formatarQuantidadeVagas(job.quantidade_vagas)} Â·{" "}
             <span className="capitalize">{job.status}</span>
           </p>
           <p className="mt-2 text-sm text-gray-500">
@@ -496,14 +496,14 @@ function JobDetail({ id, data }: { id: string; data: Data }) {
         {job.titulo}
       </h1>
       <p className="mt-2 text-gray-600">
-        {formatarQuantidadeVagas(job.quantidade_vagas)} · {job.cidade}/
-        {job.estado} · {job.status}
+        {formatarQuantidadeVagas(job.quantidade_vagas)} Â· {job.cidade}/
+        {job.estado} Â· {job.status}
       </p>
       <div className="mt-6 grid gap-5 bg-white p-6 shadow-sm md:grid-cols-2">
-        <Info title="Descrição" text={job.descricao} />
+        <Info title="DescriÃ§Ã£o" text={job.descricao} />
         <Info title="Atividades" text={job.atividades} />
         <Info title="Requisitos" text={job.requisitos} />
-        <Info title="Benefícios" text={job.beneficios} />
+        <Info title="BenefÃ­cios" text={job.beneficios} />
       </div>
       <h2 className="mt-10 text-2xl font-semibold text-[#052656]">
         Candidatos compartilhados
@@ -530,10 +530,10 @@ function JobDetail({ id, data }: { id: string; data: Data }) {
                   <p className="text-gray-600">{etapaLabel(app.etapa)}</p>
                 </div>
                 {interview && (
-                  <div className="text-right text-sm font-semibold text-[#052656]"><p className="flex items-center gap-2"><Clock3 size={16}/>{formatDate(interview.data)} às {interview.horario.slice(0,5)}</p><p>{interviewLabel(interview.status)} · {interview.modalidade==="presencial"?"Presencial":"Online"}</p>{interview.local&&<p>{interview.local}</p>}</div>
+                  <div className="text-right text-sm font-semibold text-[#052656]"><p className="flex items-center gap-2"><Clock3 size={16}/>{formatDate(interview.data)} Ã s {interview.horario.slice(0,5)}</p><p>{interviewLabel(interview.status)} Â· {interview.modalidade==="presencial"?"Presencial":"Online"}</p>{interview.local&&<p>{interview.local}</p>}</div>
                 )}
               </div>
-              {app.data_admissao&&<p className="mt-3 font-semibold text-[#052656]">Data de admissão: {formatDate(app.data_admissao)}</p>}
+              {app.data_admissao&&<p className="mt-3 font-semibold text-[#052656]">Data de admissÃ£o: {formatDate(app.data_admissao)}</p>}
             </a>
           );
         })}
@@ -600,9 +600,9 @@ function CandidateDetail({
       await saveClientFeedback(authorizedApp.id, company.id, decision, comment);
       await onReload();
       setIsEditing(false);
-      setMessage("Feedback enviado com sucesso. A HR Consultoria dará continuidade ao processo.");
+      setMessage("Feedback enviado com sucesso. A HR Solutions darÃ¡ continuidade ao processo.");
     } catch {
-      setMessage("Não foi possível enviar o feedback.");
+      setMessage("NÃ£o foi possÃ­vel enviar o feedback.");
     } finally {
       setSaving(false);
     }
@@ -616,7 +616,7 @@ function CandidateDetail({
         "noopener,noreferrer",
       );
     } catch {
-      setMessage("Não foi possível abrir o currículo.");
+      setMessage("NÃ£o foi possÃ­vel abrir o currÃ­culo.");
     }
   }
   return (
@@ -633,15 +633,15 @@ function CandidateDetail({
           {candidate.nome}
         </h1>
         <p className="mt-2 text-gray-600">
-          {job.titulo} · {etapaLabel(app.etapa)}
+          {job.titulo} Â· {etapaLabel(app.etapa)}
           {candidate.cidade
-            ? ` · ${candidate.cidade}${candidate.estado ? `/${candidate.estado}` : ""}`
+            ? ` Â· ${candidate.cidade}${candidate.estado ? `/${candidate.estado}` : ""}`
             : ""}
         </p>
         <div className="mt-7 grid gap-6 md:grid-cols-2">
           <Info title="Resumo profissional" text={app.resumo_cliente} />
           <Info title="Pontos positivos" text={app.pontos_positivos_cliente} />
-          <Info title="Pontos de atenção" text={app.pontos_atencao_cliente} />
+          <Info title="Pontos de atenÃ§Ã£o" text={app.pontos_atencao_cliente} />
         </div>
         <p className="mt-6 text-sm text-gray-500">
           Encaminhado em {formatDate(app.portal_liberado_em ?? app.created_at)}
@@ -652,14 +652,14 @@ function CandidateDetail({
               Entrevista com o cliente: {interviewLabel(interview.status)}
             </strong>
             <p>
-              {formatDate(interview.data)} às {interview.horario.slice(0, 5)}
-              {interview.local ? ` · ${interview.local}` : ""}
+              {formatDate(interview.data)} Ã s {interview.horario.slice(0, 5)}
+              {interview.local ? ` Â· ${interview.local}` : ""}
             </p>
           </div>
         )}
         {app.data_admissao && (
           <p className="mt-5 font-semibold text-[#052656]">
-            Data de admissão: {formatDate(app.data_admissao)}
+            Data de admissÃ£o: {formatDate(app.data_admissao)}
           </p>
         )}
         {app.curriculo_liberado && candidate.curriculo_url && (
@@ -668,14 +668,14 @@ function CandidateDetail({
             className="mt-5 inline-flex items-center gap-2 border border-[#052656] px-4 py-2 font-semibold text-[#052656]"
           >
             <FileText size={17} />
-            Abrir currículo
+            Abrir currÃ­culo
           </button>
         )}
       </div>
       <div className="mt-6 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-semibold text-[#052656]">Seu feedback</h2>
-        {!isEditing && feedback ? <div className="mt-4"><p><strong>Decisão:</strong> {feedbackDecisionLabel(feedback.decisao)}</p><p className="mt-2"><strong>Comentário:</strong> {feedback.comentario || "Sem comentário"}</p><button type="button" onClick={()=>{setDecision(feedback.decisao);setComment(feedback.comentario ?? "");setMessage("");setIsEditing(true)}} className="mt-4 border border-[#052656] px-5 py-3 font-semibold text-[#052656]">Alterar feedback</button></div> : <>
-        <Field label="Decisão">
+        {!isEditing && feedback ? <div className="mt-4"><p><strong>DecisÃ£o:</strong> {feedbackDecisionLabel(feedback.decisao)}</p><p className="mt-2"><strong>ComentÃ¡rio:</strong> {feedback.comentario || "Sem comentÃ¡rio"}</p><button type="button" onClick={()=>{setDecision(feedback.decisao);setComment(feedback.comentario ?? "");setMessage("");setIsEditing(true)}} className="mt-4 border border-[#052656] px-5 py-3 font-semibold text-[#052656]">Alterar feedback</button></div> : <>
+        <Field label="DecisÃ£o">
           <select
             value={decision}
             onChange={(e) => setDecision(e.target.value as ClientDecision)}
@@ -683,13 +683,13 @@ function CandidateDetail({
           >
             <option value="quero_entrevistar">Quero entrevistar</option>
             <option value="aprovado_empresa">Aprovado pela empresa</option>
-            <option value="nao_aprovado">Não aprovado</option>
+            <option value="nao_aprovado">NÃ£o aprovado</option>
             <option value="solicitar_informacoes">
-              Solicitar mais informações
+              Solicitar mais informaÃ§Ãµes
             </option>
           </select>
         </Field>
-        <Field label="Comentário opcional">
+        <Field label="ComentÃ¡rio opcional">
           <textarea
             rows={4}
             maxLength={2000}
@@ -705,7 +705,7 @@ function CandidateDetail({
           onClick={() => void save()}
           className="mt-4 bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] disabled:opacity-60"
         >
-          {saving ? "Salvando..." : feedback ? "Salvar alterações" : "Enviar feedback"}
+          {saving ? "Salvando..." : feedback ? "Salvar alteraÃ§Ãµes" : "Enviar feedback"}
         </button>
         {feedback && <button type="button" disabled={saving} onClick={()=>{setDecision(feedback.decisao);setComment(feedback.comentario ?? "");setMessage("");setIsEditing(false)}} className="ml-3 mt-4 border border-gray-400 px-5 py-3 font-semibold text-gray-700">Cancelar</button>}
         </>}
@@ -713,7 +713,7 @@ function CandidateDetail({
     </section>
   );
 }
-function feedbackDecisionLabel(value: ClientDecision) { return ({ quero_entrevistar: "Quero entrevistar", aprovado_empresa: "Aprovado pela empresa", nao_aprovado: "Não aprovado", solicitar_informacoes: "Solicitar mais informações" } as const)[value]; }
+function feedbackDecisionLabel(value: ClientDecision) { return ({ quero_entrevistar: "Quero entrevistar", aprovado_empresa: "Aprovado pela empresa", nao_aprovado: "NÃ£o aprovado", solicitar_informacoes: "Solicitar mais informaÃ§Ãµes" } as const)[value]; }
 function Metric({
   icon,
   label,
@@ -780,7 +780,7 @@ function ErrorPage({ message,onRetry }: { message: string;onRetry:()=>void }) {
     <main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] px-5">
       <div className="max-w-md bg-white p-8 text-center shadow">
         <h1 className="text-2xl font-semibold text-[#052656]">
-          Não foi possível abrir o portal
+          NÃ£o foi possÃ­vel abrir o portal
         </h1>
         <p className="mt-3 text-gray-600">{message}</p>
         <button onClick={onRetry} className="mt-5 inline-block bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656]">Tentar novamente</button>
@@ -792,16 +792,16 @@ function NotFound() {
   return (
     <section className="mx-auto max-w-3xl px-5 py-20 text-center">
       <h1 className="text-3xl font-semibold text-[#052656]">
-        Conteúdo não encontrado
+        ConteÃºdo nÃ£o encontrado
       </h1>
       <p className="mt-3 text-gray-600">
-        Este conteúdo não está disponível para sua empresa.
+        Este conteÃºdo nÃ£o estÃ¡ disponÃ­vel para sua empresa.
       </p>
       <a
         href="/cliente"
         className="mt-6 inline-block bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656]"
       >
-        Voltar à visão geral
+        Voltar Ã  visÃ£o geral
       </a>
     </section>
   );

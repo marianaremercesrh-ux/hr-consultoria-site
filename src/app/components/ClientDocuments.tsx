@@ -1,4 +1,4 @@
-import { Download, Eye, FileText, RefreshCw } from "lucide-react";
+﻿import { Download, Eye, FileText, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { listPortalContracts, signedPortalContract } from "../services/clientPortal";
 import { CONTRACT_STATUSES, type PortalContract } from "../types/companyContracts";
@@ -17,7 +17,7 @@ export default function ClientDocuments({ companyId }: { companyId: string }) {
       setDocuments(await listPortalContracts(companyId));
     } catch (reason) {
       console.error("[Documentos do Portal]", reason);
-      setError("Não foi possível consultar os documentos liberados. Tente novamente.");
+      setError("NÃ£o foi possÃ­vel consultar os documentos liberados. Tente novamente.");
     } finally {
       if (background) setRefreshing(false); else setLoading(false);
     }
@@ -44,7 +44,7 @@ export default function ClientDocuments({ companyId }: { companyId: string }) {
       window.open(url, "_blank", "noopener,noreferrer");
     } catch (reason) {
       console.error("[Acesso ao contrato]", reason);
-      setError("Não foi possível gerar o acesso seguro ao contrato. Tente novamente.");
+      setError("NÃ£o foi possÃ­vel gerar o acesso seguro ao contrato. Tente novamente.");
     } finally {
       setOpening(null);
     }
@@ -55,7 +55,7 @@ export default function ClientDocuments({ companyId }: { companyId: string }) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold text-[#052656]">Documentos</h1>
-          <p className="mt-2 text-gray-600">Contratos disponibilizados pela HR Consultoria.</p>
+          <p className="mt-2 text-gray-600">Contratos disponibilizados pela HR Solutions.</p>
         </div>
         <button
           type="button"
@@ -92,8 +92,8 @@ export default function ClientDocuments({ companyId }: { companyId: string }) {
       ) : (
         <div className="mt-7 border border-gray-200 bg-white px-6 py-14 text-center">
           <FileText className="mx-auto text-[#D4A62A]" size={38} />
-          <h2 className="mt-4 text-xl font-semibold text-[#052656]">Nenhum documento disponível</h2>
-          <p className="mt-2 text-gray-600">Quando um contrato for liberado pela recrutadora, ele aparecerá aqui.</p>
+          <h2 className="mt-4 text-xl font-semibold text-[#052656]">Nenhum documento disponÃ­vel</h2>
+          <p className="mt-2 text-gray-600">Quando um contrato for liberado pela recrutadora, ele aparecerÃ¡ aqui.</p>
         </div>
       )}
     </section>

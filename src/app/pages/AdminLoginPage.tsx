@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function AdminLoginPage() {
@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
     const { data: profile } = await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id", user?.id ?? "").maybeSingle();
     if (!profile || !["administrador", "recrutador"].includes(profile.perfil)) {
       await supabase.auth.signOut();
-      setMensagem("Este usuário não possui acesso ao painel administrativo.");
+      setMensagem("Este usuÃ¡rio nÃ£o possui acesso ao painel administrativo.");
       setCarregando(false);
       return;
     }
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
       <section className="w-full max-w-md bg-white p-8 shadow-xl">
         <img
           src="/assets/hr-consultoria-logo.png"
-          alt="HR Consultoria de RH"
+          alt="HR Solutions"
           className="mx-auto mb-6 h-auto w-[170px] max-w-full"
         />
 
@@ -132,5 +132,5 @@ export function AdminClientSessionNotice() {
     await supabase.auth.signOut();
     window.location.href = "/admin/login";
   }
-  return <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12"><section className="w-full max-w-lg bg-white p-8 text-center shadow-xl"><img src="/assets/hr-consultoria-logo.png" alt="HR Consultoria de RH" className="mx-auto mb-6 w-[170px] max-w-full"/><h1 className="text-3xl font-semibold text-[#052656]">Área do Recrutador</h1><p role="alert" className="mt-4 leading-relaxed text-gray-700">Este acesso é exclusivo para recrutadores. Saia do Portal do Cliente para entrar com uma conta administrativa.</p><button type="button" disabled={saindo} onClick={()=>void sair()} className="mt-7 w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] hover:bg-[#E0B33A] disabled:opacity-60">{saindo?"Saindo...":"Sair e acessar Área do Recrutador"}</button><a href="/cliente" className="mt-5 block font-semibold text-[#052656] underline">Voltar ao Portal do Cliente</a></section></main>;
+  return <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12"><section className="w-full max-w-lg bg-white p-8 text-center shadow-xl"><img src="/assets/hr-consultoria-logo.png" alt="HR Solutions" className="mx-auto mb-6 w-[170px] max-w-full"/><h1 className="text-3xl font-semibold text-[#052656]">Ãrea do Recrutador</h1><p role="alert" className="mt-4 leading-relaxed text-gray-700">Este acesso Ã© exclusivo para recrutadores. Saia do Portal do Cliente para entrar com uma conta administrativa.</p><button type="button" disabled={saindo} onClick={()=>void sair()} className="mt-7 w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] hover:bg-[#E0B33A] disabled:opacity-60">{saindo?"Saindo...":"Sair e acessar Ãrea do Recrutador"}</button><a href="/cliente" className="mt-5 block font-semibold text-[#052656] underline">Voltar ao Portal do Cliente</a></section></main>;
 }
