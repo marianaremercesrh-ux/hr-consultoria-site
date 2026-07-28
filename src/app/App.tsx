@@ -315,18 +315,18 @@ Descrição da necessidade: ${necessidade}`;
           scrolled ? "border-b border-[#052656]/10 bg-white/95 shadow-sm backdrop-blur" : "bg-transparent"
         }`}
       >
-        <div className="mx-auto flex h-[104px] max-w-7xl items-center justify-between gap-10 px-5 py-4 sm:px-6 lg:px-10">
-          <a href="#inicio" aria-label="Ir para o início">
-            <Logo variant="color" showText={false} className="h-16 w-auto shrink-0 sm:h-[70px]" />
+        <div className="mx-auto flex min-h-[120px] max-w-7xl items-center justify-between gap-8 px-5 py-5 sm:px-6 lg:px-10">
+          <a href="#inicio" aria-label="Ir para o início" className="flex items-center">
+            <Logo variant="color" showText={false} className="h-[64px] w-auto max-w-none shrink-0 sm:h-[65px]" />
           </a>
 
-          <nav className="hidden flex-1 items-center justify-center gap-10 xl:flex" aria-label="Menu principal">
+          <nav className="hidden flex-1 items-center justify-center gap-14 xl:flex" aria-label="Menu principal">
             {MAIN_NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => link.sectionId && setActiveSection(link.sectionId)}
-                className={link.sectionId ? navLinkClass(link.sectionId) : "relative text-sm font-semibold tracking-wide text-[#052656] transition-colors hover:text-[#D4A62A]"}
+                className={link.sectionId ? navLinkClass(link.sectionId) : "relative text-[17px] font-semibold tracking-wide text-[#052656] transition-colors hover:text-[#D4A62A]"}
                 aria-current={link.sectionId && activeSection === link.sectionId ? "page" : undefined}
               >
                 {link.label}
@@ -858,13 +858,13 @@ Mensagem: ${mensagem || "Não informado"}`;
           scrolled ? "bg-white/95 backdrop-blur-sm border-b border-border shadow-sm" : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+        <div className="mx-auto flex min-h-[128px] max-w-7xl items-center justify-between gap-8 px-5 py-5 sm:px-6 lg:px-10">
           {/* Logo */}
           <a href="#inicio" className="flex items-center" aria-label="Ir para o início">
             <Logo
               variant={scrolled ? "color" : "white"}
               showText={false}
-              className="h-14 sm:h-16 w-auto max-w-[145px] sm:max-w-[180px]"
+              className="h-auto w-[220px] max-w-none shrink-0 sm:w-[250px]"
             />
           </a>
 
@@ -1698,16 +1698,16 @@ function PublicHeader({ active }: { active?: string }) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-5 py-4 sm:px-6 lg:px-10 h-[104px] flex items-center justify-between gap-10">
+      <div className="mx-auto flex min-h-[120px] max-w-7xl items-center justify-between gap-8 px-5 py-5 sm:px-6 lg:px-10">
         <a href="/" className="flex items-center" aria-label="Ir para o início">
-          <Logo variant="color" showText={false} className="h-16 w-auto shrink-0 sm:h-[70px]" />
+          <Logo variant="color" showText={false} className="h-[64px] w-auto max-w-none shrink-0 sm:h-[65px]" />
         </a>
-        <nav className="hidden xl:flex flex-1 items-center justify-center gap-10" aria-label="Menu principal">
+        <nav className="hidden xl:flex flex-1 items-center justify-center gap-14" aria-label="Menu principal">
           {headerLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className={`relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:bg-[#D4A62A] after:transition-all ${
+              className={`relative text-[17px] font-semibold tracking-wide transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:bg-[#D4A62A] after:transition-all ${
                 active === link.href ? "text-[#D4A62A] after:w-full" : "text-[#052656] hover:text-[#D4A62A] after:w-0 hover:after:w-full"
               }`}
             >
