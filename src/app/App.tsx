@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Filter, ClipboardList, FileText, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Settings, Crown, Handshake, SearchCheck, BarChart3, BadgeCheck, Instagram } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Handshake, SearchCheck, BarChart3, BadgeCheck, Instagram, Palette } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
 import AdminLoginPage, { AdminClientSessionNotice } from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
@@ -82,6 +82,59 @@ const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center ga
 export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] px-5 py-3 text-lg font-medium tracking-wide text-white shadow-sm shadow-[#E1306C]/20 transition-all duration-200 hover:scale-[1.03] hover:shadow-md hover:shadow-[#E1306C]/30 focus:outline-none focus:ring-4 focus:ring-[#E1306C]/25 motion-reduce:transform-none whitespace-nowrap";
 const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
 
+const MAIN_NAV_LINKS = [
+  { label: "Início", href: "/" },
+  { label: "Recrutamento & Seleção", href: "/solucoes/recrutamento-selecao" },
+  { label: "Consultoria de RH", href: "/#consultoria-rh" },
+  { label: "Design & Marca", href: "/solucoes/design-marca" },
+  { label: "Sites", href: "/solucoes/criacao-de-sites" },
+  { label: "Sobre", href: "/#sobre" },
+  { label: "Portfólio", href: "/#portfolio" },
+  { label: "Contato", href: "/#contato" },
+];
+
+const SOLUTION_CARDS = [
+  {
+    icon: <Users size={26} />,
+    title: "Pessoas & Gestão",
+    desc: "Para empresas que precisam contratar melhor, organizar processos de RH e fortalecer equipes.",
+    items: ["Recrutamento e Seleção", "Consultoria de RH", "Soluções para equipes"],
+    button: "Conhecer Recrutamento",
+    href: "/solucoes/recrutamento-selecao",
+  },
+  {
+    icon: <Palette size={26} />,
+    title: "Marca & Comunicação",
+    desc: "Para negócios que querem uma marca mais profissional, coerente e preparada para vender.",
+    items: ["Identidade visual", "Design para empresas", "Materiais digitais"],
+    button: "Conhecer Design",
+    href: "/solucoes/design-marca",
+  },
+  {
+    icon: <MonitorSmartphone size={26} />,
+    title: "Presença Digital",
+    desc: "Para empresas que precisam de sites, landing pages e canais digitais com mais confiança.",
+    items: ["Criação de sites", "Landing pages", "Soluções online"],
+    button: "Conhecer Sites",
+    href: "/solucoes/criacao-de-sites",
+  },
+];
+
+const PORTFOLIO_ITEMS = [
+  {
+    title: "Processos seletivos",
+    desc: "Estruturação de vagas, triagem, entrevistas e apresentação de profissionais para empresas em crescimento.",
+  },
+  {
+    title: "Identidade e materiais",
+    desc: "Direção visual, apresentações, peças digitais e comunicação empresarial com acabamento profissional.",
+  },
+  {
+    title: "Sites e páginas",
+    desc: "Sites institucionais, landing pages e presença online integrada ao WhatsApp para gerar contatos.",
+  },
+];
+
 export function WhatsAppIcon({ size = 18 }: { size?: number }) {
   return (
     <svg
@@ -125,14 +178,7 @@ function HomeApp() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const navLinks = [
-    { label: "Início", href: "#inicio" },
-    { label: "Vagas", href: "/vagas" },
-    { label: "Sobre", href: "#sobre" },
-    { label: "Serviços", href: "#servicos" },
-    { label: "Processo", href: "#processo" },
-    { label: "Contato", href: "#contato" },
-  ];
+  const navLinks = MAIN_NAV_LINKS;
 
   const services = [
     {
@@ -200,7 +246,7 @@ function HomeApp() {
       ],
     },
     {
-      icon: <Megaphone size={24} />,
+      icon: <Palette size={24} />,
       title: "Design & Marca",
       items: [
         "Identidade visual",
@@ -229,36 +275,35 @@ function HomeApp() {
   const businessPackages = [
     {
       icon: <SearchCheck size={24} />,
-      name: "Start",
-      description: "Ideal para empresas que precisam contratar rapidamente.",
+      name: "Essencial",
+      description: "Ideal para empresas que precisam resolver uma necessidade pontual com direcionamento claro.",
       features: [
-        "Divulgação da vaga",
-        "Triagem de currículos",
-        "Entrevistas",
-        "Envio dos candidatos aprovados",
+        "Alinhamento inicial",
+        "Escopo objetivo",
+        "Entrega direcionada",
+        "Canal de contato próximo",
       ],
     },
     {
       icon: <Handshake size={24} />,
-      name: "Growth",
-      description: "Tudo do Start, com acompanhamento mais completo da contratação.",
+      name: "Estratégico",
+      description: "Para empresas que precisam combinar diagnóstico, execução e acompanhamento.",
       featured: true,
       features: [
-        "Relatório completo",
-        "Acompanhamento da contratação",
-        "Garantia de reposição",
-        "Suporte durante o processo",
+        "Diagnóstico da necessidade",
+        "Plano de ação",
+        "Acompanhamento do projeto",
+        "Suporte durante a execução",
       ],
     },
     {
       icon: <BarChart3 size={24} />,
       name: "Premium",
-      description: "Tudo do Growth, com consultoria estratégica para estruturar o RH.",
+      description: "Para empresas que buscam evolução contínua em pessoas, marca ou presença digital.",
       features: [
-        "Diagnóstico de RH",
+        "Consultoria estratégica",
         "Estruturação de processos",
         "Indicadores",
-        "Consultoria estratégica",
         "Reuniões periódicas",
         "Plano de melhoria contínua",
       ],
@@ -301,7 +346,7 @@ function HomeApp() {
 Nome: ${nome}
 Empresa: ${empresa}
 Telefone/WhatsApp: ${telefone}
-Vaga que preciso contratar: ${vaga}
+Solução de interesse: ${vaga}
 Mensagem: ${mensagem || "Não informado"}`;
 
     const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(texto)}`;
@@ -328,7 +373,7 @@ Mensagem: ${mensagem || "Não informado"}`;
 Nome: ${nome}
 Empresa: ${empresa}
 Telefone/WhatsApp: ${telefone}
-Vaga que preciso contratar: ${vaga}
+Solução de interesse: ${vaga}
 Mensagem: ${mensagem || "Não informado"}`;
 
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -355,16 +400,23 @@ Mensagem: ${mensagem || "Não informado"}`;
 
           {/* Desktop nav */}
           <nav className="hidden xl:flex items-center gap-7" aria-label="Menu principal" lang="pt-BR" translate="no">
-            {navLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="text-lg font-medium tracking-wide transition-colors hover:opacity-70"
-                style={{ color: scrolled ? "#052656" : "#fff" }}
-              >
-                {l.label}
-              </a>
-            ))}
+            <a href="#inicio" className="text-lg font-medium tracking-wide transition-colors hover:opacity-70" style={{ color: scrolled ? "#052656" : "#fff" }}>Início</a>
+            <div className="group relative">
+              <button type="button" className="inline-flex items-center gap-1 text-lg font-medium tracking-wide transition-colors hover:opacity-70" style={{ color: scrolled ? "#052656" : "#fff" }}>
+                Soluções
+                <ChevronDown size={16} aria-hidden="true" />
+              </button>
+              <div className="invisible absolute left-0 top-full min-w-[260px] translate-y-3 border border-border bg-white p-2 opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
+                {MAIN_NAV_LINKS.slice(1, 5).map((link) => (
+                  <a key={link.href} href={link.href} className="block px-4 py-3 text-base font-semibold text-[#052656] transition-colors hover:bg-[#F5F7FA] hover:text-[#D4A62A]">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <a href="#sobre" className="text-lg font-medium tracking-wide transition-colors hover:opacity-70" style={{ color: scrolled ? "#052656" : "#fff" }}>Sobre</a>
+            <a href="#portfolio" className="text-lg font-medium tracking-wide transition-colors hover:opacity-70" style={{ color: scrolled ? "#052656" : "#fff" }}>Portfólio</a>
+            <a href="#contato" className="text-lg font-medium tracking-wide transition-colors hover:opacity-70" style={{ color: scrolled ? "#052656" : "#fff" }}>Contato</a>
           </nav>
 
           {/* CTA */}
@@ -441,7 +493,7 @@ Mensagem: ${mensagem || "Não informado"}`;
       </header>
 
       {/* HERO */}
-      <section id="inicio" className="relative min-h-screen flex items-center">
+      <section id="inicio" className="relative min-h-[88vh] flex items-center">
         <div
           className="home-hero-background absolute inset-0"
           style={{
@@ -463,10 +515,10 @@ Mensagem: ${mensagem || "Não informado"}`;
             <h1
               className="font-['Playfair_Display',serif] text-4xl sm:text-5xl lg:text-6xl leading-[1.08] font-semibold text-white mb-7"
             >
-              HR Solutions
+              Pessoas, marcas e tecnologia para transformar negócios.
             </h1>
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-10 max-w-2xl font-light">
-              Unimos pessoas, criatividade e tecnologia para ajudar empresas a crescerem. Oferecemos soluções em Recursos Humanos, Design e Presença Digital.
+              Ajudamos empresas a crescerem através de soluções em gestão de pessoas, design estratégico e presença digital.
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
               <a
@@ -476,22 +528,94 @@ Mensagem: ${mensagem || "Não informado"}`;
                 className="inline-flex w-full items-center justify-center gap-3 bg-[#D4A62A] px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:bg-[#B98E20] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4A62A]/35 motion-reduce:transition-none sm:w-auto whitespace-nowrap"
               >
                 <WhatsAppIcon size={20} />
-                Solicitar proposta
+                Escolher solução
                 <ArrowRight size={15} />
               </a>
               <a
-                href="#servicos"
+                href="#solucoes"
                 className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors duration-200 hover:bg-[#D4A62A]/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#D4A62A]/30 motion-reduce:transition-none whitespace-nowrap"
               >
-                Conhecer serviços
+                Ver caminhos
               </a>
             </div>
           </div>
         </div>
 
-        <a href="#sobre" className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 hover:text-white/80 transition-colors motion-safe:animate-bounce motion-reduce:transition-none" aria-label="Ir para a seção Sobre">
+        <a href="#solucoes" className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 hover:text-white/80 transition-colors motion-safe:animate-bounce motion-reduce:transition-none" aria-label="Ir para soluções">
           <ChevronDown size={24} />
         </a>
+      </section>
+
+      {/* CAMINHOS */}
+      <section id="solucoes" className="py-20 md:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="mb-12 max-w-3xl">
+            <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
+              Decisão rápida
+            </span>
+            <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground mb-5">
+              Qual solução sua empresa precisa?
+            </h2>
+            <p className="text-lg leading-[1.75] text-muted-foreground">
+              Escolha o caminho mais alinhado ao momento do seu negócio e conheça a solução ideal para contratar, comunicar ou crescer online.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {SOLUTION_CARDS.map((card) => (
+              <article key={card.title} className="group flex min-h-[380px] flex-col border border-border bg-white p-7 md:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A62A]/60 hover:shadow-xl hover:shadow-[#052656]/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                <div className="mb-7 flex h-12 w-12 items-center justify-center bg-[#052656] text-[#D4A62A] transition-colors duration-300 group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
+                  {card.icon}
+                </div>
+                <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold leading-tight text-foreground mb-4">
+                  {card.title}
+                </h3>
+                <p className="text-lg leading-[1.65] text-muted-foreground mb-8">
+                  {card.desc}
+                </p>
+                <ul className="mb-8 space-y-3">
+                  {card.items.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-base font-medium leading-snug text-foreground">
+                      <Check size={16} className="mt-0.5 shrink-0 text-[#D4A62A]" strokeWidth={2.8} aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href={card.href} className="mt-auto inline-flex w-full items-center justify-center gap-2 border border-[#D4A62A] bg-[#D4A62A] px-5 py-3 text-base font-semibold text-[#052656] transition-colors hover:bg-[#E0B33A]">
+                  {card.button}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PORTFOLIO */}
+      <section id="portfolio" className="py-20 md:py-28" style={{ backgroundColor: "#F5F7FA" }}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="mb-14 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-16 items-end">
+            <div>
+              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
+                Portfólio
+              </span>
+              <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground">
+                Entregas para diferentes momentos do negócio.
+              </h2>
+            </div>
+            <p className="text-lg leading-[1.75] text-muted-foreground">
+              A HR Solutions combina a autoridade construída em Recursos Humanos com novas frentes de marca e tecnologia para resolver necessidades reais de empresas.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {PORTFOLIO_ITEMS.map((item) => (
+              <article key={item.title} className="border border-border bg-white p-7 md:p-8 shadow-sm">
+                <h3 className="font-['Playfair_Display',serif] text-2xl font-semibold text-foreground mb-4">{item.title}</h3>
+                <p className="text-lg leading-[1.65] text-muted-foreground">{item.desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* SOBRE */}
@@ -568,7 +692,7 @@ Mensagem: ${mensagem || "Não informado"}`;
       </section>
 
       {/* SOLUÇÕES EMPRESARIAIS */}
-      <section className="py-20 md:py-28 bg-background">
+      <section id="consultoria-rh" className="py-20 md:py-28 bg-background">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
           <div className="mb-16 max-w-3xl">
             <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
@@ -613,10 +737,10 @@ Mensagem: ${mensagem || "Não informado"}`;
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
           <div className="mb-16 text-center">
             <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
-              Pacotes Empresariais
+              Formatos de contratação
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight">
-              Escolha o nível de apoio ideal para sua empresa
+              Escolha o apoio ideal para sua empresa
             </h2>
           </div>
 
@@ -698,7 +822,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             Tudo o que sua empresa precisa para crescer, em um só lugar.
           </h2>
           <p className="text-xl leading-[1.7] text-muted-foreground mb-10">
-            Da contratação ao fortalecimento da sua marca, oferecemos soluções completas para impulsionar o crescimento do seu negócio.
+            Da gestão de pessoas ao fortalecimento da marca e presença digital, oferecemos soluções para impulsionar o crescimento do seu negócio.
           </p>
           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4">
             <a
@@ -849,10 +973,10 @@ Mensagem: ${mensagem || "Não informado"}`;
             Vamos conversar
           </span>
           <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-white leading-tight mb-6">
-            Precisa preencher uma vaga com mais segurança?
+            Pronto para transformar o próximo passo da sua empresa?
           </h2>
           <p className="text-xl leading-[1.7] mb-10" style={{ color: "rgba(255,255,255,0.68)" }}>
-            Conte qual vaga sua empresa precisa preencher. Vamos entender o perfil, orientar os próximos passos e iniciar uma busca mais organizada.
+            Conte se sua empresa precisa contratar melhor, fortalecer a marca ou criar presença digital. Vamos entender o cenário e indicar o caminho mais estratégico.
           </p>
           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4">
             <a
@@ -862,7 +986,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
             >
               <WhatsAppIcon size={20} />
-              Quero contratar melhor
+              Falar com a HR Solutions
               <ArrowRight size={15} />
             </a>
             <a
@@ -931,7 +1055,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               { field: "nome", label: "Nome", placeholder: "Seu nome completo" },
               { field: "empresa", label: "Empresa", placeholder: "Nome da sua empresa" },
               { field: "telefone", label: "Telefone / WhatsApp", placeholder: "(31) 99999-9999" },
-              { field: "vaga", label: "Vaga que precisa contratar", placeholder: "Ex: Assistente Administrativo" },
+              { field: "vaga", label: "Solução de interesse", placeholder: "Ex: Recrutamento, identidade visual ou site" },
             ].map(({ field, label, placeholder }) => (
               <div key={field}>
                 <label htmlFor={field} className="block text-base font-medium tracking-wide uppercase mb-2 text-foreground">
@@ -958,7 +1082,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                 id="mensagem"
                 name="mensagem"
                 rows={4}
-                placeholder="Fale um pouco sobre o perfil que você busca..."
+                placeholder="Fale um pouco sobre o que sua empresa precisa..."
                 value={formData.mensagem}
                 onChange={handleChange}
                 className="w-full px-5 py-4 text-lg leading-relaxed border border-border bg-card focus:outline-none focus:border-[#D4A62A] transition-colors resize-none"
@@ -1087,23 +1211,250 @@ Mensagem: ${mensagem || "Não informado"}`;
   );
 }
 
+type SolutionPageProps = {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  items: string[];
+  benefits: string[];
+  examples: string[];
+  cta: string;
+  message: string;
+};
+
+function PublicHeader({ active }: { active?: string }) {
+  const [open, setOpen] = useState(false);
+  const solutionLinks = MAIN_NAV_LINKS.slice(1, 5);
+  const rootLinks = [
+    { label: "Início", href: "/" },
+    { label: "Sobre", href: "/#sobre" },
+    { label: "Portfólio", href: "/#portfolio" },
+    { label: "Contato", href: "/#contato" },
+  ];
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+        <a href="/" className="flex items-center" aria-label="Ir para o início">
+          <Logo variant="color" showText={false} className="h-14 sm:h-16 w-auto max-w-[145px] sm:max-w-[180px]" />
+        </a>
+        <nav className="hidden xl:flex items-center gap-7" aria-label="Menu principal">
+          <a href="/" className="text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70">Início</a>
+          <div className="group relative">
+            <button type="button" className="inline-flex items-center gap-1 text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70">
+              Soluções
+              <ChevronDown size={16} aria-hidden="true" />
+            </button>
+            <div className="invisible absolute left-0 top-full min-w-[260px] translate-y-3 border border-border bg-white p-2 opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
+              {solutionLinks.map((link) => (
+                <a key={link.href} href={link.href} className={`block px-4 py-3 text-base font-semibold transition-colors hover:bg-[#F5F7FA] ${active === link.href ? "text-[#D4A62A]" : "text-[#052656]"}`}>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+          {rootLinks.slice(1).map((link) => (
+            <a key={link.href} href={link.href} className="text-lg font-medium tracking-wide text-[#052656] transition-colors hover:opacity-70">
+              {link.label}
+            </a>
+          ))}
+        </nav>
+        <div className="hidden xl:flex items-center gap-3">
+          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className={WHATSAPP_HEADER_BUTTON_CLASS}>
+            <WhatsAppIcon size={18} />
+            Fale conosco
+          </a>
+        </div>
+        <button type="button" className="xl:hidden p-2" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open}>
+          {open ? <X size={22} color="#052656" /> : <Menu size={22} color="#052656" />}
+        </button>
+      </div>
+      {open && (
+        <div className="xl:hidden bg-white border-t border-border px-6 py-6 flex flex-col gap-5">
+          {MAIN_NAV_LINKS.map((link) => (
+            <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-lg font-medium text-foreground tracking-wide">
+              {link.label}
+            </a>
+          ))}
+          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}>
+            <WhatsAppIcon size={18} />
+            Fale conosco
+          </a>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function PublicFooter() {
+  return (
+    <footer style={{ backgroundColor: "#052656" }} className="py-16">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
+          <div>
+            <div className="mb-4">
+              <Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" />
+            </div>
+            <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
+              Pessoas, marcas e tecnologia para transformar negócios.
+            </p>
+          </div>
+          <div>
+            <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Soluções</p>
+            <ul className="space-y-3">
+              {MAIN_NAV_LINKS.slice(1, 5).map((link) => (
+                <li key={link.href}><a href={link.href} className="text-lg transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>{link.label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Contato</p>
+            <div className="flex flex-col gap-4">
+              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-3 bg-[#25D366] px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:bg-[#1EBE57]">
+                <WhatsAppIcon size={18} />
+                WhatsApp
+              </a>
+              <a href={emailLink()} className="inline-flex w-fit items-center gap-3 border border-white/15 bg-white/5 px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
+                <Mail size={18} aria-hidden="true" />
+                {CONTACT_EMAIL}
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="pt-8 border-t text-center text-base leading-relaxed" style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}>
+          © HR Solutions. Todos os direitos reservados.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, message }: SolutionPageProps) {
+  const active = window.location.pathname;
+  return (
+    <div className="min-h-screen bg-background text-foreground font-['Inter',sans-serif] antialiased">
+      <PublicHeader active={active} />
+      <main className="pt-20">
+        <section className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+            <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
+              {eyebrow}
+            </span>
+            <h1 className="font-['Playfair_Display',serif] text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-white mb-6 max-w-4xl">
+              {title}
+            </h1>
+            <p className="text-xl leading-[1.75] text-white/72 max-w-3xl">
+              {intro}
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <a href={`${whatsappLink()}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}>
+                <WhatsAppIcon size={20} />
+                {cta}
+              </a>
+              <a href="/#solucoes" className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors hover:bg-[#D4A62A]/15">
+                Ver outras soluções
+              </a>
+            </div>
+          </div>
+        </section>
+        <section className="py-20 md:py-24 bg-background">
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-20">
+            <div>
+              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
+                O que entregamos
+              </span>
+              <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground">
+                Uma solução clara para o momento da sua empresa.
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
+              {items.map((item) => (
+                <article key={item} className="bg-white p-6 md:p-7">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center bg-[#D4A62A] text-[#052656]">
+                    <Check size={17} strokeWidth={2.8} aria-hidden="true" />
+                  </div>
+                  <h3 className="text-xl font-semibold leading-snug text-foreground">{item}</h3>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="py-20 md:py-24" style={{ backgroundColor: "#F5F7FA" }}>
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            <div>
+              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
+                Benefícios
+              </span>
+              <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground mb-8">
+                Por que contratar esta solução?
+              </h2>
+              <ul className="space-y-4">
+                {benefits.map((benefit) => (
+                  <li key={benefit} className="flex items-start gap-3 text-lg leading-[1.6] text-foreground">
+                    <Check size={18} className="mt-1 shrink-0 text-[#D4A62A]" strokeWidth={2.8} aria-hidden="true" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="border border-border bg-white p-7 md:p-8 shadow-sm">
+              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
+                Exemplos
+              </span>
+              <div className="space-y-5">
+                {examples.map((example) => (
+                  <article key={example} className="border-l-4 pl-5" style={{ borderColor: "#D4A62A" }}>
+                    <p className="text-lg leading-[1.65] text-muted-foreground">{example}</p>
+                  </article>
+                ))}
+              </div>
+              <a href={`${whatsappLink()}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_BUTTON_CLASS} mt-8 w-full`}>
+                <WhatsAppIcon size={20} />
+                {cta}
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+      <PublicFooter />
+    </div>
+  );
+}
+
 export default function App() {
   const caminho = window.location.pathname;
 
   useEffect(() => {
     const isJobsPage = caminho === "/vagas" || caminho === "/vagas/";
-    const isPublicPage = caminho === "/" || caminho.startsWith("/vagas");
-    const title = isJobsPage
+    const isSolutionsPage = caminho.startsWith("/solucoes");
+    const isPublicPage = caminho === "/" || caminho.startsWith("/vagas") || isSolutionsPage;
+    const pageMeta: Record<string, { title: string; description: string }> = {
+      "/solucoes/recrutamento-selecao": {
+        title: "Recrutamento & Seleção Estratégico | HR Solutions",
+        description: "Recrutamento e seleção estratégico com entendimento da vaga, divulgação, triagem, entrevistas, apresentação de profissionais e acompanhamento.",
+      },
+      "/solucoes/design-marca": {
+        title: "Design & Marca | HR Solutions",
+        description: "Identidade visual, criação de artes, materiais empresariais, apresentações profissionais e conteúdo visual para redes sociais.",
+      },
+      "/solucoes/criacao-de-sites": {
+        title: "Criação de Sites e Soluções Digitais | HR Solutions",
+        description: "Sites institucionais, landing pages, sites para profissionais e imobiliárias, integração com WhatsApp e SEO básico.",
+      },
+    };
+    const title = pageMeta[caminho]?.title ?? (isJobsPage
       ? "Vagas de emprego em Belo Horizonte | HR Solutions"
-      : "HR Solutions | Soluções estratégicas para empresas";
-    const description = isJobsPage
+      : "HR Solutions | Soluções estratégicas para empresas");
+    const description = pageMeta[caminho]?.description ?? (isJobsPage
       ? "Confira vagas de emprego divulgadas pela HR Solutions e candidate-se às oportunidades disponíveis."
-      : "Soluções estratégicas para empresas em Recursos Humanos, Design, criação de sites, landing pages e presença online.";
+      : "Pessoas, marcas e tecnologia para transformar negócios. Soluções estratégicas em RH, Design e criação de sites.");
     const canonical = caminho.startsWith("/vagas/")
       ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
       : isJobsPage
         ? "https://www.hrconsultoriaderh.com.br/vagas"
-        : "https://www.hrconsultoriaderh.com.br/";
+        : isSolutionsPage
+          ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
+          : "https://www.hrconsultoriaderh.com.br/";
 
     document.title = title;
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", description);
@@ -1122,6 +1473,98 @@ export default function App() {
   if (caminho === "/cliente/auth/callback") return <ClientAuthCallbackPage />;
   if (caminho === "/cliente/login") return <ClientLoginPage />;
   if (caminho === "/cliente" || caminho.startsWith("/cliente/")) return <ClientAccessGate><ClientPortalPage /></ClientAccessGate>;
+
+  if (caminho === "/solucoes/recrutamento-selecao") {
+    return (
+      <SolutionPage
+        eyebrow="Pessoas"
+        title="Recrutamento & Seleção Estratégico"
+        intro="Conduzimos processos seletivos com clareza, critério e acompanhamento próximo para encontrar profissionais alinhados ao perfil e às necessidades da sua empresa."
+        items={[
+          "Entendimento da vaga",
+          "Divulgação",
+          "Triagem de candidatos",
+          "Entrevistas",
+          "Apresentação dos profissionais",
+          "Acompanhamento pós contratação",
+        ]}
+        benefits={[
+          "Reduz tempo da empresa com triagens desalinhadas.",
+          "Aumenta a clareza sobre o perfil ideal antes de divulgar a vaga.",
+          "Entrega candidatos com contexto para apoiar uma decisão mais segura.",
+          "Mantém comunicação próxima durante as etapas do processo.",
+        ]}
+        examples={[
+          "Contratação para posições administrativas, comerciais, operacionais e técnicas.",
+          "Apoio para empresas que não possuem RH interno estruturado.",
+          "Reposição e organização de processos seletivos com mais previsibilidade.",
+        ]}
+        cta="Solicitar recrutamento"
+        message="Olá, gostaria de solicitar uma proposta de recrutamento e seleção com a HR Solutions."
+      />
+    );
+  }
+
+  if (caminho === "/solucoes/design-marca") {
+    return (
+      <SolutionPage
+        eyebrow="Marcas"
+        title="Design & Marca"
+        intro="Criamos identidades e materiais visuais que tornam sua empresa mais profissional, reconhecível e preparada para se comunicar melhor com clientes, equipes e parceiros."
+        items={[
+          "Identidade visual",
+          "Criação de artes",
+          "Materiais empresariais",
+          "Apresentações profissionais",
+          "Conteúdo visual para redes sociais",
+        ]}
+        benefits={[
+          "Torna a comunicação da empresa mais profissional e consistente.",
+          "Melhora a percepção de valor antes mesmo da primeira conversa comercial.",
+          "Facilita a criação de materiais digitais alinhados à identidade da marca.",
+          "Ajuda equipes, clientes e parceiros a reconhecerem a empresa com mais clareza.",
+        ]}
+        examples={[
+          "Identidade visual para negócios em fase de reposicionamento.",
+          "Apresentações comerciais, propostas e materiais institucionais.",
+          "Artes e conteúdos visuais para redes sociais e campanhas digitais.",
+        ]}
+        cta="Solicitar design"
+        message="Olá, gostaria de solicitar uma proposta de Design & Marca com a HR Solutions."
+      />
+    );
+  }
+
+  if (caminho === "/solucoes/criacao-de-sites") {
+    return (
+      <SolutionPage
+        eyebrow="Tecnologia"
+        title="Sites & Soluções Digitais"
+        intro="Desenvolvemos presença digital para empresas que precisam vender melhor, transmitir confiança e facilitar o contato com clientes no ambiente online."
+        items={[
+          "Sites institucionais",
+          "Landing pages",
+          "Sites para profissionais autônomos",
+          "Sites para imobiliárias",
+          "Integração com WhatsApp",
+          "SEO básico",
+        ]}
+        benefits={[
+          "Cria uma presença online profissional para gerar confiança.",
+          "Facilita o contato de clientes por WhatsApp e canais digitais.",
+          "Organiza informações importantes em páginas claras e objetivas.",
+          "Prepara a empresa para campanhas, divulgação e captação de oportunidades.",
+        ]}
+        examples={[
+          "Site institucional para empresas que precisam apresentar serviços.",
+          "Landing page para campanhas, lançamentos ou captação de contatos.",
+          "Sites para profissionais autônomos, imobiliárias e negócios locais.",
+        ]}
+        cta="Solicitar site"
+        message="Olá, gostaria de solicitar uma proposta de site ou solução digital com a HR Solutions."
+      />
+    );
+  }
 
   if (caminho === "/admin/login") {
     return <AdminLoginPage />;
