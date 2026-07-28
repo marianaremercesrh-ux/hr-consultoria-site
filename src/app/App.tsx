@@ -27,12 +27,12 @@ import { clientPortalSupabase } from "./lib/clientPortalSupabase";
 
 const LOGO_ASSETS = {
   color: {
-    mark: "/assets/hr-consultoria-logo-mark.png",
-    full: "/assets/hr-consultoria-logo.png",
+    mark: "/assets/hr-solutions-logo-transparent.png",
+    full: "/assets/hr-solutions-logo-transparent.png",
   },
   white: {
-    mark: "/assets/hr-consultoria-logo-mark-white.png",
-    full: "/assets/hr-consultoria-logo-white.png",
+    mark: "/assets/hr-solutions-footer-cropped.png",
+    full: "/assets/hr-solutions-footer-cropped.png",
   },
 };
 
@@ -50,15 +50,15 @@ export function Logo({
 
   if (showText) {
     return (
-      <div className={`flex items-center gap-3 ${className}`} aria-label="HR Solutions">
+      <div className={`flex items-center gap-3 ${className}`} aria-label="HR Gestão e Soluções">
         <img
           src={src}
           alt=""
           className="block h-full w-auto object-contain"
           draggable={false}
         />
-        <span className={`font-['Playfair_Display',serif] text-2xl font-semibold leading-none ${textColor}`}>
-          HR Solutions
+        <span className={`font-['Poppins',sans-serif] text-2xl font-semibold leading-none ${textColor}`}>
+          HR Gestão e Soluções
         </span>
       </div>
     );
@@ -67,7 +67,7 @@ export function Logo({
   return (
     <img
       src={src}
-      alt="HR Solutions"
+      alt="HR Gestão e Soluções"
       className={`block object-contain ${className}`}
       draggable={false}
     />
@@ -77,18 +77,16 @@ export function Logo({
 const WHATSAPP_NUMBER = "5531994773992";
 export const INSTAGRAM_URL = "https://www.instagram.com/hrconsultoriaderh/";
 export const CONTACT_EMAIL = "hrconsultoriarecrutamento@gmail.com";
-export const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-lg font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
-const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3 text-lg font-medium tracking-wide text-white transition-colors duration-200 hover:bg-[#1EBE57] focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 whitespace-nowrap";
+export const WHATSAPP_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 rounded-md bg-[#25D366] px-8 py-4 text-base font-semibold tracking-wide text-white shadow-lg shadow-[#25D366]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1EBE57] hover:shadow-xl hover:shadow-[#25D366]/25 focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 motion-reduce:hover:translate-y-0 whitespace-nowrap";
+const WHATSAPP_HEADER_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-3 text-sm font-semibold tracking-wide text-white shadow-sm shadow-[#25D366]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1EBE57] hover:shadow-md hover:shadow-[#25D366]/25 focus:outline-none focus:ring-4 focus:ring-[#25D366]/25 motion-reduce:hover:translate-y-0 whitespace-nowrap";
 export const INSTAGRAM_BUTTON_CLASS = "inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] px-5 py-3 text-lg font-medium tracking-wide text-white shadow-sm shadow-[#E1306C]/20 transition-all duration-200 hover:scale-[1.03] hover:shadow-md hover:shadow-[#E1306C]/30 focus:outline-none focus:ring-4 focus:ring-[#E1306C]/25 motion-reduce:transform-none whitespace-nowrap";
-const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 border border-[#052656]/20 bg-white px-8 py-4 text-lg font-semibold tracking-wide text-[#052656] transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 whitespace-nowrap";
+const EMAIL_BUTTON_CLASS = "inline-flex items-center justify-center gap-3 rounded-md border border-[#052656]/20 bg-white px-8 py-4 text-base font-semibold tracking-wide text-[#052656] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-[#D4A62A]/20 motion-reduce:hover:translate-y-0 whitespace-nowrap";
 
 const MAIN_NAV_LINKS = [
   { label: "Início", href: "#inicio", sectionId: "inicio" },
-  { label: "Recrutamento e Seleção", href: "#recrutamento-selecao", sectionId: "recrutamento-selecao" },
-  { label: "Vagas", href: "/vagas" },
-  { label: "Design & Marketing", href: "#design-marca", sectionId: "design-marca" },
-  { label: "Sites", href: "#sites", sectionId: "sites" },
-  { label: "Diferenciais", href: "#diferenciais", sectionId: "diferenciais" },
+  { label: "Serviços", href: "#solucoes", sectionId: "solucoes" },
+  { label: "Sobre", href: "#sobre", sectionId: "sobre" },
+  { label: "Contato", href: "#contato", sectionId: "contato" },
 ];
 
 const PUBLIC_SOLUTION_LINKS = [
@@ -99,11 +97,9 @@ const PUBLIC_SOLUTION_LINKS = [
 
 const PUBLIC_HEADER_LINKS = [
   { label: "Início", href: "/" },
-  PUBLIC_SOLUTION_LINKS[0],
-  { label: "Vagas", href: "/vagas" },
-  PUBLIC_SOLUTION_LINKS[1],
-  PUBLIC_SOLUTION_LINKS[2],
-  { label: "Diferenciais", href: "/#diferenciais" },
+  { label: "Serviços", href: "/#solucoes" },
+  { label: "Sobre", href: "/#sobre" },
+  { label: "Contato", href: "/#contato" },
 ];
 
 const SOLUTION_CARDS = [
@@ -169,7 +165,7 @@ export function whatsappLink() {
 
 function emailLink(
   body = "Olá, gostaria de solicitar um orçamento.",
-  subject = "Solicitação de orçamento - HR Solutions",
+  subject = "Solicitação de orçamento - HR Gestão e Soluções",
 ) {
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
@@ -295,14 +291,14 @@ function HomeApp() {
       return;
     }
 
-    const body = `Olá, gostaria de entrar em contato com a HR Solutions.
+    const body = `Olá, gostaria de entrar em contato com a HR Gestão e Soluções.
 
 Nome: ${nome}
 E-mail: ${email}
 Telefone: ${telefone}
 Descrição da necessidade: ${necessidade}`;
 
-    window.location.href = emailLink(body, "Contato pelo site - HR Solutions");
+    window.location.href = emailLink(body, "Contato pelo site - HR Gestão e Soluções");
   };
 
   const navLinkClass = (sectionId: string) =>
@@ -319,12 +315,12 @@ Descrição da necessidade: ${necessidade}`;
           scrolled ? "border-b border-[#052656]/10 bg-white/95 shadow-sm backdrop-blur" : "bg-transparent"
         }`}
       >
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-5 sm:px-6 lg:px-10">
+        <div className="mx-auto flex h-[104px] max-w-7xl items-center justify-between gap-10 px-5 py-4 sm:px-6 lg:px-10">
           <a href="#inicio" aria-label="Ir para o início">
-            <Logo variant="color" showText={false} className="h-14 w-auto shrink-0 sm:h-16" />
+            <Logo variant="color" showText={false} className="h-16 w-auto shrink-0 sm:h-[70px]" />
           </a>
 
-          <nav className="hidden flex-1 items-center justify-center gap-5 xl:flex" aria-label="Menu principal">
+          <nav className="hidden flex-1 items-center justify-center gap-10 xl:flex" aria-label="Menu principal">
             {MAIN_NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -338,26 +334,12 @@ Descrição da necessidade: ${necessidade}`;
             ))}
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 xl:flex">
+          <div className="hidden shrink-0 items-center pl-2 xl:flex">
             <a
-              href="/cliente/login"
-              className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10"
-            >
-              <Building2 size={16} aria-hidden="true" />
-              Área do Cliente
-            </a>
-            <a
-              href="/admin/login"
-              className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10"
-            >
-              <LockKeyhole size={16} aria-hidden="true" />
-              Área do Recrutador
-            </a>
-            <a
-              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`}
+              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-[#052656] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0B3470]"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#052656] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#052656]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B3470] hover:shadow-xl hover:shadow-[#052656]/20"
             >
               <WhatsAppIcon size={18} />
               Falar com especialista
@@ -392,16 +374,8 @@ Descrição da necessidade: ${necessidade}`;
                   {link.label}
                 </a>
               ))}
-              <a href="/cliente/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
-                <Building2 size={17} aria-hidden="true" />
-                Área do Cliente
-              </a>
-              <a href="/admin/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
-                <LockKeyhole size={17} aria-hidden="true" />
-                Área do Recrutador
-              </a>
               <a
-                href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`}
+                href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}
@@ -415,28 +389,29 @@ Descrição da necessidade: ${necessidade}`;
       </header>
 
       <main>
-        <section id="inicio" className="relative overflow-hidden bg-white pt-28 md:pt-32">
-          <div className="mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-24">
+        <section id="inicio" className="relative overflow-hidden bg-white pt-36 md:pt-40">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(212,166,42,0.10),transparent_26%),linear-gradient(180deg,#ffffff_0%,#F8F8F6_100%)]" />
+          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-16 px-5 pb-24 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-10 lg:pb-28">
             <div className="motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
-              <span className="mb-6 inline-flex border border-[#D4A62A]/30 bg-[#D4A62A]/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#8C6A10]">
+              <span className="mb-6 inline-flex rounded-full border border-[#D4A62A]/30 bg-[#D4A62A]/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#8C6A10]">
                 Consultoria estratégica
               </span>
-              <h1 className="font-['Playfair_Display',serif] text-5xl font-semibold leading-[1.02] text-[#052656] sm:text-6xl lg:text-7xl">
+              <h1 className="max-w-3xl font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.06] text-[#052656] sm:text-6xl lg:text-[4.6rem]">
                 Pessoas, marcas e tecnologia para transformar negócios.
               </h1>
-              <p className="mt-7 max-w-2xl text-xl leading-[1.75] text-[#4B4B4B]">
-                A HR Solutions conecta estratégia, criatividade e inovação para ajudar empresas a crescerem.
+              <p className="mt-7 max-w-2xl text-lg leading-[1.8] text-[#4B4B4B] sm:text-xl">
+                A HR Gestão e Soluções conecta estratégia, criatividade e inovação para ajudar empresas a crescerem.
               </p>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <a href="#solucoes" className="inline-flex w-full items-center justify-center gap-3 bg-[#D4A62A] px-8 py-4 text-lg font-semibold text-[#052656] transition-colors hover:bg-[#E0B33A] sm:w-auto">
+                <a href="#solucoes" className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-[#D4A62A] px-8 py-4 text-base font-bold text-[#052656] shadow-lg shadow-[#D4A62A]/25 transition-all hover:-translate-y-0.5 hover:bg-[#E0B33A] hover:shadow-xl hover:shadow-[#D4A62A]/30 sm:w-auto">
                   Conheça nossas soluções
                   <ArrowRight size={18} aria-hidden="true" />
                 </a>
                 <a
-                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`}
+                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-3 border border-[#052656]/18 bg-white px-8 py-4 text-lg font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-3 rounded-md border border-[#052656]/18 bg-white px-8 py-4 text-base font-bold text-[#052656] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 hover:shadow-md sm:w-auto"
                 >
                   <WhatsAppIcon size={20} />
                   Falar com especialista
@@ -445,27 +420,27 @@ Descrição da necessidade: ${necessidade}`;
             </div>
 
             <div className="relative motion-safe:animate-[fadeInUp_850ms_ease-out_120ms_both]">
-              <div className="absolute -left-6 top-10 h-28 w-28 border border-[#D4A62A]/30" />
-              <div className="relative overflow-hidden bg-[#052656] shadow-2xl shadow-[#052656]/18">
+              <div className="absolute -left-6 top-10 h-28 w-28 rounded-md border border-[#D4A62A]/30" />
+              <div className="relative overflow-hidden rounded-md bg-[#052656] shadow-2xl shadow-[#052656]/18 ring-1 ring-[#052656]/10">
                 <img
                   src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&h=1050&fit=crop&auto=format"
                   alt="Equipe de consultoria em uma reunião estratégica"
                   className="h-[440px] w-full object-cover opacity-90 sm:h-[560px]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#052656]/45 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 bg-white/94 p-5 shadow-xl backdrop-blur">
+                <div className="absolute bottom-6 left-6 right-6 rounded-md bg-white/94 p-5 shadow-xl backdrop-blur">
                   <p className="text-base font-semibold uppercase tracking-[0.16em] text-[#D4A62A]">Três pilares</p>
                   <p className="mt-2 text-xl font-semibold leading-snug text-[#052656]">
                     Pessoas, criatividade e digital trabalhando juntos.
                   </p>
                 </div>
               </div>
-              <div className="absolute -bottom-6 -right-6 h-40 w-40 bg-[#D4A62A]/16" />
+              <div className="absolute -bottom-6 -right-6 h-40 w-40 rounded-md bg-[#D4A62A]/16" />
             </div>
           </div>
         </section>
 
-        <section id="nichos" className="bg-[#F8F8F6] py-16 md:py-20">
+        <section id="nichos" className="bg-[#F8F8F6] py-20 md:py-24">
           <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
               <div>
@@ -476,7 +451,7 @@ Descrição da necessidade: ${necessidade}`;
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {niches.map((niche) => (
-                  <div key={niche} className="border border-[#052656]/10 bg-white px-5 py-4 text-base font-semibold text-[#052656] shadow-sm">
+                  <div key={niche} className="rounded-md border border-[#052656]/10 bg-white px-5 py-4 text-base font-semibold text-[#052656] shadow-sm shadow-[#052656]/5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D4A62A]/40 hover:shadow-md">
                     {niche}
                   </div>
                 ))}
@@ -485,11 +460,11 @@ Descrição da necessidade: ${necessidade}`;
           </div>
         </section>
 
-        <section id="solucoes" className="bg-[#F8F8F6] py-20 md:py-28">
+        <section id="solucoes" className="bg-[#F8F8F6] py-24 md:py-32">
           <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
             <div className="mx-auto mb-14 max-w-3xl text-center motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
               <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Nossas soluções</span>
-              <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-[#052656] md:text-5xl">
+              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight text-[#052656] md:text-5xl">
                 Escolha o caminho certo para o momento da sua empresa.
               </h2>
             </div>
@@ -500,12 +475,12 @@ Descrição da necessidade: ${necessidade}`;
                   key={solution.title}
                   id={solution.sectionId}
                   href={solution.href}
-                  className="group flex min-h-[360px] flex-col border border-[#052656]/10 bg-white p-8 shadow-lg shadow-[#052656]/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A62A]/70 hover:shadow-2xl hover:shadow-[#052656]/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                  className="group flex min-h-[360px] flex-col rounded-md border border-[#052656]/10 bg-white p-8 shadow-lg shadow-[#052656]/5 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A62A]/70 hover:shadow-2xl hover:shadow-[#052656]/12 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 >
-                  <div className="mb-8 flex h-14 w-14 items-center justify-center bg-[#052656] text-[#D4A62A] transition-colors group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
+                  <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-md bg-[#052656] text-[#D4A62A] transition-colors group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
                     {solution.icon}
                   </div>
-                  <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold leading-tight text-[#052656]">{solution.title}</h3>
+                  <h3 className="font-['Poppins',sans-serif] text-2xl font-semibold leading-tight text-[#052656]">{solution.title}</h3>
                   <p className="mt-5 text-lg leading-[1.7] text-[#4B4B4B]">{solution.desc}</p>
                   <span className="mt-auto inline-flex items-center gap-2 pt-8 text-base font-semibold text-[#052656] transition-colors group-hover:text-[#D4A62A]">
                     Conhecer solução
@@ -517,22 +492,22 @@ Descrição da necessidade: ${necessidade}`;
           </div>
         </section>
 
-        <section id="diferenciais" className="bg-white py-20 md:py-28">
+        <section id="sobre" className="bg-white py-24 md:py-32">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
             <div>
               <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Diferenciais</span>
-              <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-[#052656] md:text-5xl">
+              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight text-[#052656] md:text-5xl">
                 Uma visão integrada para transformar intenção em resultado.
               </h2>
               <p className="mt-6 text-lg leading-[1.75] text-[#4B4B4B]">
-                A HR Solutions combina análise, criação e execução digital para apoiar empresas com soluções bem direcionadas, sem excesso de complexidade.
+                A HR Gestão e Soluções combina análise, criação e execução digital para apoiar empresas com soluções bem direcionadas, sem excesso de complexidade.
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {differentials.map((item) => (
-                <article key={item.title} className="border border-[#052656]/10 bg-[#F8F8F6] p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-[#052656]/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                  <div className="mb-5 flex h-11 w-11 items-center justify-center bg-[#D4A62A]/16 text-[#8C6A10]">
+                <article key={item.title} className="rounded-md border border-[#052656]/10 bg-[#F8F8F6] p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-[#052656]/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-md bg-[#D4A62A]/16 text-[#8C6A10]">
                     {item.icon}
                   </div>
                   <h3 className="text-2xl font-semibold leading-tight text-[#052656]">{item.title}</h3>
@@ -542,19 +517,19 @@ Descrição da necessidade: ${necessidade}`;
           </div>
         </section>
 
-        <section id="contato" className="bg-[#052656] py-20 md:py-28">
+        <section id="contato" className="bg-[#052656] py-24 md:py-32">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
             <div>
               <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Próximo passo</span>
-              <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-white md:text-5xl">
+              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight text-white md:text-5xl">
                 Vamos transformar sua ideia em resultado?
               </h2>
               <p className="mt-6 max-w-2xl text-xl leading-[1.7] text-white/70">
-                Conte o que sua empresa precisa e direcionamos a melhor solução dentro dos pilares da HR Solutions.
+                Conte o que sua empresa precisa e direcionamos a melhor solução dentro dos pilares da HR Gestão e Soluções.
               </p>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
                 <a
-                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de entrar em contato com a HR Solutions.")}`}
+                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de entrar em contato com a HR Gestão e Soluções.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
@@ -566,7 +541,7 @@ Descrição da necessidade: ${necessidade}`;
                   href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
+                  aria-label="Abrir Instagram oficial da HR Gestão e Soluções em nova aba"
                   className={`${INSTAGRAM_BUTTON_CLASS} w-full sm:w-auto`}
                 >
                   <Instagram size={20} aria-hidden="true" />
@@ -575,7 +550,7 @@ Descrição da necessidade: ${necessidade}`;
               </div>
             </div>
 
-            <form onSubmit={handleContactSubmit} className="bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
+            <form onSubmit={handleContactSubmit} className="rounded-md bg-white p-6 shadow-2xl shadow-black/20 ring-1 ring-white/10 sm:p-8">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="nome" className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#052656]">
@@ -587,7 +562,7 @@ Descrição da necessidade: ${necessidade}`;
                     type="text"
                     value={contactForm.nome}
                     onChange={handleContactChange}
-                    className="w-full border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    className="w-full rounded-md border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white focus:ring-4 focus:ring-[#D4A62A]/10"
                     placeholder="Seu nome"
                   />
                 </div>
@@ -601,7 +576,7 @@ Descrição da necessidade: ${necessidade}`;
                     type="email"
                     value={contactForm.email}
                     onChange={handleContactChange}
-                    className="w-full border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    className="w-full rounded-md border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white focus:ring-4 focus:ring-[#D4A62A]/10"
                     placeholder="voce@empresa.com"
                   />
                 </div>
@@ -615,7 +590,7 @@ Descrição da necessidade: ${necessidade}`;
                     type="tel"
                     value={contactForm.telefone}
                     onChange={handleContactChange}
-                    className="w-full border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    className="w-full rounded-md border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white focus:ring-4 focus:ring-[#D4A62A]/10"
                     placeholder="(31) 99999-9999"
                   />
                 </div>
@@ -629,19 +604,19 @@ Descrição da necessidade: ${necessidade}`;
                     rows={5}
                     value={contactForm.necessidade}
                     onChange={handleContactChange}
-                    className="w-full resize-none border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white"
+                    className="w-full resize-none rounded-md border border-[#052656]/14 bg-[#F8F8F6] px-4 py-3 text-base text-[#052656] outline-none transition-colors focus:border-[#D4A62A] focus:bg-white focus:ring-4 focus:ring-[#D4A62A]/10"
                     placeholder="Fale sobre o desafio, projeto ou solução que sua empresa precisa."
                   />
                 </div>
               </div>
 
               {formError && (
-                <p className="mt-4 border border-red-200 bg-red-50 px-4 py-3 text-base font-medium text-red-700">
+                <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-base font-medium text-red-700">
                   {formError}
                 </p>
               )}
 
-              <button type="submit" className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-[#D4A62A] px-8 py-4 text-lg font-semibold text-[#052656] transition-colors hover:bg-[#E0B33A]">
+              <button type="submit" className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-md bg-[#D4A62A] px-8 py-4 text-base font-bold text-[#052656] shadow-lg shadow-[#D4A62A]/20 transition-all hover:-translate-y-0.5 hover:bg-[#E0B33A] hover:shadow-xl hover:shadow-[#D4A62A]/25">
                 <Mail size={20} aria-hidden="true" />
                 Entrar em contato
               </button>
@@ -836,7 +811,7 @@ function LegacyHomeApp() {
       return;
     }
 
-    const texto = `Olá, tenho interesse em solicitar uma proposta da HR Solutions.
+    const texto = `Olá, tenho interesse em solicitar uma proposta da HR Gestão e Soluções.
 
 Nome: ${nome}
 Empresa: ${empresa}
@@ -861,9 +836,9 @@ Mensagem: ${mensagem || "Não informado"}`;
       return;
     }
 
-    const subject = "Solicitação de proposta - HR Solutions";
+    const subject = "Solicitação de proposta - HR Gestão e Soluções";
 
-    const body = `Olá, tenho interesse em solicitar uma proposta da HR Solutions.
+    const body = `Olá, tenho interesse em solicitar uma proposta da HR Gestão e Soluções.
 
 Nome: ${nome}
 Empresa: ${empresa}
@@ -920,7 +895,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
+              aria-label="Abrir Instagram oficial da HR Gestão e Soluções em nova aba"
               className={INSTAGRAM_BUTTON_CLASS}
             >
               <Instagram size={18} aria-hidden="true" />
@@ -977,7 +952,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
+              aria-label="Abrir Instagram oficial da HR Gestão e Soluções em nova aba"
               className={`${INSTAGRAM_BUTTON_CLASS} w-full`}
             >
               <Instagram size={18} aria-hidden="true" />
@@ -1099,7 +1074,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               </h2>
             </div>
             <p className="text-lg leading-[1.75] text-muted-foreground">
-              A HR Solutions combina a autoridade construída em Recursos Humanos com novas frentes de marca e tecnologia para resolver necessidades reais de empresas.
+              A HR Gestão e Soluções combina a autoridade construída em Recursos Humanos com novas frentes de marca e tecnologia para resolver necessidades reais de empresas.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -1121,11 +1096,11 @@ Mensagem: ${mensagem || "Não informado"}`;
               Quem somos
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground mb-6">
-              Sobre a HR Solutions
+              Sobre a HR Gestão e Soluções
             </h2>
             <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
             <p className="text-lg leading-[1.75] text-muted-foreground mb-6">
-              A HR Solutions une pessoas, criatividade e tecnologia para ajudar empresas a crescerem com mais clareza, presença e estratégia.
+              A HR Gestão e Soluções une pessoas, criatividade e tecnologia para ajudar empresas a crescerem com mais clareza, presença e estratégia.
             </p>
             <p className="text-lg leading-[1.75] text-muted-foreground">
               Atuamos em Recursos Humanos, Design e Soluções Digitais, conectando gestão, marca e presença online em uma experiência consultiva e próxima.
@@ -1328,7 +1303,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Solicitar Proposta
             </a>
             <a
-              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar sobre as soluções empresariais da HR Solutions.")}`}
+              href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar sobre as soluções empresariais da HR Gestão e Soluções.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
@@ -1353,7 +1328,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               </h2>
               <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
               <p className="text-lg leading-[1.75] text-muted-foreground">
-                A HR Solutions atua com soluções para empresas em diferentes áreas: gestão de pessoas, comunicação visual e presença digital. Em Recursos Humanos, seguimos apoiando contratações de diferentes níveis com análise cuidadosa do perfil ideal para cada função.
+                A HR Gestão e Soluções atua com soluções para empresas em diferentes áreas: gestão de pessoas, comunicação visual e presença digital. Em Recursos Humanos, seguimos apoiando contratações de diferentes níveis com análise cuidadosa do perfil ideal para cada função.
               </p>
             </div>
 
@@ -1384,7 +1359,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Um processo claro do briefing à contratação
             </h2>
             <p className="mt-6 max-w-3xl text-lg leading-[1.75] text-muted-foreground">
-              A HR Solutions organiza cada etapa com clareza, acompanhamento próximo e foco em soluções mais assertivas para a realidade de cada empresa.
+              A HR Gestão e Soluções organiza cada etapa com clareza, acompanhamento próximo e foco em soluções mais assertivas para a realidade de cada empresa.
             </p>
           </div>
 
@@ -1413,7 +1388,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Atendimento remoto para todo o Brasil
             </h3>
             <p className="text-lg leading-[1.7] text-muted-foreground">
-              A HR Solutions atende empresas em todo o Brasil, conduzindo projetos e alinhamentos de forma remota, por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
+              A HR Gestão e Soluções atende empresas em todo o Brasil, conduzindo projetos e alinhamentos de forma remota, por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
             </p>
           </div>
         </div>
@@ -1427,7 +1402,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               Nossos diferenciais
             </span>
             <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold text-foreground leading-tight mb-4">
-              Por que escolher a HR Solutions?
+              Por que escolher a HR Gestão e Soluções?
             </h2>
             <div className="w-12 h-px mb-10" style={{ backgroundColor: "#D4A62A" }} />
             <ul className="space-y-4">
@@ -1481,7 +1456,7 @@ Mensagem: ${mensagem || "Não informado"}`;
               className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}
             >
               <WhatsAppIcon size={20} />
-              Falar com a HR Solutions
+              Falar com a HR Gestão e Soluções
               <ArrowRight size={15} />
             </a>
             <a
@@ -1508,14 +1483,14 @@ Mensagem: ${mensagem || "Não informado"}`;
             </h2>
             <div className="w-12 h-px mb-8" style={{ backgroundColor: "#D4A62A" }} />
             <p className="text-lg text-muted-foreground leading-[1.75] mb-10">
-              Fale com a HR Solutions e conte qual solução sua empresa precisa. Preencha o formulário para receber um retorno sobre os próximos passos.
+              Fale com a HR Gestão e Soluções e conte qual solução sua empresa precisa. Preencha o formulário para receber um retorno sobre os próximos passos.
             </p>
             <div className="rounded-2xl border border-[#D4A62A]/20 bg-[#D4A62A]/8 p-5 mb-8">
               <p className="text-base font-medium tracking-[0.18em] uppercase mb-2" style={{ color: "#D4A62A" }}>
                 Atendimento remoto para todo o Brasil
               </p>
               <p className="text-lg leading-[1.7] text-muted-foreground">
-                A HR Solutions atende empresas em todo o Brasil, conduzindo projetos e alinhamentos de forma remota, por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
+                A HR Gestão e Soluções atende empresas em todo o Brasil, conduzindo projetos e alinhamentos de forma remota, por WhatsApp, e-mail ou videochamada. Quando necessário, também realizamos atendimentos presenciais conforme a demanda da empresa em Belo Horizonte.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
@@ -1615,7 +1590,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                 <Logo variant="white" showText={true} className="h-24 md:h-28 w-auto max-w-[220px]" />
               </div>
               <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
-                A HR Solutions une Recursos Humanos, Design e Soluções Digitais para ajudar empresas a crescerem com estratégia, criatividade e presença.
+                A HR Gestão e Soluções une Recursos Humanos, Design e Soluções Digitais para ajudar empresas a crescerem com estratégia, criatividade e presença.
               </p>
             </div>
 
@@ -1673,7 +1648,7 @@ Mensagem: ${mensagem || "Não informado"}`;
                   href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
+                  aria-label="Abrir Instagram oficial da HR Gestão e Soluções em nova aba"
                   className={`${INSTAGRAM_BUTTON_CLASS} w-fit`}
                 >
                   <Instagram size={18} aria-hidden="true" />
@@ -1687,7 +1662,7 @@ Mensagem: ${mensagem || "Não informado"}`;
             className="pt-8 border-t text-center text-base leading-relaxed"
             style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}
           >
-            © HR Solutions. Todos os direitos reservados.
+            © HR Gestão e Soluções. Todos os direitos reservados.
           </div>
         </div>
       </footer>
@@ -1723,11 +1698,11 @@ function PublicHeader({ active }: { active?: string }) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 h-20 flex items-center justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-5 py-4 sm:px-6 lg:px-10 h-[104px] flex items-center justify-between gap-10">
         <a href="/" className="flex items-center" aria-label="Ir para o início">
-          <Logo variant="color" showText={false} className="h-14 w-auto shrink-0 sm:h-16" />
+          <Logo variant="color" showText={false} className="h-16 w-auto shrink-0 sm:h-[70px]" />
         </a>
-        <nav className="hidden xl:flex flex-1 items-center justify-center gap-5" aria-label="Menu principal">
+        <nav className="hidden xl:flex flex-1 items-center justify-center gap-10" aria-label="Menu principal">
           {headerLinks.map((link) => (
             <a
               key={link.href}
@@ -1740,16 +1715,8 @@ function PublicHeader({ active }: { active?: string }) {
             </a>
           ))}
         </nav>
-        <div className="hidden xl:flex shrink-0 items-center gap-2">
-          <a href="/cliente/login" className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
-            <Building2 size={16} aria-hidden="true" />
-            Área do Cliente
-          </a>
-          <a href="/admin/login" className="inline-flex items-center justify-center gap-2 border border-[#052656]/15 bg-white/80 px-3 py-3 text-sm font-semibold text-[#052656] transition-colors hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
-            <LockKeyhole size={16} aria-hidden="true" />
-            Área do Recrutador
-          </a>
-          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#052656] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0B3470]">
+        <div className="hidden xl:flex shrink-0 items-center pl-2">
+          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#052656] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#052656]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B3470] hover:shadow-xl hover:shadow-[#052656]/20">
             <WhatsAppIcon size={18} />
             Falar com especialista
           </a>
@@ -1765,15 +1732,7 @@ function PublicHeader({ active }: { active?: string }) {
               {link.label}
             </a>
           ))}
-          <a href="/cliente/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
-            <Building2 size={17} aria-hidden="true" />
-            Área do Cliente
-          </a>
-          <a href="/admin/login" className="inline-flex w-full items-center justify-center gap-2 border border-[#052656]/15 bg-white px-5 py-3 text-base font-semibold text-[#052656]">
-            <LockKeyhole size={17} aria-hidden="true" />
-            Área do Recrutador
-          </a>
-          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Solutions.")}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}>
+          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}>
             <WhatsAppIcon size={18} />
             Falar com especialista
           </a>
@@ -1784,39 +1743,62 @@ function PublicHeader({ active }: { active?: string }) {
 }
 
 function PublicFooter() {
+  const footerNavLinks = [
+    { label: "Início", href: "/" },
+    { label: "Serviços", href: "/#solucoes" },
+    { label: "Sobre", href: "/#sobre" },
+    { label: "Contato", href: "/#contato" },
+  ];
+
   return (
-    <footer style={{ backgroundColor: "#052656" }} className="py-16">
+    <footer style={{ backgroundColor: "#052656" }} className="py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
-          <div>
-            <div className="mb-4">
-              <div className="inline-flex flex-col items-center" aria-label="HR Solutions">
-                <Logo variant="white" showText={false} className="h-20 w-auto" />
-                <span className="mt-1 font-['Playfair_Display',serif] text-2xl font-semibold leading-none text-white">
-                  Solutions
-                </span>
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_1fr_1.15fr] lg:gap-16 xl:gap-20 mb-16">
+          <div className="text-center md:text-left">
+            <div className="mb-8 flex justify-center md:justify-start">
+              <div className="inline-flex flex-col items-center" aria-label="HR Gestão e Soluções">
+                <Logo variant="white" showText={false} className="h-24 w-auto max-w-[320px] sm:h-28 sm:max-w-[380px] lg:h-[120px] lg:max-w-[420px]" />
               </div>
             </div>
-            <p className="text-lg leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.52)" }}>
+            <p className="mx-auto max-w-sm text-base leading-[1.75] md:mx-0" style={{ color: "rgba(255,255,255,0.58)" }}>
               Pessoas, marcas e tecnologia para transformar negócios.
             </p>
           </div>
+
           <div>
-            <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Soluções</p>
-            <ul className="space-y-3">
-              {PUBLIC_SOLUTION_LINKS.map((link) => (
-                <li key={link.href}><a href={link.href} className="text-lg transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>{link.label}</a></li>
+            <p className="text-sm font-semibold tracking-[0.18em] uppercase text-[#D4A62A] mb-6">Navegação</p>
+            <ul className="space-y-4">
+              {footerNavLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="text-base font-medium transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.66)" }}>
+                    {link.label}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
+
           <div>
-            <p className="text-base font-medium tracking-[0.15em] uppercase text-white/45 mb-5">Contato</p>
-            <div className="flex flex-col gap-4">
-              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-3 bg-[#25D366] px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:bg-[#1EBE57]">
+            <p className="text-sm font-semibold tracking-[0.18em] uppercase text-[#D4A62A] mb-6">Serviços</p>
+            <ul className="space-y-4">
+              {PUBLIC_SOLUTION_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="text-base font-medium leading-relaxed transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.66)" }}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold tracking-[0.18em] uppercase text-[#D4A62A] mb-6">Contato</p>
+            <div className="flex flex-col items-center gap-4 md:items-start">
+              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-[#25D366] px-5 py-3 text-base font-semibold text-white shadow-lg shadow-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1EBE57] sm:w-fit">
                 <WhatsAppIcon size={18} />
                 WhatsApp
               </a>
-              <a href={emailLink()} className="inline-flex w-fit items-center gap-3 border border-white/15 bg-white/5 px-5 py-3 text-lg font-semibold text-white transition-colors duration-200 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10">
+              <a href={emailLink()} className="inline-flex w-full items-center justify-center gap-3 rounded-md border border-white/15 bg-white/5 px-5 py-3 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 sm:w-fit">
                 <Mail size={18} aria-hidden="true" />
                 {CONTACT_EMAIL}
               </a>
@@ -1824,8 +1806,8 @@ function PublicFooter() {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Abrir Instagram oficial da HR Solutions em nova aba"
-                className={`${INSTAGRAM_BUTTON_CLASS} w-fit`}
+                aria-label="Abrir Instagram oficial da HR Gestão e Soluções em nova aba"
+                className={`${INSTAGRAM_BUTTON_CLASS} w-full justify-center text-base sm:w-fit`}
               >
                 <Instagram size={18} aria-hidden="true" />
                 Instagram
@@ -1833,8 +1815,8 @@ function PublicFooter() {
             </div>
           </div>
         </div>
-        <div className="pt-8 border-t text-center text-base leading-relaxed" style={{ borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}>
-          © HR Solutions. Todos os direitos reservados.
+        <div className="pt-8 border-t text-center text-sm leading-relaxed" style={{ borderColor: "rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.38)" }}>
+          © HR Gestão e Soluções. Todos os direitos reservados.
         </div>
       </div>
     </footer>
@@ -1846,13 +1828,14 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
   return (
     <div className="min-h-screen bg-background text-foreground font-['Inter',sans-serif] antialiased">
       <PublicHeader active={active} />
-      <main className="pt-20">
-        <section id="inicio" className="py-20 md:py-28" style={{ backgroundColor: "#052656" }}>
-          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+      <main className="pt-28">
+        <section id="inicio" className="relative overflow-hidden py-24 md:py-32" style={{ backgroundColor: "#052656" }}>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_16%,rgba(212,166,42,0.16),transparent_28%)]" />
+          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
             <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
               {eyebrow}
             </span>
-            <h1 className="font-['Playfair_Display',serif] text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-white mb-6 max-w-4xl">
+            <h1 className="font-['Poppins',sans-serif] text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-white mb-6 max-w-4xl">
               {title}
             </h1>
             <p className="text-xl leading-[1.75] text-white/72 max-w-3xl">
@@ -1863,26 +1846,26 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
                 <WhatsAppIcon size={20} />
                 {cta}
               </a>
-              <a href="/#solucoes" className="inline-flex w-full sm:w-auto items-center justify-center gap-2 border border-[#D4A62A] bg-transparent px-8 py-4 text-lg font-semibold tracking-wide text-[#D4A62A] transition-colors hover:bg-[#D4A62A]/15">
+              <a href="/#solucoes" className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md border border-[#D4A62A] bg-transparent px-8 py-4 text-base font-semibold tracking-wide text-[#D4A62A] transition-all hover:-translate-y-0.5 hover:bg-[#D4A62A]/15">
                 Ver outras soluções
               </a>
             </div>
           </div>
         </section>
-        <section className="py-20 md:py-24 bg-background">
+        <section className="py-24 md:py-28 bg-background">
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-20">
             <div>
               <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
                 O que entregamos
               </span>
-              <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground">
+              <h2 className="font-['Poppins',sans-serif] text-3xl md:text-5xl font-semibold leading-tight text-foreground">
                 Uma solução clara para o momento da sua empresa.
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {items.map((item) => (
-                <article key={item} className="bg-white p-6 md:p-7">
-                  <div className="mb-4 flex h-9 w-9 items-center justify-center bg-[#D4A62A] text-[#052656]">
+                <article key={item} className="rounded-md border border-border bg-white p-6 shadow-sm shadow-[#052656]/5 md:p-7">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-md bg-[#D4A62A] text-[#052656]">
                     <Check size={17} strokeWidth={2.8} aria-hidden="true" />
                   </div>
                   <h3 className="text-xl font-semibold leading-snug text-foreground">{item}</h3>
@@ -1891,13 +1874,13 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
             </div>
           </div>
         </section>
-        <section className="py-20 md:py-24" style={{ backgroundColor: "#F5F7FA" }}>
+        <section className="py-24 md:py-28" style={{ backgroundColor: "#F5F7FA" }}>
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <div>
               <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
                 Benefícios
               </span>
-              <h2 className="font-['Playfair_Display',serif] text-4xl md:text-5xl font-semibold leading-tight text-foreground mb-8">
+              <h2 className="font-['Poppins',sans-serif] text-3xl md:text-5xl font-semibold leading-tight text-foreground mb-8">
                 Por que contratar esta solução?
               </h2>
               <ul className="space-y-4">
@@ -1909,7 +1892,7 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
                 ))}
               </ul>
             </div>
-            <div className="border border-border bg-white p-7 md:p-8 shadow-sm">
+            <div className="rounded-md border border-border bg-white p-7 shadow-xl shadow-[#052656]/8 md:p-8">
               <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
                 Exemplos
               </span>
@@ -1943,23 +1926,23 @@ export default function App() {
     const isPublicPage = caminho === "/" || caminho.startsWith("/vagas") || isSolutionsPage;
     const pageMeta: Record<string, { title: string; description: string }> = {
       "/solucoes/recrutamento-selecao": {
-        title: "Recrutamento & Seleção Estratégico | HR Solutions",
+        title: "Recrutamento & Seleção Estratégico | HR Gestão e Soluções",
         description: "Recrutamento e seleção estratégico com entendimento da vaga, divulgação, triagem, entrevistas, apresentação de profissionais e acompanhamento.",
       },
       "/solucoes/design-marca": {
-        title: "Design & Marca | HR Solutions",
+        title: "Design & Marca | HR Gestão e Soluções",
         description: "Identidade visual, criação de artes, materiais empresariais, apresentações profissionais e conteúdo visual para redes sociais.",
       },
       "/solucoes/criacao-de-sites": {
-        title: "Criação de Sites e Soluções Digitais | HR Solutions",
+        title: "Criação de Sites e Soluções Digitais | HR Gestão e Soluções",
         description: "Sites institucionais, landing pages, sites para profissionais e imobiliárias, integração com WhatsApp e SEO básico.",
       },
     };
     const title = pageMeta[caminho]?.title ?? (isJobsPage
-      ? "Vagas de emprego em Belo Horizonte | HR Solutions"
-      : "HR Solutions | Soluções estratégicas para empresas");
+      ? "Vagas de emprego em Belo Horizonte | HR Gestão e Soluções"
+      : "HR Gestão e Soluções | Soluções estratégicas para empresas");
     const description = pageMeta[caminho]?.description ?? (isJobsPage
-      ? "Confira vagas de emprego divulgadas pela HR Solutions e candidate-se às oportunidades disponíveis."
+      ? "Confira vagas de emprego divulgadas pela HR Gestão e Soluções e candidate-se às oportunidades disponíveis."
       : "Pessoas, marcas e tecnologia para transformar negócios. Soluções estratégicas em recrutamento, design, marca, sites e experiências digitais.");
     const canonical = caminho.startsWith("/vagas/")
       ? `https://www.hrconsultoriaderh.com.br${caminho.replace(/\/$/, "")}`
@@ -2013,7 +1996,7 @@ export default function App() {
           "Reposição e organização de processos seletivos com mais previsibilidade.",
         ]}
         cta="Solicitar recrutamento"
-        message="Olá, gostaria de solicitar uma proposta de recrutamento e seleção com a HR Solutions."
+        message="Olá, gostaria de solicitar uma proposta de recrutamento e seleção com a HR Gestão e Soluções."
       />
     );
   }
@@ -2043,7 +2026,7 @@ export default function App() {
           "Artes e conteúdos visuais para redes sociais e campanhas digitais.",
         ]}
         cta="Solicitar design"
-        message="Olá, gostaria de solicitar uma proposta de Design & Marca com a HR Solutions."
+        message="Olá, gostaria de solicitar uma proposta de Design & Marca com a HR Gestão e Soluções."
       />
     );
   }
@@ -2074,7 +2057,7 @@ export default function App() {
           "Sites para profissionais autônomos, imobiliárias e negócios locais.",
         ]}
         cta="Solicitar site"
-        message="Olá, gostaria de solicitar uma proposta de site ou solução digital com a HR Solutions."
+        message="Olá, gostaria de solicitar uma proposta de site ou solução digital com a HR Gestão e Soluções."
       />
     );
   }
