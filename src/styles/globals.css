@@ -74,22 +74,21 @@
   }
 }
 
-@keyframes avatarFloat {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(0, -7px, 0) rotate(0.35deg); }
-}
-
 @keyframes avatarBreath {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.012, 1.018); }
 }
 
+@keyframes avatarLabelFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -5px, 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .motion-safe\:animate-\[avatarFloat_7s_ease-in-out_infinite\],
-  .motion-safe\:animate-\[avatarBreath_5s_ease-in-out_infinite\] {
+  .motion-safe\:animate-\[avatarBreath_5s_ease-in-out_infinite\],
+  [class*="motion-safe\\:animate-\\[avatarLabelFloat_"] {
     animation: none;
   }
-
 }
 
 @media (max-width: 639px) {

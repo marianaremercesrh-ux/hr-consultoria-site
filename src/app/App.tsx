@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Handshake, SearchCheck, BarChart3, BadgeCheck, Instagram, Palette } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUp, Check, ChevronDown, Users, Target, Megaphone, Mail, LockKeyhole, Building2, BriefcaseBusiness, MonitorSmartphone, Handshake, SearchCheck, BarChart3, BadgeCheck, Instagram, Palette, Code2 } from "lucide-react";
 import { JobsRouter } from "./pages/JobsPage";
 import AdminLoginPage, { AdminClientSessionNotice } from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
@@ -424,14 +424,28 @@ Descrição da necessidade: ${necessidade}`;
                 <span className="inline-flex items-center gap-2"><BarChart3 size={17} className="text-[#D4A62A]" /> Foco em resultado</span>
               </div>
             </div>
-            <div className="flex min-h-[clamp(360px,58vw,620px)] items-center justify-center lg:justify-end motion-safe:animate-[avatarFloat_7s_ease-in-out_infinite]">
-              <div className="relative w-[min(94vw,520px)] max-w-none lg:w-[clamp(360px,40vw,500px)]">
+            <div className="flex min-h-[clamp(360px,58vw,620px)] items-center justify-center lg:justify-end">
+              <div className="relative w-[min(94vw,580px)] max-w-none lg:w-[clamp(460px,46vw,620px)]">
                 <img
                   src="/assets/home-avatar-transparent.png"
                   alt="Dois profissionais da HR Gestão e Soluções"
-                  className="block h-auto max-h-[clamp(360px,68vh,560px)] w-full object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite]"
+                  className="motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] block h-auto max-h-[clamp(360px,68vh,560px)] w-full object-contain"
                   draggable={false}
                 />
+                <div className="pointer-events-none absolute inset-0 text-[10px] font-bold uppercase tracking-[0.08em] sm:text-xs">
+                  <span className="absolute left-[2%] top-[18%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6s_ease-in-out_infinite] sm:left-[0%]">
+                    <Users size={15} className="text-[#A99BFF]" aria-hidden="true" /> RH
+                  </span>
+                  <span className="absolute right-[1%] top-[20%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6.5s_300ms_ease-in-out_infinite] sm:right-[-1%]">
+                    <Palette size={15} className="text-[#D4A62A]" aria-hidden="true" /> UX/UI Design
+                  </span>
+                  <span className="absolute left-[4%] bottom-[18%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_7s_500ms_ease-in-out_infinite] sm:left-[2%]">
+                    <BarChart3 size={15} className="text-[#D4A62A]" aria-hidden="true" /> Gestão de negócios
+                  </span>
+                  <span className="absolute right-[2%] bottom-[16%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6.8s_700ms_ease-in-out_infinite] sm:right-[0%]">
+                    <Code2 size={15} className="text-[#A99BFF]" aria-hidden="true" /> Desenvolvedor
+                  </span>
+                </div>
               </div>
             </div>
           </div>
