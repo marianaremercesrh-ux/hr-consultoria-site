@@ -84,21 +84,12 @@
   50% { transform: scale(1.012, 1.018); }
 }
 
-@keyframes avatarBlink {
-  0%, 45%, 100% { opacity: 0; transform: scaleY(1); }
-  47%, 49% { opacity: 0.82; transform: scaleY(0.25); }
-  51% { opacity: 0; transform: scaleY(1); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .motion-safe\:animate-\[avatarFloat_7s_ease-in-out_infinite\],
   .motion-safe\:animate-\[avatarBreath_5s_ease-in-out_infinite\] {
     animation: none;
   }
 
-  [class*="motion-safe\\:animate-\\[avatarBlink_"] {
-    animation: none;
-  }
 }
 
 @media (max-width: 639px) {
