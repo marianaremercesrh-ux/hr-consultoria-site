@@ -401,7 +401,7 @@ Descrição da necessidade: ${necessidade}`;
         <section id="inicio" className="relative overflow-hidden bg-[#052656] pt-36 sm:pt-40">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_12%,rgba(212,166,42,0.23),transparent_25%),linear-gradient(135deg,#052656_0%,#092f65_58%,#031b3d_100%)]" />
           <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
-          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:px-10 lg:pb-28">
+          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-10 lg:pb-28">
             <div className="max-w-3xl motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
               <span className="mb-7 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#F0C95C]"><span className="h-px w-8 bg-[#D4A62A]" /> Consultoria estratégica</span>
               <h1 className="font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-6xl lg:text-[5.15rem]">
@@ -423,6 +423,14 @@ Descrição da necessidade: ${necessidade}`;
                 <span className="inline-flex items-center gap-2"><Handshake size={17} className="text-[#D4A62A]" /> Atendimento próximo</span>
                 <span className="inline-flex items-center gap-2"><BarChart3 size={17} className="text-[#D4A62A]" /> Foco em resultado</span>
               </div>
+            </div>
+            <div className="flex items-center justify-center lg:justify-end motion-safe:animate-[avatarFloat_7s_ease-in-out_infinite]">
+              <img
+                src="/assets/home-avatar.png"
+                alt="Avatar da HR Gestão e Soluções"
+                className="h-auto max-h-[560px] w-full max-w-[360px] object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite]"
+                draggable={false}
+              />
             </div>
           </div>
         </section>
