@@ -316,7 +316,7 @@ Descrição da necessidade: ${necessidade}`;
       >
         <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-4 px-5 py-0 sm:px-6 lg:gap-6 lg:px-10">
           <a href="#inicio" aria-label="Ir para o início" className="flex items-center">
-            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-20 min-h-20 max-h-20 w-auto max-w-none flex-none sm:h-[88px] sm:min-h-[88px] sm:max-h-[88px]" />
+            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-16 min-h-16 max-h-16 w-auto max-w-none flex-none sm:h-[90px] sm:min-h-[90px] sm:max-h-[90px]" />
           </a>
 
           <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex 2xl:gap-10" aria-label="Menu principal">
