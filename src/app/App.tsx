@@ -428,7 +428,7 @@ Descrição da necessidade: ${necessidade}`;
               <img
                 src="/assets/home-avatar-transparent.png"
                 alt="Dois profissionais da HR Gestão e Soluções"
-                className="h-auto max-h-[clamp(360px,68vh,560px)] w-[min(94vw,520px)] max-w-none object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] lg:w-[clamp(360px,32vw,440px)]"
+                className="h-auto max-h-[clamp(360px,68vh,620px)] w-[min(94vw,560px)] max-w-none object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] lg:w-[clamp(400px,40vw,500px)]"
                 draggable={false}
               />
             </div>
