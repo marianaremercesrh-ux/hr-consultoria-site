@@ -3,6 +3,61 @@
 .primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #d4a62a; padding: 0.75rem 1.25rem; font-weight: 600; color: #052656; }
 .primary:disabled { opacity: 0.6; }
 
+.brand-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #8c6a10;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.brand-kicker::before {
+  width: 2rem;
+  height: 1px;
+  background: #d4a62a;
+  content: "";
+}
+
+.brand-link {
+  position: relative;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.brand-link::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.35rem;
+  left: 0;
+  height: 1px;
+  background: #d4a62a;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 220ms ease;
+}
+
+.brand-link:hover::after,
+.brand-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.brand-focus:focus-visible {
+  outline: 3px solid rgba(212, 166, 42, 0.55);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-link,
+  .brand-link::after {
+    transition: none;
+  }
+}
+
 .home-hero-background {
   background-position: center 30%;
 }

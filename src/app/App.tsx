@@ -305,28 +305,26 @@ Descrição da necessidade: ${necessidade}`;
     `relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:bg-[#D4A62A] after:transition-all ${
       activeSection === sectionId
         ? "text-[#D4A62A] after:w-full"
-        : "text-[#052656] hover:text-[#D4A62A] after:w-0 hover:after:w-full"
+        : `${scrolled ? "text-[#052656]" : "text-white"} hover:text-[#D4A62A] after:w-0 hover:after:w-full`
     }`;
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#F8F8F6] font-['Inter',sans-serif] text-[#052656] antialiased">
       <header
-        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
-          scrolled ? "border-b border-[#052656]/10 bg-white/95 shadow-sm backdrop-blur" : "bg-transparent"
-        }`}
+        className="fixed left-0 right-0 top-0 z-50 px-3 pt-3 transition-all duration-300 sm:px-5 sm:pt-5"
       >
-        <div className="mx-auto flex min-h-[120px] max-w-7xl items-center justify-between gap-8 px-5 py-5 sm:px-6 lg:px-10">
+        <div className={`mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-6 rounded-2xl border px-4 py-3 transition-all duration-300 sm:px-6 lg:px-8 ${scrolled ? "border-[#052656]/10 bg-white/95 shadow-xl shadow-[#052656]/8 backdrop-blur" : "border-white/15 bg-[#052656]/85 shadow-2xl shadow-[#052656]/20 backdrop-blur-md"}`}>
           <a href="#inicio" aria-label="Ir para o início" className="flex items-center">
-            <Logo variant="color" showText={false} className="h-[64px] w-auto max-w-none shrink-0 sm:h-[65px]" />
+            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-12 w-auto max-w-none shrink-0 sm:h-14" />
           </a>
 
-          <nav className="hidden flex-1 items-center justify-center gap-14 xl:flex" aria-label="Menu principal">
+          <nav className="hidden flex-1 items-center justify-center gap-10 xl:flex" aria-label="Menu principal">
             {MAIN_NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => link.sectionId && setActiveSection(link.sectionId)}
-                className={link.sectionId ? navLinkClass(link.sectionId) : "relative text-[17px] font-semibold tracking-wide text-[#052656] transition-colors hover:text-[#D4A62A]"}
+                className={link.sectionId ? navLinkClass(link.sectionId) : `relative text-sm font-semibold tracking-wide transition-colors ${scrolled ? "text-[#052656]" : "text-white"} hover:text-[#D4A62A]`}
                 aria-current={link.sectionId && activeSection === link.sectionId ? "page" : undefined}
               >
                 {link.label}
@@ -334,12 +332,18 @@ Descrição da necessidade: ${necessidade}`;
             ))}
           </nav>
 
-          <div className="hidden shrink-0 items-center pl-2 xl:flex">
+          <div className="hidden shrink-0 items-center gap-2 xl:flex">
+            <a href="/cliente/login" className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${scrolled ? "border-[#052656]/15 text-[#052656] hover:border-[#D4A62A]" : "border-white/20 text-white hover:border-[#D4A62A]"}`}>
+              <Building2 size={15} aria-hidden="true" /> Cliente
+            </a>
+            <a href="/admin/login" className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${scrolled ? "border-[#052656]/15 text-[#052656] hover:border-[#D4A62A]" : "border-white/20 text-white hover:border-[#D4A62A]"}`}>
+              <LockKeyhole size={15} aria-hidden="true" /> Recrutador
+            </a>
             <a
               href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#052656] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#052656]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B3470] hover:shadow-xl hover:shadow-[#052656]/20"
+              className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold shadow-lg transition-all hover:-translate-y-0.5 ${scrolled ? "bg-[#052656] text-white shadow-[#052656]/15 hover:bg-[#0B3470]" : "bg-[#D4A62A] text-[#052656] shadow-[#D4A62A]/20 hover:bg-[#E0B33A]"}`}
             >
               <WhatsAppIcon size={18} />
               Falar com especialista
@@ -348,7 +352,7 @@ Descrição da necessidade: ${necessidade}`;
 
           <button
             type="button"
-            className="p-2 xl:hidden"
+            className={`rounded-xl p-2 xl:hidden ${scrolled ? "text-[#052656]" : "text-white"}`}
             onClick={() => setMenuOpen((open) => !open)}
             aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
             aria-expanded={menuOpen}
@@ -358,7 +362,7 @@ Descrição da necessidade: ${necessidade}`;
         </div>
 
         {menuOpen && (
-          <div className="border-t border-[#052656]/10 bg-white px-6 py-6 shadow-xl xl:hidden">
+          <div className="mx-auto max-w-7xl border-x border-b border-[#052656]/10 bg-white px-6 py-6 shadow-xl xl:hidden">
             <div className="flex flex-col gap-5">
               {MAIN_NAV_LINKS.map((link) => (
                 <a
@@ -374,6 +378,10 @@ Descrição da necessidade: ${necessidade}`;
                   {link.label}
                 </a>
               ))}
+              <div className="grid grid-cols-2 gap-3 border-t border-[#052656]/10 pt-5">
+                <a href="/cliente/login" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#052656]/15 px-3 py-3 text-sm font-semibold text-[#052656]"><Building2 size={16} aria-hidden="true" /> Cliente</a>
+                <a href="/admin/login" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#052656]/15 px-3 py-3 text-sm font-semibold text-[#052656]"><LockKeyhole size={16} aria-hidden="true" /> Recrutador</a>
+              </div>
               <a
                 href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`}
                 target="_blank"
@@ -389,70 +397,64 @@ Descrição da necessidade: ${necessidade}`;
       </header>
 
       <main>
-        <section id="inicio" className="relative overflow-hidden bg-white pt-36 md:pt-40">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(212,166,42,0.10),transparent_26%),linear-gradient(180deg,#ffffff_0%,#F8F8F6_100%)]" />
-          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-16 px-5 pb-24 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-10 lg:pb-28">
-            <div className="motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
-              <span className="mb-6 inline-flex rounded-full border border-[#D4A62A]/30 bg-[#D4A62A]/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#8C6A10]">
-                Consultoria estratégica
-              </span>
-              <h1 className="max-w-3xl font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.06] text-[#052656] sm:text-6xl lg:text-[4.6rem]">
-                Pessoas, marcas e tecnologia para transformar negócios.
+        <section id="inicio" className="relative overflow-hidden bg-[#052656] pt-36 sm:pt-40">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_12%,rgba(212,166,42,0.23),transparent_25%),linear-gradient(135deg,#052656_0%,#092f65_58%,#031b3d_100%)]" />
+          <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
+          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-28">
+            <div className="max-w-3xl motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
+              <span className="mb-7 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#F0C95C]"><span className="h-px w-8 bg-[#D4A62A]" /> Consultoria estratégica</span>
+              <h1 className="font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-6xl lg:text-[5.15rem]">
+                O próximo nível do seu negócio começa pelas pessoas.
               </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-[1.8] text-[#4B4B4B] sm:text-xl">
+              <p className="mt-7 max-w-2xl text-lg leading-[1.8] text-white/70 sm:text-xl">
                 A HR Gestão e Soluções conecta estratégia, criatividade e inovação para ajudar empresas a crescerem.
               </p>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <a href="#solucoes" className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-[#D4A62A] px-8 py-4 text-base font-bold text-[#052656] shadow-lg shadow-[#D4A62A]/25 transition-all hover:-translate-y-0.5 hover:bg-[#E0B33A] hover:shadow-xl hover:shadow-[#D4A62A]/30 sm:w-auto">
-                  Conheça nossas soluções
-                  <ArrowRight size={18} aria-hidden="true" />
+                <a href="#solucoes" className="brand-focus inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#D4A62A] px-8 py-4 text-base font-bold text-[#052656] shadow-xl shadow-[#D4A62A]/20 transition-all hover:-translate-y-1 hover:bg-[#E0B33A] sm:w-auto">
+                  Conheça nossas soluções <ArrowRight size={18} aria-hidden="true" />
                 </a>
-                <a
-                  href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-3 rounded-md border border-[#052656]/18 bg-white px-8 py-4 text-base font-bold text-[#052656] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#D4A62A] hover:bg-[#D4A62A]/10 hover:shadow-md sm:w-auto"
-                >
-                  <WhatsAppIcon size={20} />
-                  Falar com especialista
+                <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`} target="_blank" rel="noopener noreferrer" className="brand-focus inline-flex w-full items-center justify-center gap-3 rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-bold text-white backdrop-blur transition-all hover:-translate-y-1 hover:border-white/45 hover:bg-white/10 sm:w-auto">
+                  <WhatsAppIcon size={20} /> Falar com especialista
                 </a>
+              </div>
+              <div className="mt-14 flex flex-wrap gap-x-8 gap-y-4 border-t border-white/15 pt-6 text-sm text-white/55">
+                <span className="inline-flex items-center gap-2"><BadgeCheck size={17} className="text-[#D4A62A]" /> Visão integrada</span>
+                <span className="inline-flex items-center gap-2"><Handshake size={17} className="text-[#D4A62A]" /> Atendimento próximo</span>
+                <span className="inline-flex items-center gap-2"><BarChart3 size={17} className="text-[#D4A62A]" /> Foco em resultado</span>
               </div>
             </div>
 
-            <div className="relative motion-safe:animate-[fadeInUp_850ms_ease-out_120ms_both]">
-              <div className="absolute -left-6 top-10 h-28 w-28 rounded-md border border-[#D4A62A]/30" />
-              <div className="relative overflow-hidden rounded-md bg-[#052656] shadow-2xl shadow-[#052656]/18 ring-1 ring-[#052656]/10">
-                <img
-                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&h=1050&fit=crop&auto=format"
-                  alt="Equipe de consultoria em uma reunião estratégica"
-                  className="h-[440px] w-full object-cover opacity-90 sm:h-[560px]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#052656]/45 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 rounded-md bg-white/94 p-5 shadow-xl backdrop-blur">
-                  <p className="text-base font-semibold uppercase tracking-[0.16em] text-[#D4A62A]">Três pilares</p>
-                  <p className="mt-2 text-xl font-semibold leading-snug text-[#052656]">
-                    Pessoas, criatividade e digital trabalhando juntos.
-                  </p>
+            <div className="relative mx-auto w-full max-w-xl motion-safe:animate-[fadeInUp_850ms_ease-out_120ms_both]">
+              <div className="absolute -right-5 -top-7 h-32 w-32 rounded-full border border-[#D4A62A]/35 sm:-right-10 sm:-top-10 sm:h-48 sm:w-48" />
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 p-3 shadow-2xl shadow-black/30 backdrop-blur-sm">
+                <div className="relative overflow-hidden rounded-[1.4rem] bg-[#0b3a78]">
+                  <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&h=1050&fit=crop&auto=format" alt="Equipe de consultoria em uma reunião estratégica" className="h-[430px] w-full object-cover opacity-75 sm:h-[560px]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#031b3d] via-transparent to-[#052656]/20" />
+                  <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-[#052656]/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#F0C95C] backdrop-blur">HR Gestão & Soluções</div>
+                  <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/20 bg-[#052656]/80 p-5 backdrop-blur-md">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F0C95C]">Três pilares</p>
+                    <p className="mt-2 text-xl font-semibold leading-snug text-white sm:text-2xl">Pessoas, criatividade e digital trabalhando juntos.</p>
+                  </div>
                 </div>
               </div>
-              <div className="absolute -bottom-6 -right-6 h-40 w-40 rounded-md bg-[#D4A62A]/16" />
+              <div className="absolute -bottom-6 -left-5 rounded-2xl border border-[#D4A62A]/40 bg-[#D4A62A] px-5 py-4 text-[#052656] shadow-xl shadow-black/20 sm:-left-10"><p className="text-3xl font-bold leading-none">01</p><p className="mt-1 text-xs font-bold uppercase tracking-[0.15em]">Visão estratégica</p></div>
             </div>
           </div>
         </section>
 
-        <section id="nichos" className="bg-[#F8F8F6] py-20 md:py-24">
+        <section id="nichos" className="relative bg-[#F8F8F6] py-20 md:py-24">
           <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
               <div>
-                <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Nichos</span>
-                <h2 className="mt-5 font-['Playfair_Display',serif] text-4xl font-semibold leading-tight text-[#052656] md:text-5xl">
+                <span className="brand-kicker">Para quem fazemos</span>
+                <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight tracking-[-0.02em] text-[#052656] md:text-5xl">
                   Soluções para diferentes momentos de negócio.
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {niches.map((niche) => (
-                  <div key={niche} className="rounded-md border border-[#052656]/10 bg-white px-5 py-4 text-base font-semibold text-[#052656] shadow-sm shadow-[#052656]/5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D4A62A]/40 hover:shadow-md">
-                    {niche}
+                  <div key={niche} className="group flex min-h-20 items-end border-b border-[#052656]/20 bg-white p-5 text-base font-semibold text-[#052656] transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A62A] hover:shadow-xl hover:shadow-[#052656]/8">
+                    <span className="transition-colors group-hover:text-[#8C6A10]">{niche}</span>
                   </div>
                 ))}
               </div>
@@ -460,11 +462,11 @@ Descrição da necessidade: ${necessidade}`;
           </div>
         </section>
 
-        <section id="solucoes" className="bg-[#F8F8F6] py-24 md:py-32">
+        <section id="solucoes" className="bg-white py-24 md:py-32">
           <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
             <div className="mx-auto mb-14 max-w-3xl text-center motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
-              <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Nossas soluções</span>
-              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight text-[#052656] md:text-5xl">
+              <span className="brand-kicker">Nossas soluções</span>
+              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-[1.08] tracking-[-0.02em] text-[#052656] md:text-5xl">
                 Escolha o caminho certo para o momento da sua empresa.
               </h2>
             </div>
@@ -475,16 +477,17 @@ Descrição da necessidade: ${necessidade}`;
                   key={solution.title}
                   id={solution.sectionId}
                   href={solution.href}
-                  className="group flex min-h-[360px] flex-col rounded-md border border-[#052656]/10 bg-white p-8 shadow-lg shadow-[#052656]/5 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A62A]/70 hover:shadow-2xl hover:shadow-[#052656]/12 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                  className="brand-focus group relative flex min-h-[360px] flex-col overflow-hidden border border-[#052656]/12 border-t-4 border-t-transparent bg-[#F8F8F6] p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#052656]/20 hover:border-t-[#D4A62A] hover:bg-white hover:shadow-2xl hover:shadow-[#052656]/12 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 >
-                  <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-md bg-[#052656] text-[#D4A62A] transition-colors group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
+                  <span className="absolute right-7 top-7 text-xs font-bold tracking-[0.18em] text-[#052656]/30">0{solutions.indexOf(solution) + 1}</span>
+                  <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#052656] text-[#D4A62A] transition-colors group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
                     {solution.icon}
                   </div>
-                  <h3 className="font-['Poppins',sans-serif] text-2xl font-semibold leading-tight text-[#052656]">{solution.title}</h3>
+                  <h3 className="max-w-[15rem] font-['Poppins',sans-serif] text-2xl font-semibold leading-tight text-[#052656]">{solution.title}</h3>
                   <p className="mt-5 text-lg leading-[1.7] text-[#4B4B4B]">{solution.desc}</p>
-                  <span className="mt-auto inline-flex items-center gap-2 pt-8 text-base font-semibold text-[#052656] transition-colors group-hover:text-[#D4A62A]">
+                  <span className="mt-auto inline-flex items-center gap-2 pt-8 text-base font-semibold text-[#052656] transition-colors group-hover:text-[#D4A62A]"><span>
                     Conhecer solução
-                    <ArrowRight size={17} aria-hidden="true" />
+                    </span><ArrowRight size={17} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
                   </span>
                 </a>
               ))}
@@ -492,22 +495,22 @@ Descrição da necessidade: ${necessidade}`;
           </div>
         </section>
 
-        <section id="sobre" className="bg-white py-24 md:py-32">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
+        <section id="sobre" className="bg-[#F8F8F6] py-24 md:py-32">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-center lg:px-10">
             <div>
-              <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Diferenciais</span>
-              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight text-[#052656] md:text-5xl">
+              <span className="brand-kicker">Diferenciais</span>
+              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-[1.08] tracking-[-0.02em] text-[#052656] md:text-5xl">
                 Uma visão integrada para transformar intenção em resultado.
               </h2>
-              <p className="mt-6 text-lg leading-[1.75] text-[#4B4B4B]">
+              <p className="mt-6 max-w-xl text-lg leading-[1.75] text-[#4B4B4B]">
                 A HR Gestão e Soluções combina análise, criação e execução digital para apoiar empresas com soluções bem direcionadas, sem excesso de complexidade.
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {differentials.map((item) => (
-                <article key={item.title} className="rounded-md border border-[#052656]/10 bg-[#F8F8F6] p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-[#052656]/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-md bg-[#D4A62A]/16 text-[#8C6A10]">
+                <article key={item.title} className="group border-t border-[#052656]/20 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-t-[#D4A62A] hover:shadow-xl hover:shadow-[#052656]/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4A62A]/16 text-[#8C6A10] transition-colors group-hover:bg-[#D4A62A] group-hover:text-[#052656]">
                     {item.icon}
                   </div>
                   <h3 className="text-2xl font-semibold leading-tight text-[#052656]">{item.title}</h3>
@@ -517,11 +520,12 @@ Descrição da necessidade: ${necessidade}`;
           </div>
         </section>
 
-        <section id="contato" className="bg-[#052656] py-24 md:py-32">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
+        <section id="contato" className="relative overflow-hidden bg-[#052656] py-24 md:py-32">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(212,166,42,0.16),transparent_28%)]" />
+          <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
             <div>
-              <span className="text-base font-semibold uppercase tracking-[0.18em] text-[#D4A62A]">Próximo passo</span>
-              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-tight text-white md:text-5xl">
+              <span className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#F0C95C]"><span className="h-px w-8 bg-[#D4A62A]" /> Próximo passo</span>
+              <h2 className="mt-5 font-['Poppins',sans-serif] text-3xl font-semibold leading-[1.08] tracking-[-0.02em] text-white md:text-5xl">
                 Vamos transformar sua ideia em resultado?
               </h2>
               <p className="mt-6 max-w-2xl text-xl leading-[1.7] text-white/70">
@@ -550,7 +554,7 @@ Descrição da necessidade: ${necessidade}`;
               </div>
             </div>
 
-            <form onSubmit={handleContactSubmit} className="rounded-md bg-white p-6 shadow-2xl shadow-black/20 ring-1 ring-white/10 sm:p-8">
+            <form onSubmit={handleContactSubmit} className="border border-white/10 bg-white p-6 shadow-2xl shadow-black/30 ring-8 ring-white/5 sm:p-8">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="nome" className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#052656]">
@@ -1697,8 +1701,8 @@ function PublicHeader({ active }: { active?: string }) {
   const headerLinks = PUBLIC_HEADER_LINKS;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-      <div className="mx-auto flex min-h-[120px] max-w-7xl items-center justify-between gap-8 px-5 py-5 sm:px-6 lg:px-10">
+    <header className="fixed left-0 right-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-5">
+        <div className="mx-auto flex min-h-[84px] max-w-7xl items-center justify-between gap-6 rounded-2xl border border-[#052656]/10 bg-white/95 px-4 py-3 shadow-xl shadow-[#052656]/8 backdrop-blur sm:px-6 lg:px-8">
         <a href="/" className="flex items-center" aria-label="Ir para o início">
           <Logo variant="color" showText={false} className="h-[64px] w-auto max-w-none shrink-0 sm:h-[65px]" />
         </a>
@@ -1715,8 +1719,10 @@ function PublicHeader({ active }: { active?: string }) {
             </a>
           ))}
         </nav>
-        <div className="hidden xl:flex shrink-0 items-center pl-2">
-          <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#052656] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#052656]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B3470] hover:shadow-xl hover:shadow-[#052656]/20">
+          <div className="hidden xl:flex shrink-0 items-center gap-2">
+            <a href="/cliente/login" className="inline-flex items-center gap-2 rounded-xl border border-[#052656]/15 px-3 py-2 text-xs font-semibold text-[#052656] transition-colors hover:border-[#D4A62A]"><Building2 size={15} aria-hidden="true" /> Cliente</a>
+            <a href="/admin/login" className="inline-flex items-center gap-2 rounded-xl border border-[#052656]/15 px-3 py-2 text-xs font-semibold text-[#052656] transition-colors hover:border-[#D4A62A]"><LockKeyhole size={15} aria-hidden="true" /> Recrutador</a>
+            <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#052656] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#052656]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B3470] hover:shadow-xl hover:shadow-[#052656]/20">
             <WhatsAppIcon size={18} />
             Falar com especialista
           </a>
@@ -1732,6 +1738,10 @@ function PublicHeader({ active }: { active?: string }) {
               {link.label}
             </a>
           ))}
+          <div className="grid grid-cols-2 gap-3 border-t border-[#052656]/10 pt-5">
+            <a href="/cliente/login" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#052656]/15 px-3 py-3 text-sm font-semibold text-[#052656]"><Building2 size={16} aria-hidden="true" /> Cliente</a>
+            <a href="/admin/login" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#052656]/15 px-3 py-3 text-sm font-semibold text-[#052656]"><LockKeyhole size={16} aria-hidden="true" /> Recrutador</a>
+          </div>
           <a href={`${whatsappLink()}?text=${encodeURIComponent("Olá, gostaria de falar com um especialista da HR Gestão e Soluções.")}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_HEADER_BUTTON_CLASS} w-full`}>
             <WhatsAppIcon size={18} />
             Falar com especialista
@@ -1751,13 +1761,13 @@ function PublicFooter() {
   ];
 
   return (
-    <footer style={{ backgroundColor: "#052656" }} className="py-20 md:py-28">
+    <footer style={{ backgroundColor: "#052656" }} className="border-t-4 border-[#D4A62A] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 gap-14 md:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_1fr_1.15fr] lg:gap-16 xl:gap-20 mb-16">
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr_1.15fr] lg:gap-16 xl:gap-20 mb-16">
           <div className="text-center md:text-left">
             <div className="mb-8 flex justify-center md:justify-start">
               <div className="inline-flex flex-col items-center" aria-label="HR Gestão e Soluções">
-                <Logo variant="white" showText={false} className="h-24 w-auto max-w-[320px] sm:h-28 sm:max-w-[380px] lg:h-[120px] lg:max-w-[420px]" />
+                <Logo variant="white" showText={false} className="h-20 w-auto max-w-[280px] sm:h-24 sm:max-w-[340px] lg:h-[104px] lg:max-w-[380px]" />
               </div>
             </div>
             <p className="mx-auto max-w-sm text-base leading-[1.75] md:mx-0" style={{ color: "rgba(255,255,255,0.58)" }}>
@@ -1775,6 +1785,24 @@ function PublicFooter() {
                   </a>
                 </li>
               ))}
+              <li>
+                <a href="/admin/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
+                  <LockKeyhole size={17} className="mt-1" aria-hidden="true" />
+                  <span>
+                    <strong className="block text-lg">Área do Recrutador</strong>
+                    <span className="block text-sm text-white/40 group-hover:text-white/60">Gestão administrativa e processos seletivos</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="/cliente/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
+                  <Building2 size={17} className="mt-1" aria-hidden="true" />
+                  <span>
+                    <strong className="block text-lg">Área do Cliente</strong>
+                    <span className="block text-sm text-white/40 group-hover:text-white/60">Acompanhamento de vagas e candidatos liberados</span>
+                  </span>
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -1829,19 +1857,19 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
     <div className="min-h-screen bg-background text-foreground font-['Inter',sans-serif] antialiased">
       <PublicHeader active={active} />
       <main className="pt-28">
-        <section id="inicio" className="relative overflow-hidden py-24 md:py-32" style={{ backgroundColor: "#052656" }}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_16%,rgba(212,166,42,0.16),transparent_28%)]" />
-          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-            <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-6" style={{ color: "#D4A62A" }}>
-              {eyebrow}
-            </span>
-            <h1 className="font-['Poppins',sans-serif] text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-white mb-6 max-w-4xl">
+        <section id="inicio" className="relative overflow-hidden bg-[#052656] py-28 md:py-36">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_16%,rgba(212,166,42,0.20),transparent_28%),linear-gradient(135deg,#052656_0%,#092f65_100%)]" />
+          <div className="absolute right-[-8rem] top-[-8rem] h-80 w-80 rounded-full border border-[#D4A62A]/20" />
+          <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 sm:px-6 lg:grid-cols-[1fr_0.72fr] lg:items-end lg:px-10">
+            <div>
+            <span className="mb-6 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#F0C95C]"><span className="h-px w-8 bg-[#D4A62A]" /> {eyebrow}</span>
+            <h1 className="max-w-4xl font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.05] tracking-[-0.025em] text-white sm:text-5xl md:text-6xl">
               {title}
             </h1>
-            <p className="text-xl leading-[1.75] text-white/72 max-w-3xl">
+            <p className="mt-6 max-w-3xl text-xl leading-[1.75] text-white/72">
               {intro}
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <a href={`${whatsappLink()}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" className={`${WHATSAPP_BUTTON_CLASS} w-full sm:w-auto`}>
                 <WhatsAppIcon size={20} />
                 {cta}
@@ -1850,22 +1878,25 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
                 Ver outras soluções
               </a>
             </div>
+            </div>
+            <div className="hidden border-l border-white/20 pl-8 lg:block">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F0C95C]">Uma solução com direção</p>
+              <p className="mt-4 text-lg leading-relaxed text-white/65">Clareza para decidir, proximidade para executar e visão para evoluir.</p>
+            </div>
           </div>
         </section>
         <section className="py-24 md:py-28 bg-background">
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-20">
             <div>
-              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
-                O que entregamos
-              </span>
+              <span className="brand-kicker">O que entregamos</span>
               <h2 className="font-['Poppins',sans-serif] text-3xl md:text-5xl font-semibold leading-tight text-foreground">
                 Uma solução clara para o momento da sua empresa.
               </h2>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {items.map((item) => (
-                <article key={item} className="rounded-md border border-border bg-white p-6 shadow-sm shadow-[#052656]/5 md:p-7">
-                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-md bg-[#D4A62A] text-[#052656]">
+                <article key={item} className="group border-b border-[#052656]/20 bg-white p-6 transition-all hover:-translate-y-1 hover:border-b-[#D4A62A] hover:shadow-xl hover:shadow-[#052656]/8 md:p-7">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center bg-[#D4A62A] text-[#052656] transition-transform group-hover:rotate-6">
                     <Check size={17} strokeWidth={2.8} aria-hidden="true" />
                   </div>
                   <h3 className="text-xl font-semibold leading-snug text-foreground">{item}</h3>
@@ -1877,9 +1908,7 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
         <section className="py-24 md:py-28" style={{ backgroundColor: "#F5F7FA" }}>
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <div>
-              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
-                Benefícios
-              </span>
+              <span className="brand-kicker">Benefícios</span>
               <h2 className="font-['Poppins',sans-serif] text-3xl md:text-5xl font-semibold leading-tight text-foreground mb-8">
                 Por que contratar esta solução?
               </h2>
@@ -1892,10 +1921,8 @@ function SolutionPage({ eyebrow, title, intro, items, benefits, examples, cta, m
                 ))}
               </ul>
             </div>
-            <div className="rounded-md border border-border bg-white p-7 shadow-xl shadow-[#052656]/8 md:p-8">
-              <span className="inline-block text-base font-medium tracking-[0.18em] uppercase mb-5" style={{ color: "#D4A62A" }}>
-                Exemplos
-              </span>
+            <div className="border-t-4 border-[#D4A62A] bg-white p-7 shadow-xl shadow-[#052656]/8 md:p-8">
+              <span className="brand-kicker">Exemplos</span>
               <div className="space-y-5">
                 {examples.map((example) => (
                   <article key={example} className="border-l-4 pl-5" style={{ borderColor: "#D4A62A" }}>
