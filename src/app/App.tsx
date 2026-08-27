@@ -404,8 +404,8 @@ Descrição da necessidade: ${necessidade}`;
           <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-10 lg:pb-28">
             <div className="max-w-3xl motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
               <span className="mb-7 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#F0C95C]"><span className="h-px w-8 bg-[#D4A62A]" /> Consultoria estratégica</span>
-              <h1 className="font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-6xl lg:text-[5.15rem]">
-                O próximo nível do seu negócio começa pelas pessoas.
+              <h1 className="font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-[5.15rem]">
+                O próximo nível<br className="hidden sm:block" /> do seu negócio<br className="hidden sm:block" /> começa pelas<br className="hidden sm:block" /> pessoas.
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-[1.8] text-white/70 sm:text-xl">
                 A HR Gestão e Soluções conecta estratégia, criatividade e inovação para ajudar empresas a crescerem.
@@ -432,17 +432,17 @@ Descrição da necessidade: ${necessidade}`;
                   className="motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] block h-auto max-h-[clamp(360px,68vh,560px)] w-full object-contain"
                   draggable={false}
                 />
-                <div className="pointer-events-none absolute inset-0 text-[10px] font-bold uppercase tracking-[0.08em] sm:text-xs">
-                  <span className="absolute left-[2%] top-[18%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6s_ease-in-out_infinite] sm:left-[0%]">
+                <div className="pointer-events-none absolute inset-0 text-[10px] font-bold sm:text-xs">
+                  <span className="absolute left-[18%] top-[24%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6s_ease-in-out_infinite] sm:left-[16%]">
                     <Users size={15} className="text-[#A99BFF]" aria-hidden="true" /> RH
                   </span>
-                  <span className="absolute right-[1%] top-[20%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6.5s_300ms_ease-in-out_infinite] sm:right-[-1%]">
+                  <span className="absolute right-[16%] top-[25%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6.5s_300ms_ease-in-out_infinite] sm:right-[14%]">
                     <Palette size={15} className="text-[#D4A62A]" aria-hidden="true" /> UX/UI Design
                   </span>
-                  <span className="absolute left-[4%] bottom-[18%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_7s_500ms_ease-in-out_infinite] sm:left-[2%]">
+                  <span className="absolute left-[12%] bottom-[22%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_7s_500ms_ease-in-out_infinite] sm:left-[10%]">
                     <BarChart3 size={15} className="text-[#D4A62A]" aria-hidden="true" /> Gestão de negócios
                   </span>
-                  <span className="absolute right-[2%] bottom-[16%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6.8s_700ms_ease-in-out_infinite] sm:right-[0%]">
+                  <span className="absolute right-[13%] bottom-[21%] inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0B2F61]/90 px-3 py-2 text-white shadow-lg shadow-black/15 motion-safe:animate-[avatarLabelFloat_6.8s_700ms_ease-in-out_infinite] sm:right-[11%]">
                     <Code2 size={15} className="text-[#A99BFF]" aria-hidden="true" /> Desenvolvedor
                   </span>
                 </div>
