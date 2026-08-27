@@ -316,7 +316,7 @@ Descrição da necessidade: ${necessidade}`;
       >
         <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-4 px-5 py-0 sm:px-6 lg:gap-6 lg:px-10">
           <a href="#inicio" aria-label="Ir para o início" className="flex items-center">
-            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-16 min-h-16 max-h-16 w-auto max-w-none flex-none sm:h-[90px] sm:min-h-[90px] sm:max-h-[90px]" />
+            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-14 min-h-14 max-h-14 w-auto max-w-none flex-none sm:h-[80px] sm:min-h-[80px] sm:max-h-[80px]" />
           </a>
 
           <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex 2xl:gap-10" aria-label="Menu principal">
@@ -428,7 +428,7 @@ Descrição da necessidade: ${necessidade}`;
               <img
                 src="/assets/home-avatar-transparent.png"
                 alt="Dois profissionais da HR Gestão e Soluções"
-                className="h-auto max-h-[clamp(360px,68vh,620px)] w-[min(94vw,560px)] max-w-none object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] lg:w-[clamp(400px,40vw,500px)]"
+                className="h-auto max-h-[clamp(360px,68vh,560px)] w-[min(94vw,520px)] max-w-none object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] lg:w-[clamp(360px,32vw,440px)]"
                 draggable={false}
               />
             </div>
