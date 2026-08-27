@@ -425,12 +425,18 @@ Descrição da necessidade: ${necessidade}`;
               </div>
             </div>
             <div className="flex min-h-[clamp(360px,58vw,620px)] items-center justify-center lg:justify-end motion-safe:animate-[avatarFloat_7s_ease-in-out_infinite]">
-              <img
-                src="/assets/home-avatar-transparent.png"
-                alt="Dois profissionais da HR Gestão e Soluções"
-                className="h-auto max-h-[clamp(360px,68vh,560px)] w-[min(94vw,520px)] max-w-none object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] lg:w-[clamp(360px,32vw,440px)]"
-                draggable={false}
-              />
+              <div className="relative w-[min(94vw,520px)] max-w-none lg:w-[clamp(360px,32vw,440px)]">
+                <img
+                  src="/assets/home-avatar-transparent.png"
+                  alt="Dois profissionais da HR Gestão e Soluções"
+                  className="block h-auto max-h-[clamp(360px,68vh,560px)] w-full object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite]"
+                  draggable={false}
+                />
+                <span aria-hidden="true" className="pointer-events-none absolute left-[25.5%] top-[11.5%] h-[0.8%] w-[4.2%] rounded-full bg-[#21150f] opacity-0 motion-safe:animate-[avatarBlink_6s_ease-in-out_infinite]" />
+                <span aria-hidden="true" className="pointer-events-none absolute left-[31.8%] top-[11.5%] h-[0.8%] w-[4.2%] rounded-full bg-[#21150f] opacity-0 motion-safe:animate-[avatarBlink_6s_200ms_ease-in-out_infinite]" />
+                <span aria-hidden="true" className="pointer-events-none absolute left-[69.4%] top-[11.7%] h-[0.8%] w-[4.2%] rounded-full bg-[#21150f] opacity-0 motion-safe:animate-[avatarBlink_6s_100ms_ease-in-out_infinite]" />
+                <span aria-hidden="true" className="pointer-events-none absolute left-[75.3%] top-[11.7%] h-[0.8%] w-[4.2%] rounded-full bg-[#21150f] opacity-0 motion-safe:animate-[avatarBlink_6s_300ms_ease-in-out_infinite]" />
+              </div>
             </div>
           </div>
         </section>
