@@ -424,11 +424,11 @@ Descrição da necessidade: ${necessidade}`;
                 <span className="inline-flex items-center gap-2"><BarChart3 size={17} className="text-[#D4A62A]" /> Foco em resultado</span>
               </div>
             </div>
-            <div className="flex min-h-[clamp(300px,58vw,620px)] items-center justify-center lg:justify-end motion-safe:animate-[avatarFloat_7s_ease-in-out_infinite]">
+            <div className="flex items-center justify-center lg:justify-end motion-safe:animate-[avatarFloat_7s_ease-in-out_infinite]">
               <img
                 src="/assets/home-avatar.png"
                 alt="Avatar da HR Gestão e Soluções"
-                className="h-auto max-h-[clamp(300px,68vh,620px)] w-[min(94vw,560px)] max-w-none object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite] lg:w-[clamp(420px,42vw,560px)] xl:w-[clamp(560px,52vw,760px)]"
+                className="h-auto max-h-[560px] w-full max-w-[360px] object-contain motion-safe:animate-[avatarBreath_5s_ease-in-out_infinite]"
                 draggable={false}
               />
             </div>
