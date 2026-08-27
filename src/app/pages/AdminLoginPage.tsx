@@ -2,14 +2,20 @@
 import { supabase } from "../lib/supabase";
 
 export default function AdminLoginPage() {
+  const [view, setView] = useState<"login" | "forgot" | "reset">(
+    new URLSearchParams(window.location.search).get("recovery") ? "reset" : "login",
+  );
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+  const [confirmacaoSenha, setConfirmacaoSenha] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [verificando, setVerificando] = useState(true);
   const [sessaoCliente, setSessaoCliente] = useState(false);
 
   useEffect(() => {
+    if (view === "reset") { setVerificando(false); return; }
     void supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) { setVerificando(false); return; }
       const { data: profile } = await supabase.from("perfis_usuarios").select("perfil").eq("usuario_id", data.session.user.id).maybeSingle();
@@ -21,6 +27,35 @@ export default function AdminLoginPage() {
       setVerificando(false);
     });
   }, []);
+
+  async function solicitarRecuperacao(evento: React.FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    setCarregando(true);
+    setMensagem("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: `${window.location.origin}/admin/auth/callback?next=recovery`,
+    });
+    setMensagem(error
+      ? "Não foi possível iniciar a recuperação de senha. Tente novamente."
+      : "Se o e-mail pertencer a um recrutador cadastrado, as instruções para redefinição foram enviadas.");
+    setCarregando(false);
+  }
+
+  async function redefinirSenha(evento: React.FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    setMensagem("");
+    if (novaSenha.length < 8) { setMensagem("A nova senha deve ter pelo menos 8 caracteres."); return; }
+    if (novaSenha !== confirmacaoSenha) { setMensagem("As senhas informadas não são iguais."); return; }
+    setCarregando(true);
+    const { error } = await supabase.auth.updateUser({ password: novaSenha });
+    if (error) { setMensagem("O link de recuperação é inválido ou expirou. Solicite um novo link."); setCarregando(false); return; }
+    await supabase.auth.signOut();
+    setNovaSenha("");
+    setConfirmacaoSenha("");
+    setView("login");
+    setMensagem("Senha alterada com sucesso. Agora você já pode entrar com a nova senha.");
+    setCarregando(false);
+  }
 
   if (verificando) return <main className="flex min-h-screen items-center justify-center bg-[#052656] text-white">Verificando acesso administrativo...</main>;
   if (sessaoCliente) return <AdminClientSessionNotice />;
@@ -51,6 +86,39 @@ export default function AdminLoginPage() {
     }
     window.location.href = "/admin";
   }
+
+  if (view === "forgot") return (
+    <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12">
+      <section className="w-full max-w-md bg-white p-8 text-center shadow-xl">
+        <img src="/assets/hr-consultoria-logo.png" alt="HR Solutions" className="mx-auto mb-6 h-auto w-[170px] max-w-full" />
+        <h1 className="font-['Playfair_Display',serif] text-3xl font-semibold text-[#052656]">Recuperar senha</h1>
+        <p className="mt-3 text-base text-gray-600">Informe o e-mail cadastrado do recrutador para receber um link seguro.</p>
+        <form onSubmit={solicitarRecuperacao} className="mt-8 space-y-5 text-left">
+          <label className="block text-sm font-semibold text-[#052656]" htmlFor="recuperacao-email">E-mail cadastrado</label>
+          <input id="recuperacao-email" type="email" value={email} onChange={(evento) => setEmail(evento.target.value)} required autoComplete="email" className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]" />
+          {mensagem && <p role="status" className="text-sm font-medium text-[#052656]">{mensagem}</p>}
+          <button type="submit" disabled={carregando} className="w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] transition hover:bg-[#E0B33A] disabled:cursor-not-allowed disabled:opacity-60">{carregando ? "Enviando..." : "Enviar"}</button>
+        </form>
+        <button type="button" onClick={() => { setMensagem(""); setView("login"); }} className="mt-5 font-semibold text-[#052656] underline">Voltar para o login</button>
+      </section>
+    </main>
+  );
+
+  if (view === "reset") return (
+    <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12">
+      <section className="w-full max-w-md bg-white p-8 text-center shadow-xl">
+        <img src="/assets/hr-consultoria-logo.png" alt="HR Solutions" className="mx-auto mb-6 h-auto w-[170px] max-w-full" />
+        <h1 className="font-['Playfair_Display',serif] text-3xl font-semibold text-[#052656]">Redefinir senha</h1>
+        <p className="mt-3 text-base text-gray-600">Cadastre uma nova senha para acessar o painel do recrutador.</p>
+        <form onSubmit={redefinirSenha} className="mt-8 space-y-5 text-left">
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">Nova senha</span><input type="password" value={novaSenha} onChange={(evento) => setNovaSenha(evento.target.value)} required minLength={8} autoComplete="new-password" className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]" /></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">Confirmar nova senha</span><input type="password" value={confirmacaoSenha} onChange={(evento) => setConfirmacaoSenha(evento.target.value)} required minLength={8} autoComplete="new-password" className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]" /></label>
+          {mensagem && <p role="alert" className="text-sm font-medium text-red-600">{mensagem}</p>}
+          <button type="submit" disabled={carregando} className="w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] transition hover:bg-[#E0B33A] disabled:cursor-not-allowed disabled:opacity-60">{carregando ? "Salvando..." : "Redefinir senha"}</button>
+        </form>
+      </section>
+    </main>
+  );
 
   return (
     <main className="min-h-screen bg-[#052656] px-5 py-12 flex items-center justify-center">
@@ -107,6 +175,8 @@ export default function AdminLoginPage() {
               className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]"
             />
           </div>
+
+          <button type="button" onClick={() => { setMensagem(""); setView("forgot"); }} className="block text-sm font-semibold text-[#052656] underline">Esqueci minha senha</button>
 
           {mensagem && (
             <p className="text-sm font-medium text-red-600">{mensagem}</p>

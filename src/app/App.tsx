@@ -18,6 +18,7 @@ import CompanyContractSection from "./components/CompanyContractSection";
 import PortalAccessSection from "./components/PortalAccessSection";
 import ClientLoginPage from "./pages/ClientLoginPage";
 import ClientAuthCallbackPage from "./pages/ClientAuthCallbackPage";
+import AdminAuthCallbackPage from "./pages/AdminAuthCallbackPage";
 import ClientPortalPage from "./pages/ClientPortalPage";
 import AdminPortalPreviewPage from "./pages/AdminPortalPreviewPage";
 import AdminAccessRequestsPage from "./pages/AdminAccessRequestsPage";
@@ -311,14 +312,14 @@ Descrição da necessidade: ${necessidade}`;
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#F8F8F6] font-['Inter',sans-serif] text-[#052656] antialiased">
       <header
-        className="fixed left-0 right-0 top-0 z-50 px-3 pt-3 transition-all duration-300 sm:px-5 sm:pt-5"
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${scrolled ? "border-[#052656]/10 bg-white/95 shadow-xl shadow-[#052656]/8 backdrop-blur" : "border-white/15 bg-[#052656]/90 shadow-2xl shadow-[#052656]/20 backdrop-blur-md"}`}
       >
-        <div className={`mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-6 rounded-2xl border px-4 py-3 transition-all duration-300 sm:px-6 lg:px-8 ${scrolled ? "border-[#052656]/10 bg-white/95 shadow-xl shadow-[#052656]/8 backdrop-blur" : "border-white/15 bg-[#052656]/85 shadow-2xl shadow-[#052656]/20 backdrop-blur-md"}`}>
+        <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-4 px-5 py-0 sm:px-6 lg:gap-6 lg:px-10">
           <a href="#inicio" aria-label="Ir para o início" className="flex items-center">
-            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-12 w-auto max-w-none shrink-0 sm:h-14" />
+            <Logo variant={scrolled ? "color" : "white"} showText={false} className="h-20 min-h-20 max-h-20 w-auto max-w-none flex-none sm:h-[88px] sm:min-h-[88px] sm:max-h-[88px]" />
           </a>
 
-          <nav className="hidden flex-1 items-center justify-center gap-10 xl:flex" aria-label="Menu principal">
+          <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex 2xl:gap-10" aria-label="Menu principal">
             {MAIN_NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -362,7 +363,7 @@ Descrição da necessidade: ${necessidade}`;
         </div>
 
         {menuOpen && (
-          <div className="mx-auto max-w-7xl border-x border-b border-[#052656]/10 bg-white px-6 py-6 shadow-xl xl:hidden">
+          <div className="mx-auto max-w-7xl border-t border-[#052656]/10 bg-white px-5 py-6 shadow-xl sm:px-6 xl:hidden">
             <div className="flex flex-col gap-5">
               {MAIN_NAV_LINKS.map((link) => (
                 <a
@@ -400,7 +401,7 @@ Descrição da necessidade: ${necessidade}`;
         <section id="inicio" className="relative overflow-hidden bg-[#052656] pt-36 sm:pt-40">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_12%,rgba(212,166,42,0.23),transparent_25%),linear-gradient(135deg,#052656_0%,#092f65_58%,#031b3d_100%)]" />
           <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
-          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-28">
+          <div className="relative mx-auto grid min-h-[720px] max-w-7xl grid-cols-1 items-center gap-14 px-5 pb-20 sm:px-6 lg:px-10 lg:pb-28">
             <div className="max-w-3xl motion-safe:animate-[fadeInUp_700ms_ease-out_both]">
               <span className="mb-7 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#F0C95C]"><span className="h-px w-8 bg-[#D4A62A]" /> Consultoria estratégica</span>
               <h1 className="font-['Poppins',sans-serif] text-4xl font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:text-6xl lg:text-[5.15rem]">
@@ -422,22 +423,6 @@ Descrição da necessidade: ${necessidade}`;
                 <span className="inline-flex items-center gap-2"><Handshake size={17} className="text-[#D4A62A]" /> Atendimento próximo</span>
                 <span className="inline-flex items-center gap-2"><BarChart3 size={17} className="text-[#D4A62A]" /> Foco em resultado</span>
               </div>
-            </div>
-
-            <div className="relative mx-auto w-full max-w-xl motion-safe:animate-[fadeInUp_850ms_ease-out_120ms_both]">
-              <div className="absolute -right-5 -top-7 h-32 w-32 rounded-full border border-[#D4A62A]/35 sm:-right-10 sm:-top-10 sm:h-48 sm:w-48" />
-              <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 p-3 shadow-2xl shadow-black/30 backdrop-blur-sm">
-                <div className="relative overflow-hidden rounded-[1.4rem] bg-[#0b3a78]">
-                  <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&h=1050&fit=crop&auto=format" alt="Equipe de consultoria em uma reunião estratégica" className="h-[430px] w-full object-cover opacity-75 sm:h-[560px]" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#031b3d] via-transparent to-[#052656]/20" />
-                  <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-[#052656]/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#F0C95C] backdrop-blur">HR Gestão & Soluções</div>
-                  <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/20 bg-[#052656]/80 p-5 backdrop-blur-md">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F0C95C]">Três pilares</p>
-                    <p className="mt-2 text-xl font-semibold leading-snug text-white sm:text-2xl">Pessoas, criatividade e digital trabalhando juntos.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -bottom-6 -left-5 rounded-2xl border border-[#D4A62A]/40 bg-[#D4A62A] px-5 py-4 text-[#052656] shadow-xl shadow-black/20 sm:-left-10"><p className="text-3xl font-bold leading-none">01</p><p className="mt-1 text-xs font-bold uppercase tracking-[0.15em]">Visão estratégica</p></div>
             </div>
           </div>
         </section>
@@ -1761,7 +1746,7 @@ function PublicFooter() {
   ];
 
   return (
-    <footer style={{ backgroundColor: "#052656" }} className="border-t-4 border-[#D4A62A] py-20 md:py-28">
+    <footer style={{ backgroundColor: "#052656" }} className="py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 gap-14 md:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr_1.15fr] lg:gap-16 xl:gap-20 mb-16">
           <div className="text-center md:text-left">
@@ -1994,6 +1979,7 @@ export default function App() {
   }, [caminho]);
 
   if (caminho === "/cliente/auth/callback") return <ClientAuthCallbackPage />;
+  if (caminho === "/admin/auth/callback") return <AdminAuthCallbackPage />;
   if (caminho === "/cliente/login") return <ClientLoginPage />;
   if (caminho === "/cliente" || caminho.startsWith("/cliente/")) return <ClientAccessGate><ClientPortalPage /></ClientAccessGate>;
 

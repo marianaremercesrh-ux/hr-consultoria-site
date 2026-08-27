@@ -104,7 +104,7 @@ function JobsFooter() {
               <li>
                 <a href="/cliente/login" className="group inline-flex items-start gap-2 text-white/55 transition-colors hover:text-[#D4A62A]">
                   <Building2 size={17} className="mt-1" aria-hidden="true" />
-                  <span><strong className="block text-lg">Ãrea do Cliente</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Acompanhamento de vagas e candidatos liberados</span></span>
+                  <span><strong className="block text-lg">Área do Cliente</strong><span className="block text-sm text-white/40 group-hover:text-white/60">Acompanhamento de vagas e candidatos liberados</span></span>
                 </a>
               </li>
             </ul>
@@ -202,4 +202,3 @@ function JobDetails({ job }: { job: PublicJob | null }) {
 function InfoList({ title, items }: { title: string; items: string[] }) {
   return <section><h2 className="text-3xl font-semibold text-[#052656] mb-4">{title}</h2>{items.length ? <ul className="space-y-3">{items.map((item, index) => <li key={`${item}-${index}`} className="flex gap-3 text-lg leading-relaxed"><span className="text-[#D4A62A]">âœ“</span>{item}</li>)}</ul> : <p className="text-lg text-muted-foreground">NÃ£o informado.</p>}</section>;
 }
-
