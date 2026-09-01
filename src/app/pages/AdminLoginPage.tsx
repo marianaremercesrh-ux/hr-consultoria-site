@@ -1,6 +1,8 @@
 ﻿import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
+const CONTACT_EMAIL = "hrconsultoriarecrutamento@gmail.com";
+
 export default function AdminLoginPage() {
   const [view, setView] = useState<"login" | "forgot" | "reset">(
     new URLSearchParams(window.location.search).get("recovery") ? "reset" : "login",
@@ -190,6 +192,17 @@ export default function AdminLoginPage() {
             {carregando ? "Entrando..." : "Entrar"}
           </button>
         </form>
+
+        <div className="mt-7 border-t border-gray-200 pt-6 text-center">
+          <p className="text-sm text-gray-600">Ainda não tem login de recrutador?</p>
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Solicitação de criação de login de recrutador")}&body=${encodeURIComponent("Olá, gostaria de solicitar a criação do meu login de recrutador na HR Gestão e Soluções.\n\nNome:\nE-mail:\nTelefone:")}`}
+            className="mt-2 inline-block font-semibold text-[#052656] underline decoration-[#D4A62A] decoration-2 underline-offset-4 hover:text-[#0B3470]"
+          >
+            Solicitar criação de login
+          </a>
+          <p className="mt-2 text-xs leading-relaxed text-gray-500">A HR Gestão e Soluções fará a liberação do seu acesso administrativo.</p>
+        </div>
       </section>
     </main>
   );
