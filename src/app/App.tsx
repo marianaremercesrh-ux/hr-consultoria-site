@@ -221,7 +221,7 @@ function HomeApp() {
   }, []);
 
   useEffect(() => {
-    const sections = MAIN_NAV_LINKS.map((link) => link.sectionId ? document.getElementById(link.sectionId) : null).filter(Boolean);
+    const sections = MAIN_NAV_LINKS.map((link) => link.sectionId ? document.getElementById(link.sectionId) : null).filter((section): section is HTMLElement => section !== null);
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries

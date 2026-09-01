@@ -1,10 +1,9 @@
 ﻿import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-
-const CONTACT_EMAIL = "hrconsultoriarecrutamento@gmail.com";
+import { createAdminPassword, requestAdminLoginCode, verifyAdminLoginCode } from "../services/adminLoginCreation";
 
 export default function AdminLoginPage() {
-  const [view, setView] = useState<"login" | "forgot" | "reset">(
+  const [view, setView] = useState<"login" | "forgot" | "reset" | "request" | "code" | "password" | "success">(
     new URLSearchParams(window.location.search).get("recovery") ? "reset" : "login",
   );
   const [email, setEmail] = useState("");
@@ -15,6 +14,10 @@ export default function AdminLoginPage() {
   const [mensagem, setMensagem] = useState("");
   const [verificando, setVerificando] = useState(true);
   const [sessaoCliente, setSessaoCliente] = useState(false);
+  const [challengeId, setChallengeId] = useState("");
+  const [verificationToken, setVerificationToken] = useState("");
+  const [codigo, setCodigo] = useState(["", "", "", ""]);
+  const [segundosParaReenviar, setSegundosParaReenviar] = useState(0);
 
   useEffect(() => {
     if (view === "reset") { setVerificando(false); return; }
@@ -29,6 +32,85 @@ export default function AdminLoginPage() {
       setVerificando(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (segundosParaReenviar <= 0) return;
+    const timer = window.setInterval(() => setSegundosParaReenviar(value => Math.max(0, value - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, [segundosParaReenviar]);
+
+  function abrirSolicitacao() {
+    setMensagem("");
+    setEmail("");
+    setView("request");
+  }
+
+  async function solicitarCodigo(evento: React.FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) { setMensagem("Informe seu e-mail."); return; }
+    setCarregando(true); setMensagem("");
+    try {
+      const result = await requestAdminLoginCode(normalizedEmail);
+      setEmail(normalizedEmail);
+      if (result.challenge_id) {
+        setChallengeId(result.challenge_id);
+        setCodigo(["", "", "", ""]);
+        setSegundosParaReenviar(60);
+        setView("code");
+      } else setMensagem(result.message ?? "Se o e-mail estiver autorizado, você receberá um código.");
+    } catch (error) {
+      setMensagem(error instanceof Error && error.message !== "NETWORK_ERROR" ? error.message : "Não foi possível enviar o código. Tente novamente.");
+    } finally { setCarregando(false); }
+  }
+
+  function alterarCodigo(index: number, value: string) {
+    const digits = value.replace(/\D/g, "").slice(-1);
+    setCodigo(current => current.map((item, position) => position === index ? digits : item));
+    if (digits && index < 3) document.getElementById(`codigo-${index + 1}`)?.focus();
+  }
+
+  function colarCodigo(evento: React.ClipboardEvent<HTMLInputElement>) {
+    const digits = evento.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+    if (digits.length !== 4) return;
+    evento.preventDefault();
+    setCodigo(digits.split(""));
+    document.getElementById("codigo-3")?.focus();
+  }
+
+  function apagarCodigo(evento: React.KeyboardEvent<HTMLInputElement>, index: number) {
+    if (evento.key === "Backspace" && !codigo[index] && index > 0) document.getElementById(`codigo-${index - 1}`)?.focus();
+  }
+
+  async function validarCodigo(evento: React.FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    const value = codigo.join("");
+    if (value.length !== 4) { setMensagem("Informe os 4 dígitos do código."); return; }
+    setCarregando(true); setMensagem("");
+    try {
+      const result = await verifyAdminLoginCode(email, challengeId, value);
+      setVerificationToken(result.verification_token); setNovaSenha(""); setConfirmacaoSenha(""); setView("password");
+    } catch (error) { setMensagem(error instanceof Error && error.message !== "NETWORK_ERROR" ? error.message : "Não foi possível validar o código. Tente novamente."); }
+    finally { setCarregando(false); }
+  }
+
+  async function reenviarCodigo() {
+    if (segundosParaReenviar > 0 || carregando) return;
+    setCarregando(true); setMensagem("");
+    try { const result = await requestAdminLoginCode(email); if (result.challenge_id) { setChallengeId(result.challenge_id); setCodigo(["", "", "", ""]); setSegundosParaReenviar(60); } }
+    catch (error) { setMensagem(error instanceof Error && error.message !== "NETWORK_ERROR" ? error.message : "Não foi possível reenviar o código."); }
+    finally { setCarregando(false); }
+  }
+
+  async function salvarNovaSenha(evento: React.FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    if (novaSenha.length < 8 || !/[A-Z]/.test(novaSenha) || !/[a-z]/.test(novaSenha) || !/\d/.test(novaSenha) || !/[^A-Za-z0-9]/.test(novaSenha)) { setMensagem("A senha deve cumprir todos os requisitos."); return; }
+    if (novaSenha !== confirmacaoSenha) { setMensagem("As senhas informadas não são iguais."); return; }
+    setCarregando(true); setMensagem("");
+    try { await createAdminPassword(email, verificationToken, novaSenha); setNovaSenha(""); setConfirmacaoSenha(""); setVerificationToken(""); setView("success"); }
+    catch (error) { setMensagem(error instanceof Error && error.message !== "NETWORK_ERROR" ? error.message : "Não foi possível criar o login. Tente novamente."); }
+    finally { setCarregando(false); }
+  }
 
   async function solicitarRecuperacao(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -61,6 +143,50 @@ export default function AdminLoginPage() {
 
   if (verificando) return <main className="flex min-h-screen items-center justify-center bg-[#052656] text-white">Verificando acesso administrativo...</main>;
   if (sessaoCliente) return <AdminClientSessionNotice />;
+
+  if (view === "request") return (
+    <AuthShell>
+      <h1 className="font-['Playfair_Display',serif] text-3xl font-semibold text-[#052656]">Solicitar criação de login</h1>
+      <p className="mt-3 text-base text-gray-600">Informe seu e-mail para receber o código de verificação.</p>
+      <form onSubmit={solicitarCodigo} className="mt-8 space-y-5">
+        <label className="block"><span className="mb-2 block text-sm font-semibold text-[#052656]">E-mail</span><input type="email" value={email} onChange={evento => setEmail(evento.target.value)} required autoComplete="email" className="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#D4A62A]" /></label>
+        {mensagem && <p role="alert" className="text-sm font-medium text-red-600">{mensagem}</p>}
+        <button type="submit" disabled={carregando} className="w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] transition hover:bg-[#E0B33A] disabled:cursor-not-allowed disabled:opacity-60">{carregando ? "Enviando..." : "Continuar"}</button>
+      </form>
+      <button type="button" onClick={() => { setMensagem(""); setView("login"); }} className="mt-5 block w-full font-semibold text-[#052656] underline">Voltar para o login</button>
+    </AuthShell>
+  );
+
+  if (view === "code") return (
+    <AuthShell>
+      <h1 className="font-['Playfair_Display',serif] text-3xl font-semibold text-[#052656]">Verifique seu e-mail</h1>
+      <p className="mt-3 text-base text-gray-600">Enviamos um código de verificação de 4 dígitos para o e-mail informado.</p>
+      <form onSubmit={validarCodigo} className="mt-8 space-y-5">
+        <div className="flex justify-center gap-3" onPaste={colarCodigo}>
+          {codigo.map((digit, index) => <input key={index} id={`codigo-${index}`} inputMode="numeric" pattern="[0-9]*" maxLength={1} value={digit} onChange={evento => alterarCodigo(index, evento.target.value)} onKeyDown={evento => apagarCodigo(evento, index)} aria-label={`Dígito ${index + 1}`} className="h-14 w-12 border border-gray-300 text-center text-2xl font-semibold text-[#052656] outline-none focus:border-[#D4A62A]" />)}
+        </div>
+        {mensagem && <p role="alert" className="text-sm font-medium text-red-600">{mensagem}</p>}
+        <button type="submit" disabled={carregando} className="w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] transition hover:bg-[#E0B33A] disabled:cursor-not-allowed disabled:opacity-60">{carregando ? "Verificando..." : "Verificar código"}</button>
+      </form>
+      <button type="button" disabled={segundosParaReenviar > 0 || carregando} onClick={() => void reenviarCodigo()} className="mt-5 block w-full font-semibold text-[#052656] underline disabled:cursor-not-allowed disabled:opacity-50">{segundosParaReenviar > 0 ? `Reenviar código em ${segundosParaReenviar}s` : "Reenviar código"}</button>
+    </AuthShell>
+  );
+
+  if (view === "password") return (
+    <AuthShell>
+      <h1 className="font-['Playfair_Display',serif] text-3xl font-semibold text-[#052656]">Criar senha</h1>
+      <p className="mt-3 text-base text-gray-600">Crie uma senha segura para acessar seu painel administrativo.</p>
+      <form onSubmit={salvarNovaSenha} className="mt-8 space-y-5">
+        <PasswordField label="Nova senha" value={novaSenha} onChange={setNovaSenha} />
+        <PasswordField label="Confirmar senha" value={confirmacaoSenha} onChange={setConfirmacaoSenha} />
+        <PasswordRequirements password={novaSenha} />
+        {mensagem && <p role="alert" className="text-sm font-medium text-red-600">{mensagem}</p>}
+        <button type="submit" disabled={carregando} className="w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] transition hover:bg-[#E0B33A] disabled:cursor-not-allowed disabled:opacity-60">{carregando ? "Salvando..." : "Criar senha"}</button>
+      </form>
+    </AuthShell>
+  );
+
+  if (view === "success") return <AuthShell><h1 className="font-['Playfair_Display',serif] text-3xl font-semibold text-[#052656]">Login criado com sucesso!</h1><p className="mt-4 leading-relaxed text-gray-700">Seu acesso administrativo foi criado. Agora você já pode entrar utilizando seu e-mail e sua nova senha.</p><button type="button" onClick={() => { setEmail(""); setSenha(""); setMensagem(""); setView("login"); }} className="mt-7 w-full bg-[#D4A62A] px-5 py-3 font-semibold text-[#052656] hover:bg-[#E0B33A]">Voltar para o login</button></AuthShell>;
 
   async function entrar(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -195,17 +321,32 @@ export default function AdminLoginPage() {
 
         <div className="mt-7 border-t border-gray-200 pt-6 text-center">
           <p className="text-sm text-gray-600">Ainda não tem login de recrutador?</p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Solicitação de criação de login de recrutador")}&body=${encodeURIComponent("Olá, gostaria de solicitar a criação do meu login de recrutador na HR Gestão e Soluções.\n\nNome:\nE-mail:\nTelefone:")}`}
+          <button
+            type="button"
+            onClick={abrirSolicitacao}
             className="mt-2 inline-block font-semibold text-[#052656] underline decoration-[#D4A62A] decoration-2 underline-offset-4 hover:text-[#0B3470]"
           >
             Solicitar criação de login
-          </a>
+          </button>
           <p className="mt-2 text-xs leading-relaxed text-gray-500">A HR Gestão e Soluções fará a liberação do seu acesso administrativo.</p>
         </div>
       </section>
     </main>
   );
+}
+
+function AuthShell({ children }: { children: React.ReactNode }) {
+  return <main className="flex min-h-screen items-center justify-center bg-[#052656] px-5 py-12"><section className="w-full max-w-md bg-white p-8 text-center shadow-xl"><img src="/assets/hr-consultoria-logo.png" alt="HR Solutions" className="mx-auto mb-6 h-auto w-[170px] max-w-full" />{children}</section></main>;
+}
+
+function PasswordField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+  const [visible, setVisible] = useState(false);
+  return <label className="block text-left"><span className="mb-2 block text-sm font-semibold text-[#052656]">{label}</span><span className="relative block"><input type={visible ? "text" : "password"} value={value} onChange={evento => onChange(evento.target.value)} required autoComplete="new-password" className="w-full border border-gray-300 px-4 py-3 pr-20 outline-none focus:border-[#D4A62A]" /><button type="button" onClick={() => setVisible(current => !current)} className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#052656]">{visible ? "Ocultar" : "Mostrar"}</button></span></label>;
+}
+
+function PasswordRequirements({ password }: { password: string }) {
+  const requirements = [[password.length >= 8, "8 caracteres ou mais"], [/[A-Z]/.test(password), "Uma letra maiúscula"], [/[a-z]/.test(password), "Uma letra minúscula"], [/\d/.test(password), "Um número"], [/[^A-Za-z0-9]/.test(password), "Um caractere especial"]] as const;
+  return <ul className="space-y-1 text-left text-sm text-gray-600">{requirements.map(([valid, text]) => <li key={text} className={valid ? "text-green-700" : ""}>{valid ? "✓" : "○"} {text}</li>)}</ul>;
 }
 
 export function AdminClientSessionNotice() {
